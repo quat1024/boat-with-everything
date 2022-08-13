@@ -7,7 +7,8 @@
 		"MixinBoat"
   ],
 	"client": [
-		"MixinBoatRenderer"
+		"MixinBoatRenderer",
+		"AccessorBlockRenderDispatcher"
 	],
   "injectors": {
     "defaultRequire": 1

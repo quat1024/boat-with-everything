@@ -31,9 +31,8 @@ public class MixinBoatRenderer {
 			pose.translate(15/32d, -3/16d + 0.01, 0); //Move to a tiny bit above the back of the boat
 			pose.mulPose(Vector3f.YP.rotationDegrees(-90)); //Idk
 			pose.scale(0.8f, 0.8f, 0.8f); //Scale down so the block fits inside the boat
-			pose.translate(-0.5, 0, -0.5); //Most blocks are drawn from their lower left corner, not their center
 			
-			SpecialBoatRenderer.get(state).render(boat, yaw, partialTicks, pose, bufs, light, state);
+			SpecialBoatRenderer.get(state).render(boat, yaw, partialTicks, pose, bufs, light, state, boat.getEntityData().get(BoatWithEverything.DATA_ID_ITEM_STACK));
 			
 			pose.popPose();
 		});

@@ -26,15 +26,24 @@ public class BoatWithEverything {
 	public static EntityDataAccessor<ItemStack> DATA_ID_ITEM_STACK;
 	
 	public static @Nullable InteractionResult interact(Boat boat, Player player, InteractionHand hand) {
+		if(boat.getPassengers().contains(player)) {
+			Optional<BlockState> state = boat.getEntityData().get(DATA_ID_BLOCK_STATE);
+			if(state.isPresent()) {
+				SpecialBoatRules rule = SpecialBoatRules.get(state.get());
+				InteractionResult result = rule.interact(state.get(), boat);
+				if(result != InteractionResult.PASS) return result;
+			}
+		}
+		
 		//Vanilla boat interaction always instantly returns when you're sneaking, so adding more behavior on sneak doesn't conflict
 		if(!player.isSecondaryUseActive()) return null;
 		
 		//If there's something in the boat already, pop it out
 		if(boat.getEntityData().get(DATA_ID_BLOCK_STATE).isPresent()) {
 			//return the item that was used to place the block in the boat
-			ItemStack placementItem = boat.getEntityData().get(DATA_ID_ITEM_STACK).copy();
+			ItemStack stackInBoat = boat.getEntityData().get(DATA_ID_ITEM_STACK).copy();
 			boat.getEntityData().set(DATA_ID_ITEM_STACK, ItemStack.EMPTY);
-			boat.spawnAtLocation(placementItem, boat.getBbHeight());
+			if(!player.addItem(stackInBoat)) boat.spawnAtLocation(stackInBoat, boat.getBbHeight());
 			
 			//remove the blockstate from the boat
 			boat.getEntityData().set(DATA_ID_BLOCK_STATE, Optional.empty());
@@ -45,9 +54,9 @@ public class BoatWithEverything {
 		}
 		
 		//If there's no blockstate, add it to the boat
-		BlockState placement;
-		if(canAddBlockState(boat) && (placement = getPlacementStateInsideBoat(player, boat, hand)) != null) {
-			boat.getEntityData().set(DATA_ID_BLOCK_STATE, Optional.of(placement));
+		BlockState placementState;
+		if((placementState = getPlacementStateInsideBoat(player, boat, hand)) != null && canAddBlockState(boat, placementState)) {
+			boat.getEntityData().set(DATA_ID_BLOCK_STATE, Optional.of(placementState));
 			boat.getEntityData().set(DATA_ID_ITEM_STACK, player.getItemInHand(hand).split(1));
 			
 			boat.playSound(SoundEvents.ITEM_FRAME_ADD_ITEM); //todo caption
@@ -87,7 +96,11 @@ public class BoatWithEverything {
 		} else return null;
 	}
 	
-	public static boolean canAddBlockState(Boat boat) {
-		return !(boat instanceof ChestBoat) && boat.getPassengers().size() <= 1 && boat.getEntityData().get(DATA_ID_BLOCK_STATE).isEmpty();
+	public static boolean canAddBlockState(Boat boat, BlockState state) {
+		if(boat instanceof ChestBoat) return false;
+		if(boat.getEntityData().get(DATA_ID_BLOCK_STATE).isPresent()) return false;
+		
+		if(SpecialBoatRules.get(state).consumesPassengerSlot()) return boat.getPassengers().size() <= 1;
+		else return true;
 	}
 }

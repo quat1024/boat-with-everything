@@ -1,6 +1,8 @@
 package agency.highlysuspect.boatwitheverything.mixin;
 
 import agency.highlysuspect.boatwitheverything.BoatWithEverything;
+import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
+import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -8,9 +10,11 @@ import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.block.state.BlockState;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
@@ -23,7 +27,7 @@ import java.util.Optional;
 
 @Mixin(Boat.class)
 public class MixinBoat {
-	// synched data and other setup //
+	// synched data //
 	
 	@Unique private static final EntityDataAccessor<Optional<BlockState>> DATA_ID_BLOCK_STATE = SynchedEntityData.defineId(Boat.class, EntityDataSerializers.BLOCK_STATE);
 	@Unique private static final EntityDataAccessor<ItemStack> DATA_ID_ITEM_STACK = SynchedEntityData.defineId(Boat.class, EntityDataSerializers.ITEM_STACK);
@@ -45,6 +49,27 @@ public class MixinBoat {
 	public void whenInteracting(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
 		InteractionResult result = BoatWithEverything.interact(boat(), player, hand);
 		if(result != null) cir.setReturnValue(result);
+	}
+	
+	@Inject(method = "destroy", at = @At("RETURN"))
+	public void whenDestroying(DamageSource source, CallbackInfo ci) {
+		boat().spawnAtLocation(boat().getEntityData().get(DATA_ID_ITEM_STACK));
+	}
+	
+	@Inject(method = "checkFallDamage", at = @At(
+		value = "INVOKE",
+		target = "Lnet/minecraft/world/entity/vehicle/Boat;kill()V"
+	))
+	public void whenDoingGlitchyPlanksAndSticksDropLol(double d, boolean bl, BlockState blockState, BlockPos blockPos, CallbackInfo ci) {
+		//Could avoid this gamerule check with a more annoying mixin inject, I guess
+		if(boat().level.getGameRules().getBoolean(GameRules.RULE_DOENTITYDROPS)) {
+			boat().spawnAtLocation(boat().getEntityData().get(DATA_ID_ITEM_STACK));
+		}
+	}
+	
+	@Inject(method = "tick", at = @At("RETURN"))
+	public void whenTicking(CallbackInfo ci) {
+		boat().getEntityData().get(DATA_ID_BLOCK_STATE).ifPresent(state -> SpecialBoatRules.get(state).tick(state, boat()));
 	}
 	
 	// saving and loading //
@@ -79,12 +104,20 @@ public class MixinBoat {
 	
 	@Inject(method = "getMaxPassengers", at = @At("HEAD"), cancellable = true)
 	protected void whenCountingMaxPassengers(CallbackInfoReturnable<Integer> cir) {
-		if(boat().getEntityData().get(BoatWithEverything.DATA_ID_BLOCK_STATE).isPresent()) cir.setReturnValue(1);
+		if(boat().getEntityData().get(BoatWithEverything.DATA_ID_BLOCK_STATE)
+			.map(state -> SpecialBoatRules.get(state).consumesPassengerSlot())
+			.orElse(false)) {
+			cir.setReturnValue(1);
+		}
 	}
 	
 	@Inject(method = "getSinglePassengerXOffset", at = @At("HEAD"), cancellable = true)
 	protected void whenOffsettingSinglePassenger(CallbackInfoReturnable<Float> cir) {
-		if(boat().getEntityData().get(BoatWithEverything.DATA_ID_BLOCK_STATE).isPresent()) cir.setReturnValue(0.15f); //same as ChestBoat
+		if(boat().getEntityData().get(BoatWithEverything.DATA_ID_BLOCK_STATE)
+			.map(state -> SpecialBoatRules.get(state).consumesPassengerSlot())
+			.orElse(false)) {
+			cir.setReturnValue(0.15f); //same as ChestBoat
+		}
 	}
 	
 	// helper //
