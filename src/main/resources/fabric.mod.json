@@ -1,38 +1,34 @@
 {
   "schemaVersion": 1,
-  "id": "modid",
+  "id": "boat-with-everything",
   "version": "${version}",
 
-  "name": "Example Mod",
-  "description": "This is an example description! Tell everyone what your mod is about!",
+  "name": "Boat with Everything",
+  "description": "The Boat with Chest is cool, I guess, but I want more things",
   "authors": [
-    "Me!"
+    "quaternary"
   ],
   "contact": {
-    "homepage": "https://fabricmc.net/",
-    "sources": "https://github.com/FabricMC/fabric-example-mod"
+    "homepage": "https://highlysuspect.agency/",
+    "sources": "https://github.com/quat1024/boat-with-everything"
   },
 
-  "license": "CC0-1.0",
-  "icon": "assets/modid/icon.png",
+  "license": "LGPL-3.0-or-later",
+  "icon": "assets/boat-with-everything/icon.png",
 
   "environment": "*",
   "entrypoints": {
     "main": [
-      "net.fabricmc.example.ExampleMod"
+      "agency.highlysuspect.boatwitheverything.FabricEntrypoint"
     ]
   },
   "mixins": [
-    "modid.mixins.json"
+    "boat-with-everything.mixins.json"
   ],
 
   "depends": {
     "fabricloader": ">=0.14.6",
-    "fabric": "*",
     "minecraft": "~1.19",
     "java": ">=17"
-  },
-  "suggests": {
-    "another-mod": "*"
   }
 }
