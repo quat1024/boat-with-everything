@@ -1,6 +1,5 @@
 package agency.highlysuspect.boatwitheverything.mixin;
 
-import agency.highlysuspect.boatwitheverything.BoatDuck;
 import agency.highlysuspect.boatwitheverything.BoatWithEverything;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -23,38 +22,29 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import java.util.Optional;
 
 @Mixin(Boat.class)
-public class MixinBoat implements BoatDuck {
+public class MixinBoat {
 	// synched data and other setup //
 	
 	@Unique private static final EntityDataAccessor<Optional<BlockState>> DATA_ID_BLOCK_STATE = SynchedEntityData.defineId(Boat.class, EntityDataSerializers.BLOCK_STATE);
+	@Unique private static final EntityDataAccessor<ItemStack> DATA_ID_ITEM_STACK = SynchedEntityData.defineId(Boat.class, EntityDataSerializers.ITEM_STACK);
 	
 	static {
 		BoatWithEverything.DATA_ID_BLOCK_STATE = DATA_ID_BLOCK_STATE;
+		BoatWithEverything.DATA_ID_ITEM_STACK = DATA_ID_ITEM_STACK;
 	}
 	
 	@Inject(method = "defineSynchedData", at = @At("RETURN"))
 	protected void whenDefiningSynchedData(CallbackInfo ci) {
 		boat().getEntityData().define(DATA_ID_BLOCK_STATE, Optional.empty());
+		boat().getEntityData().define(DATA_ID_ITEM_STACK, ItemStack.EMPTY);
 	}
 	
 	// interactions //
-	
-	@Unique private ItemStack itemStack = ItemStack.EMPTY;
 	
 	@Inject(method = "interact", at = @At("HEAD"), cancellable = true)
 	public void whenInteracting(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
 		InteractionResult result = BoatWithEverything.interact(boat(), player, hand);
 		if(result != null) cir.setReturnValue(result);
-	}
-	
-	@Override
-	public void boatWithEverything$setItemStack(ItemStack stack) {
-		this.itemStack = stack.copy();
-	}
-	
-	@Override
-	public ItemStack boatWithEverything$getItemStack() {
-		return itemStack;
 	}
 	
 	// saving and loading //
@@ -64,32 +54,37 @@ public class MixinBoat implements BoatDuck {
 	
 	@Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
 	public void whenAddingAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
-		BoatWithEverything.getBlockState(boat()).ifPresent(state ->
-			tag.put(BLOCKSTATE_KEY, NbtUtils.writeBlockState(state)));
+		boat().getEntityData().get(DATA_ID_BLOCK_STATE).ifPresent(state -> tag.put(BLOCKSTATE_KEY, NbtUtils.writeBlockState(state)));
 		
-		if(!itemStack.isEmpty()) tag.put(ITEMSTACK_KEY, itemStack.save(new CompoundTag()));
+		ItemStack stack = boat().getEntityData().get(DATA_ID_ITEM_STACK);
+		if(!stack.isEmpty()) tag.put(ITEMSTACK_KEY, stack.save(new CompoundTag()));
 	}
 	
 	@Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
 	public void whenReadingAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
-		BlockState state;
-		BoatWithEverything.setBlockState(boat(),
-			tag.contains(BLOCKSTATE_KEY) && !(state = NbtUtils.readBlockState(tag.getCompound(BLOCKSTATE_KEY))).isAir() ? state : null);
+		if(tag.contains(BLOCKSTATE_KEY) && !NbtUtils.readBlockState(tag.getCompound(BLOCKSTATE_KEY)).isAir()) {
+			boat().getEntityData().set(DATA_ID_BLOCK_STATE, Optional.of(NbtUtils.readBlockState(tag.getCompound(BLOCKSTATE_KEY))));
+		} else {
+			boat().getEntityData().set(DATA_ID_BLOCK_STATE, Optional.empty());
+		}
 		
-		boatWithEverything$setItemStack(
-			tag.contains(ITEMSTACK_KEY) ? ItemStack.of(tag.getCompound(ITEMSTACK_KEY)) : ItemStack.EMPTY);
+		if(tag.contains(ITEMSTACK_KEY)) {
+			boat().getEntityData().set(DATA_ID_ITEM_STACK, ItemStack.of(tag.getCompound(ITEMSTACK_KEY)));
+		} else {
+			boat().getEntityData().set(DATA_ID_ITEM_STACK, ItemStack.EMPTY);
+		}
 	}
 	
 	// passenger positioning tweaks //
 	
 	@Inject(method = "getMaxPassengers", at = @At("HEAD"), cancellable = true)
 	protected void whenCountingMaxPassengers(CallbackInfoReturnable<Integer> cir) {
-		if(BoatWithEverything.hasBlockState(boat())) cir.setReturnValue(1);
+		if(boat().getEntityData().get(BoatWithEverything.DATA_ID_BLOCK_STATE).isPresent()) cir.setReturnValue(1);
 	}
 	
 	@Inject(method = "getSinglePassengerXOffset", at = @At("HEAD"), cancellable = true)
 	protected void whenOffsettingSinglePassenger(CallbackInfoReturnable<Float> cir) {
-		if(BoatWithEverything.hasBlockState(boat())) cir.setReturnValue(0.15f); //same as ChestBoat
+		if(boat().getEntityData().get(BoatWithEverything.DATA_ID_BLOCK_STATE).isPresent()) cir.setReturnValue(0.15f); //same as ChestBoat
 	}
 	
 	// helper //

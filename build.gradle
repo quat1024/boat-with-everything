@@ -7,8 +7,14 @@ java {
 	toolchain {
 		sourceCompatibility = JavaLanguageVersion.of(17)
 	}
-	
 	withSourcesJar()
+}
+
+repositories {
+	maven {
+		url = "https://maven.terraformersmc.com"
+		content { includeGroup("com.terraformersmc") }
+	}
 }
 
 dependencies {
@@ -17,6 +23,8 @@ dependencies {
 	mappings loom.officialMojangMappings()
 	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	
+	modRuntimeOnly "com.terraformersmc:modmenu:4.0.6"
 }
 
 processResources {

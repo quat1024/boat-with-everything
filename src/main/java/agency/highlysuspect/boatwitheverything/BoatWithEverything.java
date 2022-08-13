@@ -2,6 +2,8 @@ package agency.highlysuspect.boatwitheverything;
 
 import net.minecraft.core.Direction;
 import net.minecraft.network.syncher.EntityDataAccessor;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -17,26 +19,27 @@ import org.jetbrains.annotations.Nullable;
 import java.util.Optional;
 
 public class BoatWithEverything {
-	//Instantiated as a static final field in Boat (to make sure it happens at a
-	//"predictable" time, cause entity data accessors are a bit weird), then
-	//squirreled away into this field so I can reach it from here. If you NPE on
-	//this it means noone has classloaded Boat yet. I mean, it's a vanilla entity,
-	//so if that happens you will probably not go to space today
+	//Instantiated as static final fields in Boat (to make sure it happens at a "predictable" time, cause entity data accessors
+	//are a bit weird), then squirreled away into this field so I can reach it from here. If you NPE on these it means noone has
+	//classloaded Boat yet. I mean, it's a vanilla entity, so if that happens you will probably not go to space today.
 	public static EntityDataAccessor<Optional<BlockState>> DATA_ID_BLOCK_STATE;
+	public static EntityDataAccessor<ItemStack> DATA_ID_ITEM_STACK;
 	
 	public static @Nullable InteractionResult interact(Boat boat, Player player, InteractionHand hand) {
 		//Vanilla boat interaction always instantly returns when you're sneaking, so adding more behavior on sneak doesn't conflict
 		if(!player.isSecondaryUseActive()) return null;
 		
 		//If there's something in the boat already, pop it out
-		if(hasBlockState(boat)) {
+		if(boat.getEntityData().get(DATA_ID_BLOCK_STATE).isPresent()) {
 			//return the item that was used to place the block in the boat
-			ItemStack placementItem = ((BoatDuck) boat).boatWithEverything$getItemStack();
-			((BoatDuck) boat).boatWithEverything$setItemStack(ItemStack.EMPTY);
-			boat.spawnAtLocation(placementItem, boat.getBbHeight()); //idk
+			ItemStack placementItem = boat.getEntityData().get(DATA_ID_ITEM_STACK).copy();
+			boat.getEntityData().set(DATA_ID_ITEM_STACK, ItemStack.EMPTY);
+			boat.spawnAtLocation(placementItem, boat.getBbHeight());
 			
 			//remove the blockstate from the boat
-			setBlockState(boat, null);
+			boat.getEntityData().set(DATA_ID_BLOCK_STATE, Optional.empty());
+			
+			boat.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM); //todo caption
 			
 			return InteractionResult.SUCCESS;
 		}
@@ -44,8 +47,10 @@ public class BoatWithEverything {
 		//If there's no blockstate, add it to the boat
 		BlockState placement;
 		if(canAddBlockState(boat) && (placement = getPlacementStateInsideBoat(player, boat, hand)) != null) {
-			setBlockState(boat, placement);
-			((BoatDuck) boat).boatWithEverything$setItemStack(player.getItemInHand(hand).split(1));
+			boat.getEntityData().set(DATA_ID_BLOCK_STATE, Optional.of(placement));
+			boat.getEntityData().set(DATA_ID_ITEM_STACK, player.getItemInHand(hand).split(1));
+			
+			boat.playSound(SoundEvents.ITEM_FRAME_ADD_ITEM); //todo caption
 			
 			return InteractionResult.SUCCESS;
 		}
@@ -57,43 +62,32 @@ public class BoatWithEverything {
 		//Big TODO
 		ItemStack stack = player.getItemInHand(hand);
 		if(stack.getItem() instanceof BlockItem bi) {
-			//Turn the player momentarily to fool anything using BlockPlaceContext#getDirection
+			//Turn the player momentarily to fool anything using BlockPlaceContext#getDirection or similar
 			float oldYRot = player.getYRot();
+			float oldYHeadRot = player.getYHeadRot();
 			float oldYRot0 = player.yRotO;
 			
-			//Todo why are pistons and a couple other things still fucked up lol
-			float magic = player.getYRot() - boat.getYRot(); //trial-n-errord:tm:
-			player.setYRot(magic);
-			player.yRotO = magic;
+			float relativeDirection = Mth.wrapDegrees(player.getYRot() - boat.getYRot());
+			player.setYRot(relativeDirection); //used by BlockPlaceContext#getDirection
+			player.setYHeadRot(relativeDirection); //used by #getNearestLookingDirection but only on the server lol
+			player.yRotO = relativeDirection; //idk cant hurt ?
 			
 			BlockState state = bi.getBlock().getStateForPlacement(new BlockPlaceContext(
 				player, hand, stack, 
 				new BlockHitResult(boat.position(), Direction.UP, boat.blockPosition(), true)
 			));
 			
+			//restore player position
 			player.setYRot(oldYRot);
+			player.setYHeadRot(oldYHeadRot);
 			player.yRotO = oldYRot0;
 			
+			//return
 			return state; 
-		}
-		else return null;
+		} else return null;
 	}
 	
 	public static boolean canAddBlockState(Boat boat) {
-		return !(boat instanceof ChestBoat) && boat.getPassengers().size() <= 1 && !hasBlockState(boat);
-	}
-	
-	///
-	
-	public static boolean hasBlockState(Boat boat) {
-		return getBlockState(boat).isPresent();
-	}
-	
-	public static Optional<BlockState> getBlockState(Boat boat) {
-		return boat.getEntityData().get(DATA_ID_BLOCK_STATE);
-	}
-	
-	public static void setBlockState(Boat boat, @Nullable BlockState state) {
-		boat.getEntityData().set(DATA_ID_BLOCK_STATE, Optional.ofNullable(state));
+		return !(boat instanceof ChestBoat) && boat.getPassengers().size() <= 1 && boat.getEntityData().get(DATA_ID_BLOCK_STATE).isEmpty();
 	}
 }
