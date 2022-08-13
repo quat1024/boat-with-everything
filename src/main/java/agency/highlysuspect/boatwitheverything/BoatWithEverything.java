@@ -1,5 +1,6 @@
 package agency.highlysuspect.boatwitheverything;
 
+import net.minecraft.core.Direction;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -8,7 +9,9 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.ChestBoat;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
@@ -30,7 +33,7 @@ public class BoatWithEverything {
 			//return the item that was used to place the block in the boat
 			ItemStack placementItem = ((BoatDuck) boat).boatWithEverything$getItemStack();
 			((BoatDuck) boat).boatWithEverything$setItemStack(ItemStack.EMPTY);
-			boat.spawnAtLocation(placementItem); //idk
+			boat.spawnAtLocation(placementItem, boat.getBbHeight()); //idk
 			
 			//remove the blockstate from the boat
 			setBlockState(boat, null);
@@ -40,7 +43,7 @@ public class BoatWithEverything {
 		
 		//If there's no blockstate, add it to the boat
 		BlockState placement;
-		if(canAddBlockState(boat) && (placement = getPlacementStateInsideBoat(player.getItemInHand(hand))) != null) {
+		if(canAddBlockState(boat) && (placement = getPlacementStateInsideBoat(player, boat, hand)) != null) {
 			setBlockState(boat, placement);
 			((BoatDuck) boat).boatWithEverything$setItemStack(player.getItemInHand(hand).split(1));
 			
@@ -50,9 +53,29 @@ public class BoatWithEverything {
 		return null;
 	}
 	
-	public static @Nullable BlockState getPlacementStateInsideBoat(ItemStack stack) {
+	public static @Nullable BlockState getPlacementStateInsideBoat(Player player, Boat boat, InteractionHand hand) {
 		//Big TODO
-		if(stack.getItem() instanceof BlockItem bi) return bi.getBlock().defaultBlockState();
+		ItemStack stack = player.getItemInHand(hand);
+		if(stack.getItem() instanceof BlockItem bi) {
+			//Turn the player momentarily to fool anything using BlockPlaceContext#getDirection
+			float oldYRot = player.getYRot();
+			float oldYRot0 = player.yRotO;
+			
+			//Todo why are pistons and a couple other things still fucked up lol
+			float magic = player.getYRot() - boat.getYRot(); //trial-n-errord:tm:
+			player.setYRot(magic);
+			player.yRotO = magic;
+			
+			BlockState state = bi.getBlock().getStateForPlacement(new BlockPlaceContext(
+				player, hand, stack, 
+				new BlockHitResult(boat.position(), Direction.UP, boat.blockPosition(), true)
+			));
+			
+			player.setYRot(oldYRot);
+			player.yRotO = oldYRot0;
+			
+			return state; 
+		}
 		else return null;
 	}
 	

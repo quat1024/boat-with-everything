@@ -66,19 +66,18 @@ public class MixinBoat implements BoatDuck {
 	public void whenAddingAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
 		BoatWithEverything.getBlockState(boat()).ifPresent(state ->
 			tag.put(BLOCKSTATE_KEY, NbtUtils.writeBlockState(state)));
+		
+		if(!itemStack.isEmpty()) tag.put(ITEMSTACK_KEY, itemStack.save(new CompoundTag()));
 	}
 	
 	@Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
 	public void whenReadingAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
-		if(tag.contains(BLOCKSTATE_KEY)) {
-			BlockState state = NbtUtils.readBlockState(tag.getCompound(BLOCKSTATE_KEY));
-			if(!state.isAir()) {
-				BoatWithEverything.setBlockState(boat(), state);
-				return; //only from this inject
-			}
-		}
+		BlockState state;
+		BoatWithEverything.setBlockState(boat(),
+			tag.contains(BLOCKSTATE_KEY) && !(state = NbtUtils.readBlockState(tag.getCompound(BLOCKSTATE_KEY))).isAir() ? state : null);
 		
-		BoatWithEverything.setBlockState(boat(), null);
+		boatWithEverything$setItemStack(
+			tag.contains(ITEMSTACK_KEY) ? ItemStack.of(tag.getCompound(ITEMSTACK_KEY)) : ItemStack.EMPTY);
 	}
 	
 	// passenger positioning tweaks //
