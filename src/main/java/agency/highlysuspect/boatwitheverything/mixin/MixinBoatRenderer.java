@@ -23,7 +23,6 @@ public class MixinBoatRenderer {
 		)
 	)
 	private void afterRenderingBoatModel(Boat boat, float yaw, float partialTicks, PoseStack pose, MultiBufferSource bufs, int light, CallbackInfo ci) {
-		//Hot reload pls
 		boat.getEntityData().get(BoatWithEverything.DATA_ID_BLOCK_STATE).ifPresent(state -> {
 			pose.pushPose();
 			

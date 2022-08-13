@@ -25,21 +25,21 @@ public class BoatWithEverything {
 	public static EntityDataAccessor<Optional<BlockState>> DATA_ID_BLOCK_STATE;
 	public static EntityDataAccessor<ItemStack> DATA_ID_ITEM_STACK;
 	
-	public static @Nullable InteractionResult interact(Boat boat, Player player, InteractionHand hand) {
-		if(boat.getPassengers().contains(player)) {
-			Optional<BlockState> state = boat.getEntityData().get(DATA_ID_BLOCK_STATE);
-			if(state.isPresent()) {
-				SpecialBoatRules rule = SpecialBoatRules.get(state.get());
-				InteractionResult result = rule.interact(state.get(), boat);
-				if(result != InteractionResult.PASS) return result;
-			}
-		}
-		
+	public static @Nullable InteractionResult interact(Boat boat, Player player, InteractionHand hand) {		
 		//Vanilla boat interaction always instantly returns when you're sneaking, so adding more behavior on sneak doesn't conflict
 		if(!player.isSecondaryUseActive()) return null;
 		
 		//If there's something in the boat already, pop it out
-		if(boat.getEntityData().get(DATA_ID_BLOCK_STATE).isPresent()) {
+		Optional<BlockState> stateOpt = boat.getEntityData().get(DATA_ID_BLOCK_STATE);
+		if(stateOpt.isPresent()) {
+			//If there's an rclick interaction don't do that though
+			//Idk just break the boat if you want the block back
+			//TODO maybe move removing the item to punching the boat
+			BlockState state = stateOpt.get();
+			SpecialBoatRules rule = SpecialBoatRules.get(state);
+			InteractionResult result = rule.interact(state, boat);
+			if(result != InteractionResult.PASS) return result;
+			
 			//return the item that was used to place the block in the boat
 			ItemStack stackInBoat = boat.getEntityData().get(DATA_ID_ITEM_STACK).copy();
 			boat.getEntityData().set(DATA_ID_ITEM_STACK, ItemStack.EMPTY);
