@@ -11,8 +11,6 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Material;
 
-import java.util.Optional;
-
 @SuppressWarnings("ClassCanBeRecord")
 public class SpecialDoorRules implements SpecialBoatRules {
 	public SpecialDoorRules(SoundEvent openWood, SoundEvent openMetal, SoundEvent closeWood, SoundEvent closeMetal) {
@@ -29,11 +27,12 @@ public class SpecialDoorRules implements SpecialBoatRules {
 		BlockState state = ext.getBlockState();
 		if(state == null || !state.hasProperty(BlockStateProperties.OPEN) || !state.hasProperty(BlockStateProperties.POWERED)) return;
 		
-		boolean isOpen = state.getValue(BlockStateProperties.OPEN);
+		boolean isPowered = state.getValue(BlockStateProperties.POWERED);
 		boolean shouldPower = SpecialBoatRules.isPowered(boat);
-		if(isOpen != shouldPower) {
+		if(isPowered != shouldPower) {
+			boolean isOpen = state.getValue(BlockStateProperties.OPEN);
 			ext.setBlockState(state.setValue(BlockStateProperties.OPEN, shouldPower).setValue(BlockStateProperties.POWERED, shouldPower));
-			playSound(state, boat, shouldPower);
+			if(isOpen != shouldPower)	playSound(state, boat, shouldPower);
 		}
 	}
 	
