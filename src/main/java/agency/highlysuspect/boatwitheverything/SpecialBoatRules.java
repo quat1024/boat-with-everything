@@ -18,11 +18,11 @@ public interface SpecialBoatRules {
 		return true;
 	}
 	
-	default void tick(BlockState state, Boat boat) {
+	default void tick(Boat boat, BoatExt ext) {
 		//no-op
 	}
 	
-	default InteractionResult interact(BlockState state, Boat boat) {
+	default InteractionResult interact(Boat boat, BoatExt ext) {
 		return InteractionResult.PASS;
 	}
 	

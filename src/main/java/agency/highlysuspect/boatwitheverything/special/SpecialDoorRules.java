@@ -1,5 +1,6 @@
 package agency.highlysuspect.boatwitheverything.special;
 
+import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.BoatWithEverything;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
 import net.minecraft.sounds.SoundEvent;
@@ -24,21 +25,25 @@ public class SpecialDoorRules implements SpecialBoatRules {
 	private final SoundEvent openWood, openMetal, closeWood, closeMetal;
 	
 	@Override
-	public void tick(BlockState state, Boat boat) {
+	public void tick(Boat boat, BoatExt ext) {
+		BlockState state = ext.getBlockState();
+		if(!state.hasProperty(BlockStateProperties.OPEN) || !state.hasProperty(BlockStateProperties.POWERED)) return;
+		
 		boolean isOpen = state.getValue(BlockStateProperties.OPEN);
 		boolean shouldPower = SpecialBoatRules.isPowered(boat);
 		if(isOpen != shouldPower) {
-			boat.getEntityData().set(BoatWithEverything.DATA_ID_BLOCK_STATE, Optional.of(
-				state.setValue(BlockStateProperties.OPEN, shouldPower)
-					.setValue(BlockStateProperties.POWERED, shouldPower)));
+			ext.setBlockState(state.setValue(BlockStateProperties.OPEN, shouldPower).setValue(BlockStateProperties.POWERED, shouldPower));
 			playSound(state, boat, shouldPower);
 		}
 	}
 	
 	@Override
-	public InteractionResult interact(BlockState state, Boat boat) {
+	public InteractionResult interact(Boat boat, BoatExt ext) {
+		BlockState state = ext.getBlockState();
+		if(!state.hasProperty(BlockStateProperties.OPEN)) return InteractionResult.PASS;
+		
 		boolean isOpen = state.getValue(BlockStateProperties.OPEN);
-		boat.getEntityData().set(BoatWithEverything.DATA_ID_BLOCK_STATE, Optional.of(state.setValue(BlockStateProperties.OPEN, !isOpen)));
+		ext.setBlockState(state.setValue(BlockStateProperties.OPEN, !isOpen));
 		playSound(state, boat, !isOpen);
 		return InteractionResult.SUCCESS;
 	}
