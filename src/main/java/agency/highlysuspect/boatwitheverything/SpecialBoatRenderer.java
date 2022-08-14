@@ -16,6 +16,7 @@ import net.minecraft.world.level.block.SkullBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
+import org.jetbrains.annotations.NotNull;
 
 public interface SpecialBoatRenderer {
 	void render(Boat boat, float yaw, float partialTicks, PoseStack pose, MultiBufferSource bufs, int light, BlockState state, ItemStack stack);
@@ -40,7 +41,7 @@ public interface SpecialBoatRenderer {
 	};
 		
 	
-	static SpecialBoatRenderer get(BlockState state) {
+	static @NotNull SpecialBoatRenderer get(@NotNull BlockState state) {
 		//Beds, always rotated to face inside the boat. The BlockEntityRenderer takes care of drawing both halves of the bed
 		if(state.getBlock() instanceof BedBlock) {
 			return (boat, yaw, pt, pose, bufs, light, state_, stack) -> {

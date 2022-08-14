@@ -12,6 +12,7 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import org.jetbrains.annotations.NotNull;
 
 public interface SpecialBoatRules {
 	default boolean consumesPassengerSlot() {
@@ -22,7 +23,7 @@ public interface SpecialBoatRules {
 		//no-op
 	}
 	
-	default InteractionResult interact(Boat boat, BoatExt ext) {
+	default @NotNull InteractionResult interact(Boat boat, BoatExt ext) {
 		return InteractionResult.PASS;
 	}
 	
@@ -64,7 +65,7 @@ public interface SpecialBoatRules {
 	//campfire, soul campfire (particles, maybe cook food)
 	//lectern (other people can click to see the book lol)
 	
-	static SpecialBoatRules get(BlockState state) {
+	static @NotNull SpecialBoatRules get(@NotNull BlockState state) {
 		if(state.is(BlockTags.BANNERS) || state.is(BlockTags.WOOL_CARPETS)) {
 			return DEFAULT_NO_CONSUME;
 		}

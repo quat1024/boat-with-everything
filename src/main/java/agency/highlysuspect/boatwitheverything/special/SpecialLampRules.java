@@ -10,7 +10,7 @@ public class SpecialLampRules implements SpecialBoatRules {
 	@Override
 	public void tick(Boat boat, BoatExt ext) {
 		BlockState state = ext.getBlockState();
-		if(!state.hasProperty(BlockStateProperties.LIT)) return;
+		if(state == null || !state.hasProperty(BlockStateProperties.LIT)) return;
 		
 		boolean isLit = state.getValue(BlockStateProperties.LIT);
 		boolean shouldLit = SpecialBoatRules.isPowered(boat);

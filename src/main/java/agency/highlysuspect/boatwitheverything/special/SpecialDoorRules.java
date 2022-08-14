@@ -27,7 +27,7 @@ public class SpecialDoorRules implements SpecialBoatRules {
 	@Override
 	public void tick(Boat boat, BoatExt ext) {
 		BlockState state = ext.getBlockState();
-		if(!state.hasProperty(BlockStateProperties.OPEN) || !state.hasProperty(BlockStateProperties.POWERED)) return;
+		if(state == null || !state.hasProperty(BlockStateProperties.OPEN) || !state.hasProperty(BlockStateProperties.POWERED)) return;
 		
 		boolean isOpen = state.getValue(BlockStateProperties.OPEN);
 		boolean shouldPower = SpecialBoatRules.isPowered(boat);
@@ -40,7 +40,10 @@ public class SpecialDoorRules implements SpecialBoatRules {
 	@Override
 	public InteractionResult interact(Boat boat, BoatExt ext) {
 		BlockState state = ext.getBlockState();
-		if(!state.hasProperty(BlockStateProperties.OPEN)) return InteractionResult.PASS;
+		if(state == null || !state.hasProperty(BlockStateProperties.OPEN)) return InteractionResult.PASS;
+		if(state.getMaterial() == Material.METAL) return InteractionResult.PASS;
+		
+		if(boat.level.isClientSide) return InteractionResult.SUCCESS;
 		
 		boolean isOpen = state.getValue(BlockStateProperties.OPEN);
 		ext.setBlockState(state.setValue(BlockStateProperties.OPEN, !isOpen));
