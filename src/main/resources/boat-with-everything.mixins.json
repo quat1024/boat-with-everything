@@ -5,8 +5,11 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
 		"AccessorSpongeBlock",
+		"AccessorSimpleContainer",
 		"MixinBoat",
-		"MixinEntity"
+		"MixinBoat_ContainerEntity",
+		"MixinEntity",
+		"MixinMultiPlayerGameMode"
   ],
 	"client": [
 		"MixinBoatRenderer",

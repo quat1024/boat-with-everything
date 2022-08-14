@@ -43,7 +43,7 @@ public class BoatWithEverything {
 		//If there's something in the boat already, perform its right click action
 		@Nullable SpecialBoatRules rules = ext.getRules();
 		if(rules != null && hand == InteractionHand.MAIN_HAND) {
-			InteractionResult result = rules.interact(boat, ext);
+			InteractionResult result = rules.interact(boat, ext, player);
 			if(result != InteractionResult.PASS) return result;
 		}
 		

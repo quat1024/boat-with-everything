@@ -3,6 +3,7 @@ package agency.highlysuspect.boatwitheverything.mixin;
 import agency.highlysuspect.boatwitheverything.BoatDuck;
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.BoatWithEverything;
+import agency.highlysuspect.boatwitheverything.ContainerExt;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -46,7 +47,9 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	
 	@Unique private static final EntityDataAccessor<Optional<BlockState>> DATA_ID_BLOCK_STATE = SynchedEntityData.defineId(Boat.class, EntityDataSerializers.BLOCK_STATE);
 	@Unique private static final EntityDataAccessor<ItemStack> DATA_ID_ITEM_STACK = SynchedEntityData.defineId(Boat.class, EntityDataSerializers.ITEM_STACK);
-	@Unique private SpecialBoatRules rules;
+	
+	@Unique private @Nullable SpecialBoatRules rules;
+	@Unique private @Nullable ContainerExt container;
 	
 	@Inject(method = "defineSynchedData", at = @At("RETURN"))
 	protected void whenDefiningSynchedData(CallbackInfo ci) {
@@ -64,8 +67,13 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		public void setBlockState(@Nullable BlockState state) {
 			boat().getEntityData().set(DATA_ID_BLOCK_STATE, Optional.ofNullable(state));
 			
-			if(state == null) rules = null;
-			else rules = SpecialBoatRules.get(state);
+			if(state == null) {
+				rules = null;
+				container = null; //TODO: what to do with the old container?
+			} else {
+				rules = SpecialBoatRules.get(state);
+				container = rules.makeNewContainer(boat(), this); //TODO: method of keeping the container when changing blockstate (e.g. barrel opening blockstate)
+			}
 		}
 		
 		@Override
@@ -76,6 +84,11 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		@Override
 		public void setItemStack(@NotNull ItemStack stack) {
 			boat().getEntityData().set(DATA_ID_ITEM_STACK, stack);
+		}
+		
+		@Override
+		public @Nullable ContainerExt getContainer() {
+			return container;
 		}
 		
 		@Override
@@ -149,6 +162,7 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	@Unique private static final String BLOCKSTATE_KEY = "BoatWithEverything$blockState";
 	@Unique private static final String ITEMSTACK_KEY = "BoatWithEverything$itemStack";
 	
+	
 	@Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
 	public void whenAddingAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
 		BlockState state = ext.getBlockState();
@@ -156,6 +170,9 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		
 		ItemStack stack = ext.getItemStack();
 		if(!stack.isEmpty()) tag.put(ITEMSTACK_KEY, stack.save(new CompoundTag()));
+		
+		SpecialBoatRules rules = ext.getRules();
+		if(rules != null) rules.addAdditionalSaveData(boat(), ext, tag);
 	}
 	
 	@Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
@@ -171,6 +188,9 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		} else {
 			ext.clearItemStack();
 		}
+		
+		SpecialBoatRules rules = ext.getRules();
+		if(rules != null) rules.readAdditionalSaveData(boat(), ext, tag);
 	}
 	
 	// passenger tweaks //

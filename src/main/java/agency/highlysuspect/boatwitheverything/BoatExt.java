@@ -7,6 +7,8 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 /**
+ * Boat extensions.
+ * 
  * Defined like this (instead of a duck interface) because methods added via duck interface should be globally unique.
  * These are very commonly used methods and I want them to be nice to call.
  */
@@ -16,6 +18,8 @@ public interface BoatExt {
 	
 	@NotNull ItemStack getItemStack();
 	void setItemStack(@NotNull ItemStack stack);
+	
+	@Nullable ContainerExt getContainer();
 	
 	default boolean hasBlockState() {
 		return getBlockState() != null;

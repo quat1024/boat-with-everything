@@ -4,6 +4,7 @@ import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -36,7 +37,7 @@ public class SpecialDoorRules implements SpecialBoatRules {
 	}
 	
 	@Override
-	public InteractionResult interact(Boat boat, BoatExt ext) {
+	public InteractionResult interact(Boat boat, BoatExt ext, Player player) {
 		BlockState state = ext.getBlockState();
 		if(state == null || !state.hasProperty(BlockStateProperties.OPEN)) return InteractionResult.PASS;
 		if(state.getMaterial() == Material.METAL) return InteractionResult.PASS;
@@ -52,10 +53,10 @@ public class SpecialDoorRules implements SpecialBoatRules {
 	private void playSound(BlockState state, Boat boat, boolean opening) {
 		if(opening) {
 			boat.playSound(state.getMaterial() == Material.METAL ? openMetal : openWood);
-			boat.level.gameEvent(boat, GameEvent.BLOCK_OPEN, boat.position());
+			boat.gameEvent(GameEvent.BLOCK_OPEN);
 		}	else {
 			boat.playSound(state.getMaterial() == Material.METAL ? closeMetal : closeWood);
-			boat.level.gameEvent(boat, GameEvent.BLOCK_CLOSE, boat.position());
+			boat.gameEvent(GameEvent.BLOCK_CLOSE);
 		}
 	}
 }
