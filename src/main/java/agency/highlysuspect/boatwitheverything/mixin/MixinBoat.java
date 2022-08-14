@@ -66,7 +66,10 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		@Override
 		public void setBlockState(@Nullable BlockState state) {
 			boat().getEntityData().set(DATA_ID_BLOCK_STATE, Optional.ofNullable(state));
-			
+			setBlockState0(state);
+		}
+		
+		private void setBlockState0(@Nullable BlockState state) {
 			if(state == null) {
 				rules = null;
 				container = null; //TODO: what to do with the old container?
@@ -103,13 +106,11 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		
 		@Override
 		public void onSyncedDataUpdated(EntityDataAccessor<?> accessor) {
-			//Called from MixinEntity upwards in the hierarchy - BoatEntity doesn't override onSyncedDataUpdated itself, so there's nothing to inject to.
+			//Called from MixinEntity, upwards in the hierarchy - BoatEntity doesn't override onSyncedDataUpdated itself, so there's nothing to inject to.
 			//We need to make sure that when vanilla uses the EntityDataAccessor system, clients know to change the cached SpecialBoatRules instance as well.
 			if(accessor == DATA_ID_BLOCK_STATE) {
 				BlockState state = boat().getEntityData().get(DATA_ID_BLOCK_STATE).orElse(null);
-				
-				if(state == null) rules = null;
-				else rules = SpecialBoatRules.get(state);
+				setBlockState0(state);
 			}
 		}
 	};
