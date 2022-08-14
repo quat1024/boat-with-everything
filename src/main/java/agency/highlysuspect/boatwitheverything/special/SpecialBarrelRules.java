@@ -5,35 +5,70 @@ import agency.highlysuspect.boatwitheverything.ContainerExt;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
 import agency.highlysuspect.boatwitheverything.mixin.AccessorSimpleContainer;
 import net.minecraft.core.NonNullList;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
 
 public class SpecialBarrelRules implements SpecialBoatRules {
 	@Override
 	public @Nullable ContainerExt makeNewContainer(Boat boat, BoatExt ext) {
-		System.out.println("SpecialBarrelRules#makeNewContainer @ 19");
-		return new BarrelContainerExt();
+		return new BarrelContainerExt(boat, ext);
 	}
 	
 	public static class BarrelContainerExt extends SimpleContainer implements ContainerExt {
-		public BarrelContainerExt() {
+		public BarrelContainerExt(Boat boat, BoatExt ext) {
 			super(27);
+			this.boat = boat;
+			this.ext = ext;
 		}
+		
+		private final Boat boat;
+		private final BoatExt ext;
+		private int watchers = 0;
 		
 		@Override
 		public NonNullList<ItemStack> getItemStacks() {
 			return ((AccessorSimpleContainer) this).bwe$items();
 		}
 		
+		@Override
+		public void startOpen(Player player) {
+			watchers++;
+			updateStateAndSounds();
+		}
+		
+		@Override
+		public void stopOpen(Player player) {
+			watchers--;
+			updateStateAndSounds();
+		}
+		
+		private void updateStateAndSounds() {
+			BlockState currentState = ext.getBlockState();
+			if(currentState == null || !currentState.hasProperty(BlockStateProperties.OPEN)) return; //idk
+			boolean wasOpen = currentState.getValue(BlockStateProperties.OPEN);
+			boolean shouldOpen = watchers > 0;
+			
+			if(wasOpen != shouldOpen) {
+				ext.setBlockState(currentState.setValue(BlockStateProperties.OPEN, shouldOpen));
+				
+				if(shouldOpen) boat.playSound(SoundEvents.BARREL_OPEN);
+				else boat.playSound(SoundEvents.BARREL_CLOSE);
+			}
+		}
+		
 		@Nullable
 		@Override
 		public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
-			return null;
+			return ChestMenu.threeRows(i, inventory, this);
 		}
 	}
 }

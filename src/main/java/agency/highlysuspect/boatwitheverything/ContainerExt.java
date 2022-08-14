@@ -4,10 +4,13 @@ import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.Container;
 import net.minecraft.world.ContainerHelper;
+import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.inventory.MenuConstructor;
 import net.minecraft.world.item.ItemStack;
 
 public interface ContainerExt extends Container, MenuConstructor {
+	NonNullList<ItemStack> getItemStacks();
+	
 	default boolean hasServerControlledInventory() {
 		return true;
 	}
@@ -23,5 +26,10 @@ public interface ContainerExt extends Container, MenuConstructor {
 		ContainerHelper.loadAllItems(tag, getItemStacks());
 	}
 	
-	NonNullList<ItemStack> getItemStacks();
+	default void drop(Boat boat, BoatExt ext) {
+		for(ItemStack stack : getItemStacks()) {
+			boat.spawnAtLocation(stack);
+		}
+		clearContent();
+	}
 }

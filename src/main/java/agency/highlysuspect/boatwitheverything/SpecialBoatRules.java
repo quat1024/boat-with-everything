@@ -16,6 +16,7 @@ import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -23,13 +24,15 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
+import java.util.Objects;
+
 public interface SpecialBoatRules {
 	default boolean consumesPassengerSlot() {
 		return true;
 	}
 	
 	default void tick(Boat boat, BoatExt ext) {
-		//no-op
+		//no-op by default
 	}
 	
 	default @NotNull InteractionResult interact(Boat boat, BoatExt ext, Player player) {
@@ -58,20 +61,16 @@ public interface SpecialBoatRules {
 	String CONTAINER_KEY = "BoatWithEverything$container";
 	
 	default void addAdditionalSaveData(Boat boat, BoatExt ext, CompoundTag tag) {
-		System.out.println("SpecialBoatRules#addAdditionalSaveData @ 61");
-		
 		ContainerExt cext = ext.getContainer();
 		if(cext != null) tag.put(CONTAINER_KEY, cext.writeSaveData());
 	}
 	
 	default void readAdditionalSaveData(Boat boat, BoatExt ext, CompoundTag tag) {
-		System.out.println("SpecialBoatRules#readAdditionalSaveData @ 68");
-		
 		ContainerExt cext = ext.getContainer();
 		if(cext != null && tag.contains(CONTAINER_KEY)) cext.readSaveData(tag.getCompound(CONTAINER_KEY));
 	}
 	
-	// container //
+	// container utils //
 	
 	default @Nullable ContainerExt makeNewContainer(Boat boat, BoatExt ext) {
 		return null;

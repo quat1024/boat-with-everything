@@ -1,6 +1,8 @@
 package agency.highlysuspect.boatwitheverything;
 
+import agency.highlysuspect.boatwitheverything.menu.Menus;
 import net.minecraft.core.Direction;
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -18,6 +20,17 @@ import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
 public class BoatWithEverything {
+	public static final String MODID = "boat-with-everything";
+	public static BoatWithEverything INSTANCE;
+	
+	public BoatWithEverything(LoaderServices services) {
+		Menus.register(services);
+	}
+	
+	public static ResourceLocation id(String path) {
+		return new ResourceLocation(MODID, path);
+	}
+	
 	public static boolean hurt(Boat boat, BoatExt ext, DamageSource source) {
 		if(!ext.hasBlockState()) return false;
 		

@@ -32,6 +32,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
+import java.util.Objects;
 import java.util.Optional;
 
 @SuppressWarnings("WrongEntityDataParameterClass")
@@ -71,11 +72,23 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		
 		private void setBlockState0(@Nullable BlockState state) {
 			if(state == null) {
+				if(container != null) container.drop(boat(), this);
+				
 				rules = null;
-				container = null; //TODO: what to do with the old container?
+				container = null;
 			} else {
 				rules = SpecialBoatRules.get(state);
-				container = rules.makeNewContainer(boat(), this); //TODO: method of keeping the container when changing blockstate (e.g. barrel opening blockstate)
+				
+				//only swap out the container if a different implementation was returned w/ the new blockstate
+				//makes it so stuff like opening the barrel doesn't delete the container because the blockstate changed
+				//Hey cheat client developers this is probably where you should look to find the egregious dupe bugs in the mod
+				ContainerExt newContainer = rules.makeNewContainer(boat(), this);
+				Class<?> oldContainerClass = container == null ? null : container.getClass();
+				Class<?> newContainerClass = newContainer == null ? null : newContainer.getClass();
+				if(!Objects.equals(oldContainerClass, newContainerClass)) {
+					if(container != null) container.drop(boat(), this);
+					container = newContainer;
+				}
 			}
 		}
 		
