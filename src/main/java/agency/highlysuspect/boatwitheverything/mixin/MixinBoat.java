@@ -113,6 +113,15 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		if(result != InteractionResult.PASS) cir.setReturnValue(result);
 	}
 	
+	@Inject(method = "hurt", at = @At(
+		//After the isClientSide check, but before effects such as damage animations begin to happen.
+		value = "INVOKE",
+		target = "Lnet/minecraft/world/entity/vehicle/Boat;setHurtDir(I)V"
+	), cancellable = true)
+	public void whenHurting(DamageSource src, float amount, CallbackInfoReturnable<Boolean> cir) {
+		if(BoatWithEverything.hurt(boat(), ext, src)) cir.setReturnValue(false);
+	}
+	
 	@Inject(method = "destroy", at = @At("RETURN"))
 	public void whenDestroying(DamageSource source, CallbackInfo ci) {
 		boat().spawnAtLocation(ext.getItemStack());

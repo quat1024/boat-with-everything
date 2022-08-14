@@ -5,6 +5,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.ChestBoat;
@@ -16,34 +17,34 @@ import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class BoatWithEverything {	
+public class BoatWithEverything {
+	public static boolean hurt(Boat boat, BoatExt ext, DamageSource source) {
+		if(!ext.hasBlockState()) return false;
+		
+		//return the item that was used to place the block in the boat
+		ItemStack stackInBoat = ext.getItemStack().copy();
+		@Nullable Player player = source.getEntity() instanceof Player p ? p : null;
+		if(player == null || !player.addItem(stackInBoat)) {
+			boat.spawnAtLocation(stackInBoat, boat.getBbHeight());
+		}
+		
+		//remove all the stuff from the boat
+		ext.clearBlockState();
+		ext.clearItemStack();
+		
+		boat.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM); //todo caption
+		return player != null; //Only cancel vanilla damage handling if it was from a player punch.
+	}
+	
 	public static @NotNull InteractionResult interact(Boat boat, BoatExt ext, Player player, InteractionHand hand) {		
 		//Vanilla boat interaction always instantly returns when you're sneaking, so adding more behavior on sneak doesn't conflict
 		if(!player.isSecondaryUseActive()) return InteractionResult.PASS;
 		
-		//If there's something in the boat already, pop it out
-		@Nullable BlockState state = ext.getBlockState();
-		if(state != null) {
-			//If there's an rclick interaction don't do that though
-			//Idk just break the boat if you want the block back
-			//TODO maybe move removing the item to punching the boat
-			SpecialBoatRules rules = ext.getRules();
-			if(rules != null) {
-				InteractionResult result = ext.getRules().interact(boat, ext);
-				if(result != InteractionResult.PASS) return result;
-			}
-			
-			//return the item that was used to place the block in the boat
-			ItemStack stackInBoat = ext.getItemStack().copy();
-			if(!player.addItem(stackInBoat)) boat.spawnAtLocation(stackInBoat, boat.getBbHeight());
-			
-			//remove all the stuff from the boat
-			ext.clearBlockState();
-			ext.clearItemStack();
-			
-			boat.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM); //todo caption
-			
-			return InteractionResult.SUCCESS;
+		//If there's something in the boat already, perform its right click action
+		@Nullable SpecialBoatRules rules = ext.getRules();
+		if(rules != null && hand == InteractionHand.MAIN_HAND) {
+			InteractionResult result = rules.interact(boat, ext);
+			if(result != InteractionResult.PASS) return result;
 		}
 		
 		//If there's no blockstate, add it to the boat
