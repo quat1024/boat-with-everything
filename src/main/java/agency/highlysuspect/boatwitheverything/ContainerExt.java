@@ -11,10 +11,6 @@ import net.minecraft.world.item.ItemStack;
 public interface ContainerExt extends Container, MenuConstructor {
 	NonNullList<ItemStack> getItemStacks();
 	
-	default boolean hasServerControlledInventory() {
-		return true;
-	}
-	
 	default CompoundTag writeSaveData() {
 		CompoundTag tag = new CompoundTag();
 		ContainerHelper.saveAllItems(tag, getItemStacks());

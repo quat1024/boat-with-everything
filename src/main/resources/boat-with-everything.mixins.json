@@ -9,7 +9,10 @@
 		"MixinBoat",
 		"MixinBoat_ContainerEntity",
 		"MixinEntity",
-		"MixinMultiPlayerGameMode"
+		"MixinMultiPlayerGameMode",
+		"cosmetic.AccessorChestBlockEntity",
+		"cosmetic.AccessorEnderChestBlockEntity",
+		"cosmetic.MixinChestLidController"
   ],
 	"client": [
 		"MixinBoatRenderer",

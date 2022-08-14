@@ -1,7 +1,9 @@
 package agency.highlysuspect.boatwitheverything;
 
 import agency.highlysuspect.boatwitheverything.special.SpecialBarrelRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialChestRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialDoorRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialEnderChestRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialLampRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialSpongeRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialTntRules;
@@ -10,21 +12,19 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
-
-import java.util.Objects;
 
 public interface SpecialBoatRules {
 	default boolean consumesPassengerSlot() {
@@ -36,23 +36,11 @@ public interface SpecialBoatRules {
 	}
 	
 	default @NotNull InteractionResult interact(Boat boat, BoatExt ext, Player player) {
-		ContainerExt cext = ext.getContainer();
-		if(cext == null) return InteractionResult.PASS;
-		
-		boat.gameEvent(GameEvent.BLOCK_OPEN);
-		player.openMenu(new MenuProvider() {
-			@Override
-			public Component getDisplayName() {
-				return boat.getDisplayName();
-			}
-			
-			@Nullable
-			@Override
-			public AbstractContainerMenu createMenu(int sequence, Inventory playerInventory, Player player) {
-				return cext.createMenu(sequence, playerInventory, player);
-			}
-		});
-		
+		MenuProvider provider = getMenuProvider(boat, ext, player);
+		if(provider != null) {
+			boat.gameEvent(GameEvent.BLOCK_OPEN);
+			player.openMenu(provider);
+		}
 		return InteractionResult.SUCCESS;
 	}
 	
@@ -70,11 +58,34 @@ public interface SpecialBoatRules {
 		if(cext != null && tag.contains(CONTAINER_KEY)) cext.readSaveData(tag.getCompound(CONTAINER_KEY));
 	}
 	
-	// container utils //
+	// container/menu utils //
 	
 	default @Nullable ContainerExt makeNewContainer(Boat boat, BoatExt ext) {
 		return null;
 	}
+	
+	default boolean hasServerControlledInventory(Boat boat, BoatExt ext, Player player) {
+		return getMenuProvider(boat, ext, player) != null;
+	}
+	
+	default @Nullable MenuProvider getMenuProvider(Boat boat, BoatExt ext, Player player) {
+		ContainerExt cext = ext.getContainer();
+		if(cext != null) return new MenuProvider() {
+			@Override
+			public Component getDisplayName() {
+				return boat.getDisplayName();
+			}
+			
+			@Nullable
+			@Override
+			public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+				return cext.createMenu(i, inventory, player);
+			}
+		};
+		else return null;
+	}
+	
+	//////////
 	
 	SpecialBoatRules DEFAULT = new SpecialBoatRules() {};
 	SpecialBoatRules DEFAULT_NO_CONSUME = new SpecialBoatRules() {
@@ -84,7 +95,6 @@ public interface SpecialBoatRules {
 		}
 	};
 	
-	//ender chest (working)
 	//beacon (working?)
 	//flower pot (working interaction)
 	//dragon head (animation when powered)
@@ -92,13 +102,14 @@ public interface SpecialBoatRules {
 	//shulker box (working w/ animation and sound when opened)
 	//conduit? maybe
 	//loom, smithing table, cartography table, stonecutter (gui)
-	//barrel (working w/ blockstate change and sound when opened)
 	//bell (ding)
 	//campfire, soul campfire (particles, maybe cook food)
 	//lectern (other people can click to see the book lol)
 	
 	static @NotNull SpecialBoatRules get(@NotNull BlockState state) {
 		if(state.is(Blocks.BARREL)) return new SpecialBarrelRules();
+		if(state.is(Blocks.CHEST)) return new SpecialChestRules();
+		if(state.is(Blocks.ENDER_CHEST)) return new SpecialEnderChestRules();
 		
 		if(state.is(BlockTags.BANNERS) || state.is(BlockTags.WOOL_CARPETS)) return DEFAULT_NO_CONSUME;
 		

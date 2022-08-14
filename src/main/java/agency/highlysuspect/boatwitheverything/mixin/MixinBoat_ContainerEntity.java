@@ -3,8 +3,11 @@ package agency.highlysuspect.boatwitheverything.mixin;
 import agency.highlysuspect.boatwitheverything.BoatDuck;
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.ContainerExt;
+import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
 import net.minecraft.core.NonNullList;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.HasCustomInventoryScreen;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Inventory;
@@ -24,21 +27,34 @@ public abstract class MixinBoat_ContainerEntity implements ContainerEntity, HasC
 	
 	@Override
 	public boolean stillValid(Player player) {
-		return isChestVehicleStillValid(player);
+		return isChestVehicleStillValid(player) && container() != null;
 	}
 	
 	// Menu //
 	
-	@Nullable
-	@Override
-	public AbstractContainerMenu createMenu(int sequenceNumber, Inventory playerInventory, Player player) {
-		ContainerExt containerExt = container();
-		return containerExt == null ? null : containerExt.createMenu(sequenceNumber, playerInventory, player);
-	}
+	private final MenuProvider provider = new MenuProvider() {
+		@Override
+		public Component getDisplayName() {
+			//TODO: merge to something like SpecialBoatRules#getMenuDisplayName
+			// Also maybe this whole thing could be merged with SpecialBoatRules#getMenuProvider instead?
+			return boat().getDisplayName();
+		}
+		
+		@Nullable
+		@Override
+		public AbstractContainerMenu createMenu(int sequenceNumber, Inventory playerInventory, Player player) {
+			SpecialBoatRules rules = rules();
+			if(rules == null) return null;
+			
+			MenuProvider provider = rules.getMenuProvider(boat(), ext(), player);
+			if(provider == null) return null;
+			else return provider.createMenu(sequenceNumber, playerInventory, player);
+		}
+	};
 	
 	@Override
 	public void openCustomInventoryScreen(Player player) {
-		player.openMenu(this);
+		player.openMenu(this.provider);
 		if(!player.level.isClientSide) {
 			boat().gameEvent(GameEvent.BLOCK_OPEN);
 			PiglinAi.angerNearbyPiglins(player, true); //i suppose
@@ -133,6 +149,10 @@ public abstract class MixinBoat_ContainerEntity implements ContainerEntity, HasC
 	
 	@Unique private BoatExt ext() {
 		return ((BoatDuck) this).bwe$getExt();
+	}
+	
+	@Unique private @Nullable SpecialBoatRules rules() {
+		return ext().getRules();
 	}
 	
 	@Unique private @Nullable ContainerExt container() {

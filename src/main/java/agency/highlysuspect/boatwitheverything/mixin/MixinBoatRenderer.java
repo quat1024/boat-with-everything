@@ -36,7 +36,7 @@ public class MixinBoatRenderer {
 		pose.mulPose(Vector3f.YP.rotationDegrees(-90)); //Idk
 		pose.scale(0.8f, 0.8f, 0.8f); //Scale down so the block fits inside the boat
 		
-		SpecialBoatRenderer.get(state).render(boat, yaw, partialTicks, pose, bufs, light, state, ext.getItemStack());
+		SpecialBoatRenderer.get(state).render(boat, ext, yaw, partialTicks, pose, bufs, light, state, ext.getItemStack());
 		
 		pose.popPose();
 	}

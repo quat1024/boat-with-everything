@@ -25,9 +25,11 @@ public class MixinMultiPlayerGameMode {
 		assert player != null;
 		
 		if(player.isPassenger() && player.getVehicle() instanceof Boat boat) {
-			ContainerExt containerExt = ((BoatDuck) boat).bwe$getExt().getContainer();
-			if(containerExt == null) cir.setReturnValue(false);
-			else cir.setReturnValue(containerExt.hasServerControlledInventory());
+			BoatExt ext = ((BoatDuck) boat).bwe$getExt();
+			
+			SpecialBoatRules rules = ext.getRules();
+			if(rules == null) cir.setReturnValue(false);
+			else cir.setReturnValue(rules.hasServerControlledInventory(boat, ext, player));
 		}
 	}
 }
