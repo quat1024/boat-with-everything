@@ -5,6 +5,7 @@ import agency.highlysuspect.boatwitheverything.mixin.cosmetic.AccessorChestBlock
 import agency.highlysuspect.boatwitheverything.mixin.cosmetic.AccessorEnderChestBlockEntity;
 import agency.highlysuspect.boatwitheverything.special.SpecialBannerRenderer;
 import agency.highlysuspect.boatwitheverything.special.SpecialChestRenderer;
+import agency.highlysuspect.boatwitheverything.special.SpecialSkullBlockRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
@@ -52,6 +53,7 @@ public interface SpecialBoatRenderer {
 	SpecialBoatRenderer ENDER_CHEST = new SpecialChestRenderer<>(new EnderChestBlockEntity(BlockPos.ZERO, Blocks.ENDER_CHEST.defaultBlockState()), chest -> ((AccessorEnderChestBlockEntity) chest).bwe$getChestLidController());
 	
 	SpecialBoatRenderer BANNER = new SpecialBannerRenderer();
+	SpecialBoatRenderer SKULL = new SpecialSkullBlockRenderer();
 	
 	static @NotNull SpecialBoatRenderer get(@NotNull BlockState state) {
 		//Beds, always rotated to face inside the boat. The BlockEntityRenderer takes care of drawing both halves of the bed
@@ -74,30 +76,14 @@ public interface SpecialBoatRenderer {
 		//Haxx for chests
 		if(state.is(Blocks.CHEST)) return CHEST;
 		if(state.is(Blocks.ENDER_CHEST)) return ENDER_CHEST;
+		if(state.getBlock() instanceof BannerBlock) return BANNER;
+		if(state.getBlock() instanceof SkullBlock) return SKULL;
 		
 		//Haxx for certain block entities like enderchests; renderSingleBlock doesn't apply the rotation from the blockstate
 		if(state.getRenderShape() == RenderShape.ENTITYBLOCK_ANIMATED && state.hasProperty(BlockStateProperties.HORIZONTAL_FACING)) {
 			return (boat, ext, yaw, pt, pose, bufs, light, state_, stack) -> {
 				pose.mulPose(Vector3f.YP.rotationDegrees(-state_.getValue(BlockStateProperties.HORIZONTAL_FACING).toYRot()));
 				DEFAULT.render(boat, ext, yaw, pt, pose, bufs, light, state_, stack);
-			};
-		}
-		
-		//Banners - renderSingleBlock skips them because of the RenderShape, and I want to position them differently
-		if(state.getBlock() instanceof BannerBlock) {
-			return BANNER;
-//			return (boat, ext, yaw, pt, pose, bufs, light, state_, stack) -> {
-//				pose.mulPose(Vector3f.YP.rotationDegrees(180));
-//				pose.translate(0, 7/16d, 0.59); //Sticks the banner's post into the side of the boat
-//				USING_BEWLR.render(boat, ext, yaw, pt, pose, bufs, light, state_, stack);
-//			};
-		}
-		
-		//Skulls, also skipped in renderSingleBlock. And I need to apply the funny rotation property
-		if(state.getBlock() instanceof SkullBlock && state.hasProperty(BlockStateProperties.ROTATION_16)) {
-			return (boat, ext, yaw, pt, pose, bufs, light, state_, stack) -> {
-				pose.mulPose(Vector3f.YP.rotationDegrees(180 + -22.5f * state_.getValue(BlockStateProperties.ROTATION_16)));
-				USING_BEWLR.render(boat, ext, yaw, pt, pose, bufs, light, state_, stack); //Will probably need adjustment to do the enderdragon skull animation
 			};
 		}
 		

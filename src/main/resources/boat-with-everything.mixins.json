@@ -20,7 +20,8 @@
 		"MixinBoatRenderer",
 		"AccessorBlockRenderDispatcher",
 		"cosmetic.AccessorBannerRenderer",
-		"cosmetic.MixinEntity_ChestLidEvent"
+		"cosmetic.MixinEntity_ChestLidEvent",
+		"cosmetic.AccessorSkullBlockEntity"
 	],
   "injectors": {
     "defaultRequire": 1

@@ -102,7 +102,6 @@ public interface SpecialBoatRules {
 	
 	//beacon (working?)
 	//flower pot (working interaction)
-	//dragon head (animation when powered)
 	//dropper (working w/ inventory gui)
 	//shulker box (working w/ animation and sound when opened)
 	//conduit? maybe
