@@ -102,12 +102,18 @@ public interface SpecialBoatRules {
 	
 	//beacon (working?)
 	//flower pot (working interaction)
-	//dropper (working w/ inventory gui)
+	//dropper, maybe dispenser if its not too difficult (working w/ inventory gui)
 	//shulker box (working w/ animation and sound when opened)
 	//conduit? maybe
 	//bell (ding)
+	//note block (ding)
 	//campfire, soul campfire (particles, maybe cook food)
 	//lectern (other people can click to see the book lol)
+	//torch, glowstone, soul torch, etc (light source that follows you around)
+	//furnace, smoker, blastfurnace (working, speed boost the boat when list)
+	//grindstone (gui)
+	//anvil (gui, needs haxx to avoid spawning an anvil block on damaging)
+	//bed (set spawn? or maybe just differnet pose while riding? idk)
 	
 	static @NotNull SpecialBoatRules get(@NotNull BlockState state) {
 		if(state.is(Blocks.BARREL)) return new SpecialBarrelRules();
@@ -124,18 +130,14 @@ public interface SpecialBoatRules {
 		if(state.is(Blocks.SPONGE)) return new SpecialSpongeRules();
 		if(state.is(Blocks.TNT)) return new SpecialTntRules();
 		
-		if(state.hasProperty(BlockStateProperties.POWERED) && state.hasProperty(BlockStateProperties.OPEN)) {
-			if(state.is(BlockTags.DOORS))
-				return new SpecialDoorRules(SoundEvents.WOODEN_DOOR_OPEN, SoundEvents.IRON_DOOR_OPEN, SoundEvents.WOODEN_DOOR_CLOSE, SoundEvents.IRON_DOOR_CLOSE);
-			if(state.is(BlockTags.TRAPDOORS))
-				return new SpecialDoorRules(SoundEvents.WOODEN_TRAPDOOR_OPEN, SoundEvents.IRON_TRAPDOOR_OPEN, SoundEvents.WOODEN_TRAPDOOR_CLOSE, SoundEvents.IRON_TRAPDOOR_CLOSE);
-			if(state.is(BlockTags.FENCE_GATES))
-				return new SpecialDoorRules(SoundEvents.FENCE_GATE_OPEN, SoundEvents.FENCE_GATE_OPEN, SoundEvents.FENCE_GATE_CLOSE, SoundEvents.FENCE_GATE_CLOSE);
-		}
+		if(state.is(BlockTags.DOORS))
+			return new SpecialDoorRules(SoundEvents.WOODEN_DOOR_OPEN, SoundEvents.IRON_DOOR_OPEN, SoundEvents.WOODEN_DOOR_CLOSE, SoundEvents.IRON_DOOR_CLOSE);
+		if(state.is(BlockTags.TRAPDOORS))
+			return new SpecialDoorRules(SoundEvents.WOODEN_TRAPDOOR_OPEN, SoundEvents.IRON_TRAPDOOR_OPEN, SoundEvents.WOODEN_TRAPDOOR_CLOSE, SoundEvents.IRON_TRAPDOOR_CLOSE);
+		if(state.is(BlockTags.FENCE_GATES))
+			return new SpecialDoorRules(SoundEvents.FENCE_GATE_OPEN, SoundEvents.FENCE_GATE_OPEN, SoundEvents.FENCE_GATE_CLOSE, SoundEvents.FENCE_GATE_CLOSE);
 		
-		if(state.hasProperty(BlockStateProperties.LIT) && state.is(Blocks.REDSTONE_LAMP)) {
-			return new SpecialLampRules();
-		}
+		if(state.is(Blocks.REDSTONE_LAMP)) return new SpecialLampRules();
 		
 		return DEFAULT;
 	}
