@@ -3,7 +3,7 @@ package agency.highlysuspect.boatwitheverything.special;
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.cosmetic.ChestLidControllerDuck;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRenderer;
-import agency.highlysuspect.boatwitheverything.cosmetic.ContainerExtWithLid;
+import agency.highlysuspect.boatwitheverything.cosmetic.ChestLidRenderData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
@@ -33,9 +33,10 @@ public class SpecialChestRenderer<T extends BlockEntity> implements SpecialBoatR
 		pose.translate(-0.5, 0, -0.5);
 		
 		ChestLidController lidController = getter.apply(be);
-		if(ext.getContainer() instanceof ContainerExtWithLid ccext) {
-			((ChestLidControllerDuck) lidController).bwe$setOpenness(ccext.getOpenNess(partialTicks));
+		if(ext.getRenderAttachmentData() instanceof ChestLidRenderData clrd) {
+			((ChestLidControllerDuck) lidController).bwe$setOpenness(clrd.getOpenness(partialTicks));
 		} else {
+			ext.setRenderAttachmentData(new ChestLidRenderData());
 			((ChestLidControllerDuck) lidController).bwe$setOpenness(0);
 		}
 		

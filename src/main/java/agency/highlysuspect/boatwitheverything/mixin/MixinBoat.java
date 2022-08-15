@@ -5,6 +5,7 @@ import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.BoatWithEverything;
 import agency.highlysuspect.boatwitheverything.ContainerExt;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
+import agency.highlysuspect.boatwitheverything.cosmetic.ChestLidRenderData;
 import agency.highlysuspect.boatwitheverything.cosmetic.RenderData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -22,6 +23,7 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -82,6 +84,9 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 				renderAttachmentData = null;
 			} else {
 				rules = SpecialBoatRules.get(state);
+				
+				//Wow! It's Bad:tm:
+				if(level.isClientSide && (state.is(Blocks.CHEST) || state.is(Blocks.ENDER_CHEST))) setRenderAttachmentData(new ChestLidRenderData());
 				
 				//only swap out the container if a different implementation was returned w/ the new blockstate
 				//makes it so stuff like opening the barrel doesn't delete the container because the blockstate changed

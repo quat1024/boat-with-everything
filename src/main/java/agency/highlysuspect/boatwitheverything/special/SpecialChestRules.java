@@ -3,7 +3,7 @@ package agency.highlysuspect.boatwitheverything.special;
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.ContainerExt;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
-import agency.highlysuspect.boatwitheverything.cosmetic.ContainerExtWithLid;
+import agency.highlysuspect.boatwitheverything.cosmetic.ChestLidRenderData;
 import agency.highlysuspect.boatwitheverything.mixin.AccessorSimpleContainer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.sounds.SoundEvents;
@@ -14,7 +14,6 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.level.block.entity.ChestLidController;
 import org.jetbrains.annotations.Nullable;
 
 public class SpecialChestRules implements SpecialBoatRules {
@@ -23,14 +22,7 @@ public class SpecialChestRules implements SpecialBoatRules {
 		return new ChestContainerExt(boat, ext);
 	}
 	
-	@Override
-	public void tick(Boat boat, BoatExt ext) {
-		if(ext.getContainer() instanceof ChestContainerExt ccext) {
-			ccext.lidController.tickLid();
-		}
-	}
-	
-	public static class ChestContainerExt extends SimpleContainer implements ContainerExt, ContainerExtWithLid {
+	public static class ChestContainerExt extends SimpleContainer implements ContainerExt {
 		public ChestContainerExt(Boat boat, BoatExt ext) {
 			super(27);
 			this.boat = boat;
@@ -42,7 +34,6 @@ public class SpecialChestRules implements SpecialBoatRules {
 		
 		private int oldWatchers = 0;
 		private int watchers = 0;
-		private final ChestLidController lidController = new ChestLidController(); //see MixinEntity
 		
 		@Override
 		public NonNullList<ItemStack> getItemStacks() {
@@ -65,22 +56,12 @@ public class SpecialChestRules implements SpecialBoatRules {
 			boolean wasOpen = oldWatchers > 0;
 			boolean shouldOpen = watchers > 0;
 			if(wasOpen != shouldOpen) {
-				boat.level.broadcastEntityEvent(boat, (byte) (shouldOpen ? 69 : 70)); //see MixinEntity
+				boat.level.broadcastEntityEvent(boat, (byte) (shouldOpen ? 69 : 70)); //see MixinEntity_ChestLidEvent
 				
 				if(shouldOpen) boat.playSound(SoundEvents.CHEST_OPEN);
 				else boat.playSound(SoundEvents.CHEST_CLOSE);
 			}
 			oldWatchers = watchers;
-		}
-		
-		@Override
-		public void setShouldBeOpen(boolean shouldBeOpen) {
-			lidController.shouldBeOpen(shouldBeOpen);
-		}
-		
-		@Override
-		public float getOpenNess(float partialTicks) {
-			return lidController.getOpenness(partialTicks);
 		}
 		
 		@Nullable

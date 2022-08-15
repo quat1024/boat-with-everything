@@ -17,7 +17,8 @@
 	"client": [
 		"MixinBoatRenderer",
 		"AccessorBlockRenderDispatcher",
-		"cosmetic.AccessorBannerRenderer"
+		"cosmetic.AccessorBannerRenderer",
+		"cosmetic.MixinEntity_ChestLidEvent"
 	],
   "injectors": {
     "defaultRequire": 1
