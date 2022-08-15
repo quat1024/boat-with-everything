@@ -3,6 +3,7 @@ package agency.highlysuspect.boatwitheverything;
 import agency.highlysuspect.boatwitheverything.mixin.AccessorBlockRenderDispatcher;
 import agency.highlysuspect.boatwitheverything.mixin.cosmetic.AccessorChestBlockEntity;
 import agency.highlysuspect.boatwitheverything.mixin.cosmetic.AccessorEnderChestBlockEntity;
+import agency.highlysuspect.boatwitheverything.special.SpecialBannerRenderer;
 import agency.highlysuspect.boatwitheverything.special.SpecialChestRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -50,6 +51,8 @@ public interface SpecialBoatRenderer {
 	SpecialBoatRenderer CHEST = new SpecialChestRenderer<>(new ChestBlockEntity(BlockPos.ZERO, Blocks.CHEST.defaultBlockState()), chest -> ((AccessorChestBlockEntity) chest).bwe$getChestLidController());
 	SpecialBoatRenderer ENDER_CHEST = new SpecialChestRenderer<>(new EnderChestBlockEntity(BlockPos.ZERO, Blocks.ENDER_CHEST.defaultBlockState()), chest -> ((AccessorEnderChestBlockEntity) chest).bwe$getChestLidController());
 	
+	SpecialBoatRenderer BANNER = new SpecialBannerRenderer();
+	
 	static @NotNull SpecialBoatRenderer get(@NotNull BlockState state) {
 		//Beds, always rotated to face inside the boat. The BlockEntityRenderer takes care of drawing both halves of the bed
 		if(state.getBlock() instanceof BedBlock) {
@@ -82,11 +85,12 @@ public interface SpecialBoatRenderer {
 		
 		//Banners - renderSingleBlock skips them because of the RenderShape, and I want to position them differently
 		if(state.getBlock() instanceof BannerBlock) {
-			return (boat, ext, yaw, pt, pose, bufs, light, state_, stack) -> {
-				pose.mulPose(Vector3f.YP.rotationDegrees(180));
-				pose.translate(0, 7/16d, 0.59); //Sticks the banner's post into the side of the boat
-				USING_BEWLR.render(boat, ext, yaw, pt, pose, bufs, light, state_, stack);
-			};
+			return BANNER;
+//			return (boat, ext, yaw, pt, pose, bufs, light, state_, stack) -> {
+//				pose.mulPose(Vector3f.YP.rotationDegrees(180));
+//				pose.translate(0, 7/16d, 0.59); //Sticks the banner's post into the side of the boat
+//				USING_BEWLR.render(boat, ext, yaw, pt, pose, bufs, light, state_, stack);
+//			};
 		}
 		
 		//Skulls, also skipped in renderSingleBlock. And I need to apply the funny rotation property
