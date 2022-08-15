@@ -1,11 +1,16 @@
 package agency.highlysuspect.boatwitheverything;
 
 import agency.highlysuspect.boatwitheverything.special.SpecialBarrelRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialCartographyTableRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialChestRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialCraftingTableRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialDoorRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialEnderChestRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialLampRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialLoomRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialSmithingTableRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialSpongeRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialStonecutterRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialTntRules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -101,7 +106,6 @@ public interface SpecialBoatRules {
 	//dropper (working w/ inventory gui)
 	//shulker box (working w/ animation and sound when opened)
 	//conduit? maybe
-	//loom, smithing table, cartography table, stonecutter (gui)
 	//bell (ding)
 	//campfire, soul campfire (particles, maybe cook food)
 	//lectern (other people can click to see the book lol)
@@ -110,6 +114,11 @@ public interface SpecialBoatRules {
 		if(state.is(Blocks.BARREL)) return new SpecialBarrelRules();
 		if(state.is(Blocks.CHEST)) return new SpecialChestRules();
 		if(state.is(Blocks.ENDER_CHEST)) return new SpecialEnderChestRules();
+		if(state.is(Blocks.LOOM)) return new SpecialLoomRules();
+		if(state.is(Blocks.SMITHING_TABLE)) return new SpecialSmithingTableRules();
+		if(state.is(Blocks.CARTOGRAPHY_TABLE)) return new SpecialCartographyTableRules();
+		if(state.is(Blocks.STONECUTTER)) return new SpecialStonecutterRules();
+		if(state.is(Blocks.CRAFTING_TABLE)) return new SpecialCraftingTableRules();
 		
 		if(state.is(BlockTags.BANNERS) || state.is(BlockTags.WOOL_CARPETS)) return DEFAULT_NO_CONSUME;
 		

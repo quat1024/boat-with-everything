@@ -6,6 +6,8 @@
   "mixins": [
 		"AccessorSpongeBlock",
 		"AccessorSimpleContainer",
+		"MixinAbstractContainerMenu",
+		"MixinItemCombinerMenu",
 		"MixinBoat",
 		"MixinBoat_ContainerEntity",
 		"MixinEntity",
