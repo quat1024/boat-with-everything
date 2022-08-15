@@ -2,6 +2,7 @@ package agency.highlysuspect.boatwitheverything.special;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRenderer;
+import agency.highlysuspect.boatwitheverything.cosmetic.RenderData;
 import agency.highlysuspect.boatwitheverything.mixin.cosmetic.AccessorBannerRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -17,6 +18,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.ModelBakery;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Holder;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.DyeColor;
 import net.minecraft.world.item.ItemStack;
@@ -34,6 +36,12 @@ public class SpecialBannerRenderer implements SpecialBoatRenderer {
 	@Override
 	public void render(Boat boat, BoatExt ext, float yaw, float partialTicks, PoseStack pose, MultiBufferSource bufs, int light, BlockState state, ItemStack stack) {
 		if(!(state.getBlock() instanceof BannerBlock bannerBlock)) return;
+		
+		if(!(ext.getRenderAttachmentData() instanceof RData)) {
+			ext.setRenderAttachmentData(new RData());
+		}
+		RData rdata = (RData) ext.getRenderAttachmentData();
+		double gameTime = boat.level.getGameTime() + partialTicks;
 		
 		bannerBe.fromItem(stack, bannerBlock.getColor());
 		List<Pair<Holder<BannerPattern>, DyeColor>> patterns = bannerBe.getPatterns();
@@ -55,9 +63,38 @@ public class SpecialBannerRenderer implements SpecialBoatRenderer {
 		pole.render(pose, vc, light, OverlayTexture.NO_OVERLAY);
 		bar.render(pose, vc, light, OverlayTexture.NO_OVERLAY);
 		
-		flag.xRot = (float) (boat.getDeltaMovement().length() * -1.2);
+		//Kinda winged this
+		float boatSpeedFactor = rdata.getDampedSpeed(partialTicks) * -1.2f;
+		float swayFactor = (float) (Math.cos(gameTime / 20d) * 0.04f + 0.03f);
+		flag.xRot = boatSpeedFactor + swayFactor - 0.07f;
 		flag.y = -32f;
 		
 		BannerRenderer.renderPatterns(pose, bufs, light, OverlayTexture.NO_OVERLAY, flag, ModelBakery.BANNER_BASE, true, patterns);
+	}
+	
+	//Simple easing model for the angle of the banner
+	public static class RData implements RenderData {
+		float boatSpeed;
+		float boatSpeedLastTick;
+		
+		@Override
+		public void tick(Boat boat, BoatExt ext) {
+			boatSpeedLastTick = boatSpeed;
+			
+			//arbitary factor that makes the banner sway outwards when turning
+			float yawSpeed = Math.abs(boat.getYRot() - boat.yRotO);
+			//When exiting the boat, it looks like the angle is suddenly snapped to the [0..360] range again
+			//so there might be a really big discrepancy between yRot and yRot0 for 1 tick if you do donuts in the boat
+			if(yawSpeed > 200) yawSpeed = 0;
+			yawSpeed /= 50f;
+			
+			float targetSpeed = ((float) boat.getDeltaMovement().length()) + yawSpeed;
+			float difference = targetSpeed - boatSpeed;
+			boatSpeed += difference * 0.2f;
+		}
+		
+		float getDampedSpeed(float partialTicks) {
+			return Mth.lerp(partialTicks, boatSpeedLastTick, boatSpeed);
+		}
 	}
 }

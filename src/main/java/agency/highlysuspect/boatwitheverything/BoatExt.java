@@ -1,5 +1,6 @@
 package agency.highlysuspect.boatwitheverything;
 
+import agency.highlysuspect.boatwitheverything.cosmetic.RenderData;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
@@ -40,4 +41,7 @@ public interface BoatExt {
 	@Nullable SpecialBoatRules getRules();
 	int getMaxPassengers();
 	void onSyncedDataUpdated(EntityDataAccessor<?> accessor);
+	
+	RenderData getRenderAttachmentData();
+	void setRenderAttachmentData(RenderData whatever);
 }

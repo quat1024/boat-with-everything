@@ -5,6 +5,7 @@ import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.BoatWithEverything;
 import agency.highlysuspect.boatwitheverything.ContainerExt;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
+import agency.highlysuspect.boatwitheverything.cosmetic.RenderData;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -52,6 +53,8 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	@Unique private @Nullable SpecialBoatRules rules;
 	@Unique private @Nullable ContainerExt container;
 	
+	@Unique private RenderData renderAttachmentData; //SpecialBoatRenderers can squirrel away data that persists from frame-to-frame here
+	
 	@Inject(method = "defineSynchedData", at = @At("RETURN"))
 	protected void whenDefiningSynchedData(CallbackInfo ci) {
 		boat().getEntityData().define(DATA_ID_BLOCK_STATE, Optional.empty());
@@ -76,6 +79,7 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 				
 				rules = null;
 				container = null;
+				renderAttachmentData = null;
 			} else {
 				rules = SpecialBoatRules.get(state);
 				
@@ -88,6 +92,7 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 				if(!Objects.equals(oldContainerClass, newContainerClass)) {
 					if(container != null) container.drop(boat(), this);
 					container = newContainer;
+					renderAttachmentData = null;
 				}
 			}
 		}
@@ -125,6 +130,16 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 				BlockState state = boat().getEntityData().get(DATA_ID_BLOCK_STATE).orElse(null);
 				setBlockState0(state);
 			}
+		}
+		
+		@Override
+		public RenderData getRenderAttachmentData() {
+			return renderAttachmentData;
+		}
+		
+		@Override
+		public void setRenderAttachmentData(RenderData whatever) {
+			renderAttachmentData = whatever;
 		}
 	};
 	
@@ -169,6 +184,8 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	public void whenTicking(CallbackInfo ci) {
 		SpecialBoatRules rules = ext.getRules();
 		if(rules != null) rules.tick(boat(), ext);
+		
+		if(boat().level.isClientSide && renderAttachmentData != null) renderAttachmentData.tick(boat(), ext);
 	}
 	
 	// saving and loading //
