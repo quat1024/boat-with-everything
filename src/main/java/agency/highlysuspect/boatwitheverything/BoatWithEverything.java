@@ -44,8 +44,12 @@ public class BoatWithEverything {
 		//return the item that was used to place the block in the boat
 		ItemStack stackInBoat = ext.getItemStack().copy();
 		@Nullable Player player = source.getDirectEntity() instanceof Player p ? p : null;
-		if(player != null && !player.mayInteract(boat.level, boat.blockPosition())) {
-			return false;
+		
+		@SuppressWarnings("SimplifiableConditionalExpression")
+		boolean locked = player == null ? false : (ext.isLocked() && !player.getAbilities().instabuild);
+		
+		if(player != null && (locked || !player.mayInteract(boat.level, boat.blockPosition()))) {
+			return locked; //if locked, dont even allow damaging the boat (for modfest)
 		}
 		
 		if(player == null || !player.addItem(stackInBoat)) {
@@ -71,9 +75,12 @@ public class BoatWithEverything {
 			if(result != InteractionResult.PASS) return result;
 		}
 		
+		boolean locked = ext.isLocked() && !player.getAbilities().instabuild;
+		
 		//If there's no blockstate, add it to the boat
 		BlockState placementState;
-		if(player.mayInteract(boat.level, boat.blockPosition()) &&
+		if(!locked &&
+			player.mayInteract(boat.level, boat.blockPosition()) &&
 			player.mayUseItemAt(boat.blockPosition(), Direction.UP, player.getItemInHand(hand)) &&
 			(placementState = getPlacementStateInsideBoat(player, boat, hand)) != null &&
 			canAddBlockState(boat, ext, placementState))

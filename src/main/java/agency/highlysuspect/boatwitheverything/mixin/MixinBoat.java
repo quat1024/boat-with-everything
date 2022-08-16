@@ -57,16 +57,21 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	
 	@Unique private static final EntityDataAccessor<Optional<BlockState>> DATA_ID_BLOCK_STATE = SynchedEntityData.defineId(Boat.class, EntityDataSerializers.BLOCK_STATE);
 	@Unique private static final EntityDataAccessor<ItemStack> DATA_ID_ITEM_STACK = SynchedEntityData.defineId(Boat.class, EntityDataSerializers.ITEM_STACK);
+	//For mapmakers, conventions, etc
+	@Unique private static final EntityDataAccessor<Boolean> DATA_ID_LOCKED = SynchedEntityData.defineId(Boat.class, EntityDataSerializers.BOOLEAN);
 	
 	@Unique private @Nullable SpecialBoatRules rules;
 	@Unique private @Nullable ContainerExt container;
 	
 	@Unique private RenderData renderAttachmentData; //SpecialBoatRenderers can squirrel away data that persists from frame-to-frame here
 	
+	@Unique private boolean heavy = false;
+	
 	@Inject(method = "defineSynchedData", at = @At("RETURN"))
 	protected void whenDefiningSynchedData(CallbackInfo ci) {
 		boat().getEntityData().define(DATA_ID_BLOCK_STATE, Optional.empty());
 		boat().getEntityData().define(DATA_ID_ITEM_STACK, ItemStack.EMPTY);
+		boat().getEntityData().define(DATA_ID_LOCKED, false);
 	}
 	
 	@Unique private final BoatExt ext = new BoatExt() {
@@ -152,6 +157,11 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		public void setRenderAttachmentData(RenderData whatever) {
 			renderAttachmentData = whatever;
 		}
+		
+		@Override
+		public boolean isLocked() {
+			return boat().getEntityData().get(DATA_ID_LOCKED);
+		}
 	};
 	
 	// interactions //
@@ -195,8 +205,6 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	@Shadow private Boat.Status oldStatus;
 	@Shadow private float outOfControlTicks;
 	
-	private boolean heavy = false;
-	
 	@Inject(method = "tick", at = @At("RETURN"))
 	public void whenTicking(CallbackInfo ci) {
 		SpecialBoatRules rules = ext.getRules();
@@ -230,7 +238,7 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	
 	@Unique private static final String BLOCKSTATE_KEY = "BoatWithEverything$blockState";
 	@Unique private static final String ITEMSTACK_KEY = "BoatWithEverything$itemStack";
-	
+	@Unique private static final String LOCKED_KEY = "BoatWithEverything$locked";
 	
 	@Inject(method = "addAdditionalSaveData", at = @At("RETURN"))
 	public void whenAddingAdditionalSaveData(CompoundTag tag, CallbackInfo ci) {
@@ -242,6 +250,8 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		
 		SpecialBoatRules rules = ext.getRules();
 		if(rules != null) rules.addAdditionalSaveData(boat(), ext, tag);
+		
+		tag.putBoolean(LOCKED_KEY, boat().getEntityData().get(DATA_ID_LOCKED));
 	}
 	
 	@Inject(method = "readAdditionalSaveData", at = @At("RETURN"))
@@ -260,6 +270,8 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		
 		SpecialBoatRules rules = ext.getRules();
 		if(rules != null) rules.readAdditionalSaveData(boat(), ext, tag);
+		
+		boat().getEntityData().set(DATA_ID_LOCKED, tag.getBoolean(LOCKED_KEY));
 	}
 	
 	// passenger tweaks //

@@ -44,4 +44,6 @@ public interface BoatExt {
 	
 	RenderData getRenderAttachmentData();
 	void setRenderAttachmentData(RenderData whatever);
+	
+	boolean isLocked();
 }
