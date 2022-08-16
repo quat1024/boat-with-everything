@@ -25,6 +25,7 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.CartographyTableMenu;
 import net.minecraft.world.inventory.CraftingMenu;
+import net.minecraft.world.inventory.GrindstoneMenu;
 import net.minecraft.world.inventory.LoomMenu;
 import net.minecraft.world.inventory.SmithingMenu;
 import net.minecraft.world.inventory.StonecutterMenu;
@@ -129,8 +130,6 @@ public interface SpecialBoatRules {
 	//lectern (other people can click to see the book lol)
 	//torch, glowstone, soul torch, etc (light source that follows you around)
 	//furnace, smoker, blastfurnace (working, speed boost the boat when lit)
-	//grindstone (gui)
-	//anvil (gui, needs haxx to avoid spawning an anvil block on damaging)
 	//bed (set spawn? or maybe just differnet pose while riding? idk)
 	
 	static @NotNull SpecialBoatRules get(@NotNull BlockState state) {
@@ -145,6 +144,7 @@ public interface SpecialBoatRules {
 		if(state.is(Blocks.CARTOGRAPHY_TABLE)) return new SpecialContainerlessMenuRules(CartographyTableMenu::new);
 		if(state.is(Blocks.STONECUTTER)) return new SpecialContainerlessMenuRules(StonecutterMenu::new);
 		if(state.is(Blocks.CRAFTING_TABLE)) return new SpecialContainerlessMenuRules(CraftingMenu::new);
+		if(state.is(Blocks.GRINDSTONE)) return new SpecialContainerlessMenuRules(GrindstoneMenu::new);
 		//(this one's a bit odd, see MixinItemCombinerMenu)
 		if(state.is(Blocks.SMITHING_TABLE)) return new SpecialContainerlessMenuRules(SmithingMenu::new);
 		
