@@ -1,6 +1,5 @@
 package agency.highlysuspect.boatwitheverything;
 
-import agency.highlysuspect.boatwitheverything.menu.Menus;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -24,8 +23,8 @@ public class BoatWithEverything {
 	public static final String MODID = "boat-with-everything";
 	public static BoatWithEverything INSTANCE;
 	
-	public BoatWithEverything(LoaderServices services) {
-		Menus.register(services);
+	public BoatWithEverything() {
+		//todo put init stuff here if it crops up
 	}
 	
 	public static ResourceLocation id(String path) {
