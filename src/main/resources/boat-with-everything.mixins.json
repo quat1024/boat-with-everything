@@ -22,7 +22,7 @@
 		"MixinBoatRenderer",
 		"AccessorBlockRenderDispatcher",
 		"cosmetic.AccessorBannerRenderer",
-		"cosmetic.MixinEntity_ChestLidEvent",
+		"cosmetic.MixinEntity_HackyBoatUpdates",
 		"cosmetic.AccessorSkullBlockEntity"
 	],
   "injectors": {

@@ -3,6 +3,7 @@ package agency.highlysuspect.boatwitheverything.special;
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.ContainerExt;
 import agency.highlysuspect.boatwitheverything.DelegatingContainer;
+import agency.highlysuspect.boatwitheverything.HackyEntityUpdateIds;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
 import agency.highlysuspect.boatwitheverything.mixin.AccessorSimpleContainer;
 import net.minecraft.core.NonNullList;
@@ -68,7 +69,7 @@ public class SpecialEnderChestRules implements SpecialBoatRules {
 			boolean wasOpen = oldWatchers > 0;
 			boolean shouldOpen = watchers > 0;
 			if(wasOpen != shouldOpen) {
-				boat.level.broadcastEntityEvent(boat, (byte) (shouldOpen ? 69 : 70)); //see MixinEntity_ChestLidEvent
+				boat.level.broadcastEntityEvent(boat, shouldOpen ? HackyEntityUpdateIds.OPEN_CHEST : HackyEntityUpdateIds.CLOSE_CHEST); //see MixinEntity_HackyBoatUpdates
 				
 				if(shouldOpen) boat.playSound(SoundEvents.ENDER_CHEST_OPEN);
 				else boat.playSound(SoundEvents.ENDER_CHEST_CLOSE);

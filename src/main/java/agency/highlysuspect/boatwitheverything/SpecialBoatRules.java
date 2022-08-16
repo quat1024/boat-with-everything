@@ -8,6 +8,7 @@ import agency.highlysuspect.boatwitheverything.special.SpecialDoorRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialEnderChestRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialFlowerPotRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialLampRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialNoteBlockRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialSpongeRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialTntRules;
 import net.minecraft.core.BlockPos;
@@ -132,6 +133,8 @@ public interface SpecialBoatRules {
 	//furnace, smoker, blastfurnace (working, speed boost the boat when lit)
 	//bed (set spawn? or maybe just differnet pose while riding? idk)
 	
+	//TODO TOODOOO big TODO
+	// uhh make this a map instead of a linear scan lol
 	static @NotNull SpecialBoatRules get(@NotNull BlockState state) {
 		//chests and containers
 		if(state.is(Blocks.BARREL)) return new SpecialBarrelRules();
@@ -162,6 +165,7 @@ public interface SpecialBoatRules {
 		if(state.is(Blocks.SPONGE)) return new SpecialSpongeRules();
 		if(state.is(Blocks.TNT)) return new SpecialTntRules();
 		if(state.is(Blocks.REDSTONE_LAMP)) return new SpecialLampRules();
+		if(state.is(Blocks.NOTE_BLOCK)) return new SpecialNoteBlockRules();
 		
 		//doors and the like
 		if(state.is(BlockTags.DOORS))
