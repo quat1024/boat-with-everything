@@ -44,6 +44,10 @@ public class BoatWithEverything {
 		//return the item that was used to place the block in the boat
 		ItemStack stackInBoat = ext.getItemStack().copy();
 		@Nullable Player player = source.getDirectEntity() instanceof Player p ? p : null;
+		if(player != null && !player.mayInteract(boat.level, boat.blockPosition())) {
+			return false;
+		}
+		
 		if(player == null || !player.addItem(stackInBoat)) {
 			boat.spawnAtLocation(stackInBoat, boat.getBbHeight());
 		}
@@ -69,7 +73,11 @@ public class BoatWithEverything {
 		
 		//If there's no blockstate, add it to the boat
 		BlockState placementState;
-		if((placementState = getPlacementStateInsideBoat(player, boat, hand)) != null && canAddBlockState(boat, ext, placementState)) {
+		if(player.mayInteract(boat.level, boat.blockPosition()) &&
+			player.mayUseItemAt(boat.blockPosition(), Direction.UP, player.getItemInHand(hand)) &&
+			(placementState = getPlacementStateInsideBoat(player, boat, hand)) != null &&
+			canAddBlockState(boat, ext, placementState))
+		{
 			ext.setBlockState(placementState);
 			ext.setItemStack(player.getItemInHand(hand).split(1));
 			
