@@ -126,7 +126,6 @@ public interface SpecialBoatRules {
 	//shulker box (working w/ animation and sound when opened)
 	//conduit? maybe
 	//bell (ding)
-	//note block (ding)
 	//campfire, soul campfire (particles, maybe cook food)
 	//lectern (other people can click to see the book lol)
 	//torch, glowstone, soul torch, etc (light source that follows you around)
