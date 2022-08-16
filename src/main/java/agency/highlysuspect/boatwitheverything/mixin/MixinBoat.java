@@ -18,6 +18,7 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
@@ -25,6 +26,9 @@ import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.material.Fluid;
+import net.minecraft.world.level.material.Fluids;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -42,6 +46,8 @@ import java.util.Optional;
 @Mixin(Boat.class)
 public abstract class MixinBoat extends Entity implements BoatDuck {
 	// mixin gunk //
+	
+	@Shadow public abstract boolean isUnderWater();
 	
 	public MixinBoat(EntityType<?> entityType, Level level) {
 		super(entityType, level);
@@ -185,12 +191,39 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		}
 	}
 	
+	@Shadow private Boat.Status status;
+	@Shadow private Boat.Status oldStatus;
+	@Shadow private float outOfControlTicks;
+	
+	private boolean heavy = false;
+	
 	@Inject(method = "tick", at = @At("RETURN"))
 	public void whenTicking(CallbackInfo ci) {
 		SpecialBoatRules rules = ext.getRules();
-		if(rules != null) rules.tick(boat(), ext);
+		if(rules != null) {
+			heavy = rules.isHeavy();
+			rules.tick(boat(), ext);
+		} else {
+			heavy = false;
+		}
 		
 		if(boat().level.isClientSide && renderAttachmentData != null) renderAttachmentData.tick(boat(), ext);
+	}
+	
+	//force the boat underwater if it is carrying a heavy object
+	@Inject(method = "floatBoat", at = @At("HEAD"))
+	private void whenFloating(CallbackInfo ci) {
+		if(heavy) {
+			status = oldStatus = Boat.Status.UNDER_WATER;
+			if(outOfControlTicks < 60f) outOfControlTicks = 60f;
+		}
+	}
+	
+	@Inject(method = "floatBoat", at = @At("RETURN"))
+	private void ohComeOnItNeedsToFallFasterThanThat(CallbackInfo ci) {
+		if(heavy && getDeltaMovement().y < 0) {
+			setDeltaMovement(getDeltaMovement().add(0, -0.1f, 0));
+		}
 	}
 	
 	// saving and loading //

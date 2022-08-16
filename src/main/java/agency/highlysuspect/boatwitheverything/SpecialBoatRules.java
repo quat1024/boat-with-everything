@@ -37,6 +37,10 @@ public interface SpecialBoatRules {
 		return true;
 	}
 	
+	default boolean isHeavy() {
+		return false;
+	}
+	
 	default void tick(Boat boat, BoatExt ext) {
 		//no-op by default
 	}
@@ -100,6 +104,12 @@ public interface SpecialBoatRules {
 			return false;
 		}
 	};
+	SpecialBoatRules DEFAULT_HEAVY = new SpecialBoatRules() {
+		@Override
+		public boolean isHeavy() {
+			return true;
+		}
+	};
 	
 	//beacon (working?)
 	//dropper, maybe dispenser if its not too difficult (working w/ inventory gui)
@@ -116,6 +126,7 @@ public interface SpecialBoatRules {
 	//bed (set spawn? or maybe just differnet pose while riding? idk)
 	
 	static @NotNull SpecialBoatRules get(@NotNull BlockState state) {
+		//chests and containers
 		if(state.is(Blocks.BARREL)) return new SpecialBarrelRules();
 		if(state.is(Blocks.CHEST)) return new SpecialChestRules();
 		if(state.is(Blocks.ENDER_CHEST)) return new SpecialEnderChestRules();
@@ -148,6 +159,10 @@ public interface SpecialBoatRules {
 			return new SpecialDoorRules(SoundEvents.WOODEN_TRAPDOOR_OPEN, SoundEvents.IRON_TRAPDOOR_OPEN, SoundEvents.WOODEN_TRAPDOOR_CLOSE, SoundEvents.IRON_TRAPDOOR_CLOSE);
 		if(state.is(BlockTags.FENCE_GATES))
 			return new SpecialDoorRules(SoundEvents.FENCE_GATE_OPEN, SoundEvents.FENCE_GATE_OPEN, SoundEvents.FENCE_GATE_CLOSE, SoundEvents.FENCE_GATE_CLOSE);
+		
+		//lol
+		//BEACON_BASE_BLOCKS is a decent approximation for "metal storage blocks" btw
+		if(state.is(Blocks.ANVIL) || state.is(Blocks.BEDROCK) || state.is(BlockTags.BEACON_BASE_BLOCKS)) return DEFAULT_HEAVY;
 		
 		//and everything else
 		return DEFAULT;
