@@ -3,6 +3,7 @@ package agency.highlysuspect.boatwitheverything.special;
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
@@ -37,7 +38,7 @@ public class SpecialDoorRules implements SpecialBoatRules {
 	}
 	
 	@Override
-	public InteractionResult interact(Boat boat, BoatExt ext, Player player) {
+	public InteractionResult interact(Boat boat, BoatExt ext, Player player, InteractionHand hand) {
 		BlockState state = ext.getBlockState();
 		if(state == null || !state.hasProperty(BlockStateProperties.OPEN)) return InteractionResult.PASS;
 		if(state.getMaterial() == Material.METAL) return InteractionResult.PASS;

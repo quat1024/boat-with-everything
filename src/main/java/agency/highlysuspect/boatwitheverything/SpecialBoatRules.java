@@ -5,6 +5,7 @@ import agency.highlysuspect.boatwitheverything.special.SpecialChestRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialContainerlessMenuRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialDoorRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialEnderChestRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialFlowerPotRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialLampRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialSpongeRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialTntRules;
@@ -13,6 +14,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
@@ -39,7 +41,7 @@ public interface SpecialBoatRules {
 		//no-op by default
 	}
 	
-	default @NotNull InteractionResult interact(Boat boat, BoatExt ext, Player player) {
+	default @NotNull InteractionResult interact(Boat boat, BoatExt ext, Player player, InteractionHand hand) {
 		MenuProvider provider = getMenuProvider(boat, ext, player);
 		if(provider != null) {
 			boat.gameEvent(GameEvent.BLOCK_OPEN);
@@ -100,7 +102,6 @@ public interface SpecialBoatRules {
 	};
 	
 	//beacon (working?)
-	//flower pot (working interaction)
 	//dropper, maybe dispenser if its not too difficult (working w/ inventory gui)
 	//shulker box (working w/ animation and sound when opened)
 	//conduit? maybe
@@ -128,11 +129,19 @@ public interface SpecialBoatRules {
 		//(this one's a bit odd, see MixinItemCombinerMenu)
 		if(state.is(Blocks.SMITHING_TABLE)) return new SpecialContainerlessMenuRules(SmithingMenu::new);
 		
+		//flower momer
+		if(state.is(Blocks.FLOWER_POT)) return new SpecialFlowerPotRules.Unpotted();
+		else if(state.is(BlockTags.FLOWER_POTS)) return new SpecialFlowerPotRules.Potted();
+		
+		//banners
 		if(state.is(BlockTags.BANNERS) || state.is(BlockTags.WOOL_CARPETS)) return DEFAULT_NO_CONSUME;
 		
+		//more weird blocks
 		if(state.is(Blocks.SPONGE)) return new SpecialSpongeRules();
 		if(state.is(Blocks.TNT)) return new SpecialTntRules();
+		if(state.is(Blocks.REDSTONE_LAMP)) return new SpecialLampRules();
 		
+		//doors and the like
 		if(state.is(BlockTags.DOORS))
 			return new SpecialDoorRules(SoundEvents.WOODEN_DOOR_OPEN, SoundEvents.IRON_DOOR_OPEN, SoundEvents.WOODEN_DOOR_CLOSE, SoundEvents.IRON_DOOR_CLOSE);
 		if(state.is(BlockTags.TRAPDOORS))
@@ -140,8 +149,7 @@ public interface SpecialBoatRules {
 		if(state.is(BlockTags.FENCE_GATES))
 			return new SpecialDoorRules(SoundEvents.FENCE_GATE_OPEN, SoundEvents.FENCE_GATE_OPEN, SoundEvents.FENCE_GATE_CLOSE, SoundEvents.FENCE_GATE_CLOSE);
 		
-		if(state.is(Blocks.REDSTONE_LAMP)) return new SpecialLampRules();
-		
+		//and everything else
 		return DEFAULT;
 	}
 	
