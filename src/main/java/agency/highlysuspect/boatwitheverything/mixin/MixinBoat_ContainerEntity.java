@@ -32,29 +32,15 @@ public abstract class MixinBoat_ContainerEntity implements ContainerEntity, HasC
 	
 	// Menu //
 	
-	private final MenuProvider provider = new MenuProvider() {
-		@Override
-		public Component getDisplayName() {
-			//TODO: merge to something like SpecialBoatRules#getMenuDisplayName
-			// Also maybe this whole thing could be merged with SpecialBoatRules#getMenuProvider instead?
-			return boat().getDisplayName();
-		}
-		
-		@Nullable
-		@Override
-		public AbstractContainerMenu createMenu(int sequenceNumber, Inventory playerInventory, Player player) {
-			SpecialBoatRules rules = rules();
-			if(rules == null) return null;
-			
-			MenuProvider provider = rules.getMenuProvider(boat(), ext(), player);
-			if(provider == null) return null;
-			else return provider.createMenu(sequenceNumber, playerInventory, player);
-		}
-	};
-	
 	@Override
 	public void openCustomInventoryScreen(Player player) {
-		player.openMenu(this.provider);
+		SpecialBoatRules rules = rules();
+		if(rules == null) return;
+		
+		MenuProvider provider = rules.getMenuProvider(boat(), ext(), player);
+		if(provider == null) return;
+		
+		player.openMenu(provider);
 		if(!player.level.isClientSide) {
 			boat().gameEvent(GameEvent.BLOCK_OPEN);
 			PiglinAi.angerNearbyPiglins(player, true); //i suppose
