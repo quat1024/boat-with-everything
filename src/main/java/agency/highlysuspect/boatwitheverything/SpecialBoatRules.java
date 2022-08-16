@@ -2,6 +2,7 @@ package agency.highlysuspect.boatwitheverything;
 
 import agency.highlysuspect.boatwitheverything.special.SpecialBarrelRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialChestRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialConcretePowderRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialContainerlessMenuRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialDoorRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialEnderChestRules;
@@ -27,6 +28,7 @@ import net.minecraft.world.inventory.LoomMenu;
 import net.minecraft.world.inventory.SmithingMenu;
 import net.minecraft.world.inventory.StonecutterMenu;
 import net.minecraft.world.level.block.Blocks;
+import net.minecraft.world.level.block.ConcretePowderBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
@@ -143,6 +145,9 @@ public interface SpecialBoatRules {
 		//flower momer
 		if(state.is(Blocks.FLOWER_POT)) return new SpecialFlowerPotRules.Unpotted();
 		else if(state.is(BlockTags.FLOWER_POTS)) return new SpecialFlowerPotRules.Potted();
+		
+		//conk crete (no block tag Smh)
+		if(state.getBlock() instanceof ConcretePowderBlock) return new SpecialConcretePowderRules();
 		
 		//banners
 		if(state.is(BlockTags.BANNERS) || state.is(BlockTags.WOOL_CARPETS)) return DEFAULT_NO_CONSUME;

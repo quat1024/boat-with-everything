@@ -14,6 +14,7 @@ import net.minecraft.world.entity.vehicle.ChestBoat;
 import net.minecraft.world.item.BlockItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
+import net.minecraft.world.level.block.ConcretePowderBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
@@ -88,7 +89,10 @@ public class BoatWithEverything {
 			player.setYHeadRot(relativeDirection); //used by #getNearestLookingDirection but only on the server lol
 			player.yRotO = relativeDirection; //idk cant hurt ?
 			
-			BlockState state = bi.getBlock().getStateForPlacement(new BlockPlaceContext(
+			//Owo what's this? A leaky abstraction? Never seen that in this mod before
+			BlockState state;
+			if(bi.getBlock() instanceof ConcretePowderBlock) state = bi.getBlock().defaultBlockState();
+			else state = bi.getBlock().getStateForPlacement(new BlockPlaceContext(
 				player, hand, stack, 
 				new BlockHitResult(boat.position(), Direction.UP, boat.blockPosition(), true)
 			));

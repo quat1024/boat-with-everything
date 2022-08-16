@@ -4,6 +4,7 @@
   "package": "agency.highlysuspect.boatwitheverything.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+		"AccessorConcretePowderBlock",
 		"AccessorFlowerPotBlock",
 		"AccessorSimpleContainer",
 		"AccessorSpongeBlock",
