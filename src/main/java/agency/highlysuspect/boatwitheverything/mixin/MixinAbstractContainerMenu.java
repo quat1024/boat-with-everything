@@ -1,6 +1,6 @@
 package agency.highlysuspect.boatwitheverything.mixin;
 
-import agency.highlysuspect.boatwitheverything.special.WeirdBoatContainerLevelAccess;
+import agency.highlysuspect.boatwitheverything.special.SpecialContainerlessMenuRules;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -16,7 +16,7 @@ import java.util.function.Predicate;
 public class MixinAbstractContainerMenu {
 	@Inject(method = "stillValid(Lnet/minecraft/world/inventory/ContainerLevelAccess;Lnet/minecraft/world/entity/player/Player;Lnet/minecraft/world/level/block/Block;)Z", at = @At("HEAD"), cancellable = true)
 	private static void whenCheckingStillValid(ContainerLevelAccess containerLevelAccess, Player player, Block block, CallbackInfoReturnable<Boolean> cir) {
-		if(containerLevelAccess instanceof WeirdBoatContainerLevelAccess weird) {
+		if(containerLevelAccess instanceof SpecialContainerlessMenuRules.WeirdBoatContainerLevelAccess weird) {
 			cir.setReturnValue(weird.stillValid(player, Predicate.isEqual(block)));
 		}
 	}

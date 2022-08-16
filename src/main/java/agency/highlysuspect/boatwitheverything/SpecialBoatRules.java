@@ -1,32 +1,31 @@
 package agency.highlysuspect.boatwitheverything;
 
 import agency.highlysuspect.boatwitheverything.special.SpecialBarrelRules;
-import agency.highlysuspect.boatwitheverything.special.SpecialCartographyTableRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialChestRules;
-import agency.highlysuspect.boatwitheverything.special.SpecialCraftingTableRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialContainerlessMenuRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialDoorRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialEnderChestRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialLampRules;
-import agency.highlysuspect.boatwitheverything.special.SpecialLoomRules;
-import agency.highlysuspect.boatwitheverything.special.SpecialSmithingTableRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialSpongeRules;
-import agency.highlysuspect.boatwitheverything.special.SpecialStonecutterRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialTntRules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
-import net.minecraft.world.Container;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.inventory.AbstractContainerMenu;
+import net.minecraft.world.inventory.CartographyTableMenu;
+import net.minecraft.world.inventory.CraftingMenu;
+import net.minecraft.world.inventory.LoomMenu;
+import net.minecraft.world.inventory.SmithingMenu;
+import net.minecraft.world.inventory.StonecutterMenu;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
@@ -110,7 +109,7 @@ public interface SpecialBoatRules {
 	//campfire, soul campfire (particles, maybe cook food)
 	//lectern (other people can click to see the book lol)
 	//torch, glowstone, soul torch, etc (light source that follows you around)
-	//furnace, smoker, blastfurnace (working, speed boost the boat when list)
+	//furnace, smoker, blastfurnace (working, speed boost the boat when lit)
 	//grindstone (gui)
 	//anvil (gui, needs haxx to avoid spawning an anvil block on damaging)
 	//bed (set spawn? or maybe just differnet pose while riding? idk)
@@ -119,11 +118,15 @@ public interface SpecialBoatRules {
 		if(state.is(Blocks.BARREL)) return new SpecialBarrelRules();
 		if(state.is(Blocks.CHEST)) return new SpecialChestRules();
 		if(state.is(Blocks.ENDER_CHEST)) return new SpecialEnderChestRules();
-		if(state.is(Blocks.LOOM)) return new SpecialLoomRules();
-		if(state.is(Blocks.SMITHING_TABLE)) return new SpecialSmithingTableRules();
-		if(state.is(Blocks.CARTOGRAPHY_TABLE)) return new SpecialCartographyTableRules();
-		if(state.is(Blocks.STONECUTTER)) return new SpecialStonecutterRules();
-		if(state.is(Blocks.CRAFTING_TABLE)) return new SpecialCraftingTableRules();
+		
+		//fairly basic guis that can simply be opened server client side with not much extra work
+		//make sure to check that the boat ContainerLevelAccess can actually work safely for this gui (e.g. no setBlockState)
+		if(state.is(Blocks.LOOM)) return new SpecialContainerlessMenuRules(LoomMenu::new);
+		if(state.is(Blocks.CARTOGRAPHY_TABLE)) return new SpecialContainerlessMenuRules(CartographyTableMenu::new);
+		if(state.is(Blocks.STONECUTTER)) return new SpecialContainerlessMenuRules(StonecutterMenu::new);
+		if(state.is(Blocks.CRAFTING_TABLE)) return new SpecialContainerlessMenuRules(CraftingMenu::new);
+		//(this one's a bit odd, see MixinItemCombinerMenu)
+		if(state.is(Blocks.SMITHING_TABLE)) return new SpecialContainerlessMenuRules(SmithingMenu::new);
 		
 		if(state.is(BlockTags.BANNERS) || state.is(BlockTags.WOOL_CARPETS)) return DEFAULT_NO_CONSUME;
 		

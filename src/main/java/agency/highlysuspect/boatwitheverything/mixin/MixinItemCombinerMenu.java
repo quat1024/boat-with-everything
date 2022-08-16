@@ -1,6 +1,6 @@
 package agency.highlysuspect.boatwitheverything.mixin;
 
-import agency.highlysuspect.boatwitheverything.special.WeirdBoatContainerLevelAccess;
+import agency.highlysuspect.boatwitheverything.special.SpecialContainerlessMenuRules;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AnvilMenu;
@@ -25,7 +25,7 @@ public class MixinItemCombinerMenu {
 	
 	@Inject(method = "stillValid", at = @At("HEAD"), cancellable = true)
 	private void whenCheckingStillValid(Player player, CallbackInfoReturnable<Boolean> cir) {
-		if(access instanceof WeirdBoatContainerLevelAccess weird) {
+		if(access instanceof SpecialContainerlessMenuRules.WeirdBoatContainerLevelAccess weird) {
 			Predicate<Block> blockPred;
 			if(((Object) this) instanceof SmithingMenu) blockPred = Predicate.isEqual(Blocks.SMITHING_TABLE);
 			else if(((Object) this) instanceof AnvilMenu) blockPred = b -> b.defaultBlockState().is(BlockTags.ANVIL);
