@@ -35,9 +35,15 @@ public class BoatWithEverything {
 	public static boolean hurt(Boat boat, BoatExt ext, DamageSource source) {
 		if(!ext.hasBlockState()) return false;
 		
+		SpecialBoatRules rules = ext.getRules();
+		if(rules != null) {
+			boolean handled = rules.hurt(boat, ext, source);
+			if(handled) return true;
+		}
+		
 		//return the item that was used to place the block in the boat
 		ItemStack stackInBoat = ext.getItemStack().copy();
-		@Nullable Player player = source.getEntity() instanceof Player p ? p : null;
+		@Nullable Player player = source.getDirectEntity() instanceof Player p ? p : null;
 		if(player == null || !player.addItem(stackInBoat)) {
 			boat.spawnAtLocation(stackInBoat, boat.getBbHeight());
 		}

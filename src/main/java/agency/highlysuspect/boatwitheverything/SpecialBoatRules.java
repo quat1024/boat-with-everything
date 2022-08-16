@@ -18,6 +18,7 @@ import net.minecraft.tags.BlockTags;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
@@ -54,6 +55,11 @@ public interface SpecialBoatRules {
 			player.openMenu(provider);
 		}
 		return InteractionResult.SUCCESS;
+	}
+	
+	//returning true will cancel further vanilla damage handling
+	default boolean hurt(Boat boat, BoatExt ext, DamageSource source) {
+		return false;
 	}
 	
 	// additional data //
