@@ -16,10 +16,12 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.BlockTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.MenuProvider;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
@@ -30,10 +32,13 @@ import net.minecraft.world.inventory.GrindstoneMenu;
 import net.minecraft.world.inventory.LoomMenu;
 import net.minecraft.world.inventory.SmithingMenu;
 import net.minecraft.world.inventory.StonecutterMenu;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.ConcretePowderBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -183,6 +188,17 @@ public interface SpecialBoatRules {
 	}
 	
 	static boolean isPowered(Boat boat) {
+		for(Entity ent : boat.getPassengers()) {
+			if(!(ent instanceof Player player)) continue;
+			for(ItemStack held : player.getHandSlots()) if(held.getItem() == Items.REDSTONE_TORCH || held.getItem() == Items.REDSTONE_BLOCK) return true;
+		}
+		
 		return BlockPos.betweenClosedStream(boat.getBoundingBox()).anyMatch(pos -> boat.level.hasNeighborSignal(pos));
+	}
+	
+	static Vec3 positionOfBlock(Boat boat) {
+		//Just vibes man idk why the magic numbers are there but it be like that
+		double yaw = Math.toRadians(boat.getYRot() - 90);
+		return boat.position().add(new Vec3(Math.cos(yaw), 2/16d, Math.sin(yaw)).scale(15/32d));
 	}
 }

@@ -223,7 +223,6 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	private void whenFloating(CallbackInfo ci) {
 		if(heavy) {
 			status = oldStatus = Boat.Status.UNDER_WATER;
-			if(outOfControlTicks < 60f) outOfControlTicks = 60f;
 		}
 	}
 	

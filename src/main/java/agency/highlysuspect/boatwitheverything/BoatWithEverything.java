@@ -16,6 +16,7 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.ConcretePowderBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -87,7 +88,7 @@ public class BoatWithEverything {
 			ext.setBlockState(placementState);
 			ext.setItemStack(player.getItemInHand(hand).split(1));
 			
-			boat.playSound(SoundEvents.ITEM_FRAME_ADD_ITEM); //todo caption
+			boat.playSound(placementState.getSoundType().getPlaceSound());
 			
 			return InteractionResult.SUCCESS;
 		}

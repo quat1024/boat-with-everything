@@ -2,10 +2,16 @@ package agency.highlysuspect.boatwitheverything.special;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.Entity;
+import net.minecraft.world.entity.item.PrimedTnt;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.block.TntBlock;
+import net.minecraft.world.level.gameevent.GameEvent;
+import net.minecraft.world.phys.Vec3;
 
 public class SpecialTntRules implements SpecialBoatRules {
 	@Override
@@ -25,6 +31,12 @@ public class SpecialTntRules implements SpecialBoatRules {
 	private void kaboom(Boat boat, BoatExt ext) {
 		ext.clearBlockState();
 		ext.clearItemStack();
-		TntBlock.explode(boat.level, boat.blockPosition());
+		
+		//TntBlock.explode(boat.level, boat.blockPosition());
+		Vec3 pos = SpecialBoatRules.positionOfBlock(boat);
+		PrimedTnt primedTnt = new PrimedTnt(boat.level, pos.x, pos.y, pos.z, null);
+		boat.level.addFreshEntity(primedTnt);
+		boat.level.playSound(null, primedTnt.getX(), primedTnt.getY(), primedTnt.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0f, 1.0f);
+		boat.level.gameEvent(boat, GameEvent.PRIME_FUSE, pos);
 	}
 }

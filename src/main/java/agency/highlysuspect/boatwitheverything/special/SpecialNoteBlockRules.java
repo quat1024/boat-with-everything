@@ -3,6 +3,7 @@ package agency.highlysuspect.boatwitheverything.special;
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.HackyEntityUpdateIds;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
+import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -13,6 +14,7 @@ import net.minecraft.world.level.block.NoteBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public class SpecialNoteBlockRules implements SpecialBoatRules {
@@ -24,7 +26,11 @@ public class SpecialNoteBlockRules implements SpecialBoatRules {
 			!state.hasProperty(BlockStateProperties.NOTEBLOCK_INSTRUMENT)) return;
 		
 		NoteBlockInstrument currentInst = state.getValue(BlockStateProperties.NOTEBLOCK_INSTRUMENT);
-		NoteBlockInstrument worldInst = NoteBlockInstrument.byState(boat.level.getBlockState(boat.blockPosition().below()));
+		
+		Vec3 wha = SpecialBoatRules.positionOfBlock(boat);
+		BlockPos huh = new BlockPos(wha).below();
+		
+		NoteBlockInstrument worldInst = NoteBlockInstrument.byState(boat.level.getBlockState(huh));
 		if(currentInst != worldInst) {
 			state = state.setValue(BlockStateProperties.NOTEBLOCK_INSTRUMENT, worldInst);
 			ext.setBlockState(state);
@@ -64,7 +70,9 @@ public class SpecialNoteBlockRules implements SpecialBoatRules {
 		//TODO: note particle comes from the offset position of the note block
 		int note = state.getValue(BlockStateProperties.NOTE);
 		float pitch = (float) Math.pow(2, (note - 12) / 12f);
-		boat.level.playLocalSound(boat.getX(), boat.getY(), boat.getZ(), state.getValue(BlockStateProperties.NOTEBLOCK_INSTRUMENT).getSoundEvent(), SoundSource.RECORDS, 3f, pitch, false);
-		boat.level.addParticle(ParticleTypes.NOTE, boat.getX(), boat.getY() + 1, boat.getZ(), note / 24d, 0, 0);
+		
+		Vec3 pos = SpecialBoatRules.positionOfBlock(boat);
+		boat.level.playLocalSound(pos.x, pos.y, pos.z, state.getValue(BlockStateProperties.NOTEBLOCK_INSTRUMENT).getSoundEvent(), SoundSource.RECORDS, 3f, pitch, false);
+		boat.level.addParticle(ParticleTypes.NOTE, pos.x, pos.y + 1, pos.z, note / 24d, 0, 0);
 	}
 }
