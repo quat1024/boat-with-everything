@@ -4,6 +4,7 @@ import agency.highlysuspect.boatwitheverything.BoatDuck;
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.BoatWithEverything;
 import agency.highlysuspect.boatwitheverything.ContainerExt;
+import agency.highlysuspect.boatwitheverything.HackyEntityUpdateIds;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
 import agency.highlysuspect.boatwitheverything.cosmetic.ChestLidRenderData;
 import agency.highlysuspect.boatwitheverything.cosmetic.RenderData;
@@ -65,7 +66,12 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	
 	@Unique private RenderData renderAttachmentData; //SpecialBoatRenderers can squirrel away data that persists from frame-to-frame here
 	
+	//set from the specialboatrules when it is carrying a heavy object
 	@Unique private boolean heavy = false;
+	
+	//timer that's set when you fill the boat with water, forcing it to sink
+	//only set for a couple seconds b/c once the boat passes the surface for real, vanilla "boat underwater" logic will take over
+	@Unique private int forceSink = 0;
 	
 	@Inject(method = "defineSynchedData", at = @At("RETURN"))
 	protected void whenDefiningSynchedData(CallbackInfo ci) {
@@ -162,6 +168,17 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		public boolean isLocked() {
 			return boat().getEntityData().get(DATA_ID_LOCKED);
 		}
+		
+		@Override
+		public void clickWithWaterBucket() {
+			setForceSink();
+			level.broadcastEntityEvent(boat(), HackyEntityUpdateIds.FILL_BOAT_WITH_WATER_LOL); //so other clients get it
+		}
+		
+		@Override
+		public void setForceSink() {
+			forceSink = 40;
+		}
 	};
 	
 	// interactions //
@@ -203,7 +220,6 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	
 	@Shadow private Boat.Status status;
 	@Shadow private Boat.Status oldStatus;
-	@Shadow private float outOfControlTicks;
 	
 	@Inject(method = "tick", at = @At("RETURN"))
 	public void whenTicking(CallbackInfo ci) {
@@ -215,13 +231,16 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 			heavy = false;
 		}
 		
+		if(forceSink > 0) forceSink--;
+		
 		if(boat().level.isClientSide && renderAttachmentData != null) renderAttachmentData.tick(boat(), ext);
 	}
 	
 	//force the boat underwater if it is carrying a heavy object
 	@Inject(method = "floatBoat", at = @At("HEAD"))
 	private void whenFloating(CallbackInfo ci) {
-		if(heavy) {
+		//setting the status at the start of this method influences which way this code will push the boat
+		if(heavy || forceSink > 0) {
 			status = oldStatus = Boat.Status.UNDER_WATER;
 		}
 	}
@@ -229,8 +248,15 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	@Inject(method = "floatBoat", at = @At("RETURN"))
 	private void ohComeOnItNeedsToFallFasterThanThat(CallbackInfo ci) {
 		if(heavy && getDeltaMovement().y < 0) {
-			setDeltaMovement(getDeltaMovement().add(0, -0.1f, 0));
+			setDeltaMovement(getDeltaMovement().add(0, -0.15f, 0));
 		}
+	}
+	
+	//BoatRenderer checks isUnderWater when doing rendering.
+	//This method is not to be confused with "isUnderwater", which actually checks for water blocks above the boat lmao
+	@Inject(method = "isUnderWater", at = @At("HEAD"), cancellable = true)
+	private void whenCheckingUnderWater(CallbackInfoReturnable<Boolean> cir) {
+		if(forceSink > 0) cir.setReturnValue(true);
 	}
 	
 	// saving and loading //

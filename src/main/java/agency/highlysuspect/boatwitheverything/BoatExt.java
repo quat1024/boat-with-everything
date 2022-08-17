@@ -46,4 +46,7 @@ public interface BoatExt {
 	void setRenderAttachmentData(RenderData whatever);
 	
 	boolean isLocked();
+	
+	void clickWithWaterBucket();
+	void setForceSink();
 }

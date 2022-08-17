@@ -21,8 +21,15 @@ public class MixinEntity_HackyBoatUpdates {
 		
 		if(((Entity) (Object) this) instanceof Boat boat) {
 			BoatExt ext = ((BoatDuck) this).bwe$getExt();
+			
+			if(event == HackyEntityUpdateIds.FILL_BOAT_WITH_WATER_LOL) {
+				ext.setForceSink();
+				return;
+			}
+			
 			if(ext.getRenderAttachmentData() instanceof ChestLidRenderData lid) {
 				lid.setShouldBeOpen(event == HackyEntityUpdateIds.OPEN_CHEST);
+				return;
 			}
 			
 			if(ext.getRules() instanceof SpecialNoteBlockRules dootDoot) {

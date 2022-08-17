@@ -60,7 +60,7 @@ public class SpecialFlowerPotRules {
 			Block heldBlock = bi.getBlock();
 			
 			//check that there is a corresponding flowerpot block for that block
-			Block resultBlock = afpb.bwe$getPottedByContent().get(heldBlock);
+			Block resultBlock = AccessorFlowerPotBlock.bwe$getPottedByContent().get(heldBlock);
 			if(resultBlock == null) return InteractionResult.PASS;
 			
 			//done! place the item in the boat

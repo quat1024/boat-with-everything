@@ -9,6 +9,8 @@ import java.util.Map;
 
 @Mixin(FlowerPotBlock.class)
 public interface AccessorFlowerPotBlock {
-	@Accessor("POTTED_BY_CONTENT") Map<Block, Block> bwe$getPottedByContent();
+	@Accessor("POTTED_BY_CONTENT") static Map<Block, Block> bwe$getPottedByContent() {
+		throw new IllegalStateException("mixin poot");
+	}
 	@Accessor("content") Block bwe$content();
 }

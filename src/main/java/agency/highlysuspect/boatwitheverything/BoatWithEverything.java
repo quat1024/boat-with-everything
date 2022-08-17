@@ -3,6 +3,7 @@ package agency.highlysuspect.boatwitheverything;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -11,7 +12,9 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.entity.vehicle.ChestBoat;
 import net.minecraft.world.item.BlockItem;
+import net.minecraft.world.item.BucketItem;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.ConcretePowderBlock;
 import net.minecraft.world.level.block.state.BlockState;
@@ -76,17 +79,25 @@ public class BoatWithEverything {
 		}
 		
 		boolean locked = ext.isLocked() && !player.getAbilities().instabuild;
+		ItemStack held = player.getItemInHand(hand);
+		
+		if(locked || !player.mayInteract(boat.level, boat.blockPosition()) || !player.mayUseItemAt(boat.blockPosition(), Direction.UP, held)) {
+			return InteractionResult.PASS;
+		}
+		
+		if(held.getItem() == Items.WATER_BUCKET) {
+			ext.clickWithWaterBucket();
+			
+			player.setItemInHand(hand, BucketItem.getEmptySuccessItem(held, player));
+			boat.level.playSound(player, boat, SoundEvents.BUCKET_EMPTY, SoundSource.BLOCKS, 1, 1);
+			return InteractionResult.SUCCESS;
+		}
 		
 		//If there's no blockstate, add it to the boat
 		BlockState placementState;
-		if(!locked &&
-			player.mayInteract(boat.level, boat.blockPosition()) &&
-			player.mayUseItemAt(boat.blockPosition(), Direction.UP, player.getItemInHand(hand)) &&
-			(placementState = getPlacementStateInsideBoat(player, boat, hand)) != null &&
-			canAddBlockState(boat, ext, placementState))
-		{
+		if((placementState = getPlacementStateInsideBoat(player, boat, hand)) != null && canAddBlockState(boat, ext, placementState)) {
 			ext.setBlockState(placementState);
-			ext.setItemStack(player.getItemInHand(hand).split(1));
+			ext.setItemStack(held.split(1));
 			
 			boat.playSound(placementState.getSoundType().getPlaceSound());
 			
