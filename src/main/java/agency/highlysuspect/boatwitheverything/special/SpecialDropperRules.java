@@ -66,12 +66,16 @@ public class SpecialDropperRules implements SpecialBoatRules {
 			Direction facing = state.getValue(BlockStateProperties.FACING);
 			boolean vertical = facing.getAxis() == Direction.Axis.Y;
 			
+			Vec3 dropperPos = SpecialBoatRules.positionOfBlock(boat).add(0, 0.5, 0); //cause it returns the bottom-center
+			
 			int slot = getRandomSlot(boat.level.getRandom());
 			ItemStack stackInSlot = getItem(slot); //safely handles the -1 case
-			if(stackInSlot.isEmpty()) return;
+			if(stackInSlot.isEmpty()) {
+				boat.level.playSound(null, dropperPos.x, dropperPos.y, dropperPos.z, SoundEvents.DISPENSER_FAIL, SoundSource.BLOCKS, 1f, 1.2f);
+				return;
+			}
 			
 			//First, if there is a container, try putting the item in the container
-			Vec3 dropperPos = SpecialBoatRules.positionOfBlock(boat).add(0, 0.5, 0); //cause it returns the bottom-center
 			Vec3 dropperNormal;
 			if(vertical) dropperNormal = new Vec3(0, facing.getStepY(), 0);
 			else {
@@ -93,29 +97,27 @@ public class SpecialDropperRules implements SpecialBoatRules {
 				ItemStack toDrop = stackInSlot.split(1);
 				leftover = stackInSlot;
 				//now looking at DefaultDispenseItemBehavior
-				Vec3 itemStartPos = dropperPos.add(dropperNormal.scale(0.6)).add(0, 0, 0); //move up so the item doesnt glitch into the boat
+				Vec3 itemStartPos = dropperPos.add(dropperNormal.scale(0.6));
 				ItemEntity ent = new ItemEntity(boat.level, itemStartPos.x, itemStartPos.y, itemStartPos.z, toDrop);
 				
-				//figure out its velocity
-				double g = boat.level.getRandom().nextDouble() * 0.1 + 0.2;
-				double spread = 0.103365; //0.0172275 * 6
 				
+				//Two perpendicular vectors that form a coordinate plane parallel to the front face of the dropper.
+				//For example, if the dropper was facing upwards, these would be the X and Z axes.
 				Vec3 dropperTangent = new Vec3(vertical ? 1 : 0, vertical ? 0 : 1, 0);
 				Vec3 dropperBitangent = dropperNormal.cross(dropperTangent);
 				
-				//This isn't quite "vanilla dropper code but non-axis-aligned", but it looks pretty okay?
+				//Figure out its velocity.
+				//This isn't quite "vanilla dropper code mathed to be non-axis-aligned", but it looks pretty okay?
 				//I fudged the numbers until it looked similar to a vanilla dropper idk didnt think too hard. Its late
+				double g = boat.level.getRandom().nextDouble() * 0.1 + 0.2;
+				double spread = 0.103365; //0.0172275 * 6
 				Vec3 result = dropperNormal.scale(boat.level.getRandom().triangle(g * 1.8, spread * 1.2));
 				result = result.add(dropperTangent.scale(boat.level.getRandom().triangle(0, spread * 1.4)));
 				result = result.add(dropperBitangent.scale(boat.level.getRandom().triangle(0, spread * 1.4)));
 				
 				ent.setDeltaMovement(result.x, result.y, result.z);
 				boat.level.addFreshEntity(ent);
-				boat.level.playSound(null, itemStartPos.x, itemStartPos.y, itemStartPos.z, SoundEvents.DISPENSER_DISPENSE, SoundSource.BLOCKS, 1f, 1f);
-				//itemEntity.setDeltaMovement(
-				// level.random.triangle((double)direction.getStepX() * g, 0.0172275 * 6),
-				// level.random.triangle(0.2, 0.0172275 * 6),
-				// level.random.triangle((double)direction.getStepZ() * g, 0.0172275 * 6));
+				boat.level.playSound(null, dropperPos.x, dropperPos.y, dropperPos.z, SoundEvents.DISPENSER_DISPENSE, SoundSource.BLOCKS, 1f, 1f);
 			}
 			
 			setItem(slot, leftover);
