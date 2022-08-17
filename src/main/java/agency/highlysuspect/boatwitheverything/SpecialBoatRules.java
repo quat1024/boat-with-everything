@@ -5,6 +5,7 @@ import agency.highlysuspect.boatwitheverything.special.SpecialChestRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialConcretePowderRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialContainerlessMenuRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialDoorRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialDropperRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialEnderChestRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialFlowerPotRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialLampRules;
@@ -144,6 +145,7 @@ public interface SpecialBoatRules {
 		if(state.is(Blocks.BARREL)) return new SpecialBarrelRules();
 		if(state.is(Blocks.CHEST)) return new SpecialChestRules();
 		if(state.is(Blocks.ENDER_CHEST)) return new SpecialEnderChestRules();
+		if(state.is(Blocks.DROPPER)) return new SpecialDropperRules();
 		
 		//fairly basic guis that can simply be opened server client side with not much extra work
 		//make sure to check that the boat ContainerLevelAccess can actually work safely for this gui (e.g. no setBlockState)

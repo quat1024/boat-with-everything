@@ -48,8 +48,6 @@ import java.util.Optional;
 public abstract class MixinBoat extends Entity implements BoatDuck {
 	// mixin gunk //
 	
-	@Shadow public abstract boolean isUnderWater();
-	
 	public MixinBoat(EntityType<?> entityType, Level level) {
 		super(entityType, level);
 	}
@@ -252,7 +250,7 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		}
 	}
 	
-	//BoatRenderer checks isUnderWater when doing rendering.
+	//BoatRenderer checks isUnderWater when doing rendering, if it's true it doesn't draw the water-mask rect.
 	//This method is not to be confused with "isUnderwater", which actually checks for water blocks above the boat lmao
 	@Inject(method = "isUnderWater", at = @At("HEAD"), cancellable = true)
 	private void whenCheckingUnderWater(CallbackInfoReturnable<Boolean> cir) {

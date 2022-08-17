@@ -19,7 +19,6 @@ import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.ConcretePowderBlock;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,6 +29,9 @@ public class BoatWithEverything {
 	public BoatWithEverything() {
 		//todo put init stuff here if it crops up
 	}
+	
+	//see MixinHopperBlockEntity and yes, its not pretty
+	public static ThreadLocal<Boat> HOPPER_SKIP_THIS_BOAT_PLEASE = ThreadLocal.withInitial(() -> null);
 	
 	public static ResourceLocation id(String path) {
 		return new ResourceLocation(MODID, path);
