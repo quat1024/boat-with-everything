@@ -7,6 +7,8 @@ import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
 import agency.highlysuspect.boatwitheverything.mixin.AccessorHopperBlockEntity;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
@@ -73,7 +75,7 @@ public class SpecialDropperRules implements SpecialBoatRules {
 			Vec3 dropperNormal;
 			if(vertical) dropperNormal = new Vec3(0, facing.getStepY(), 0);
 			else {
-				float dropperYRot = (boat.getYRot() + facing.toYRot()) * Mth.DEG_TO_RAD;
+				float dropperYRot = (boat.getYRot() + facing.toYRot() + 90) * Mth.DEG_TO_RAD;
 				dropperNormal = new Vec3(Mth.cos(dropperYRot), 0, Mth.sin(dropperYRot));
 			}
 			
@@ -91,22 +93,25 @@ public class SpecialDropperRules implements SpecialBoatRules {
 				ItemStack toDrop = stackInSlot.split(1);
 				leftover = stackInSlot;
 				//now looking at DefaultDispenseItemBehavior
-				Vec3 itemStartPos = dropperPos.add(dropperNormal.scale(1)).add(0, vertical ? -0.125 : -0.15625, 0); //hey, wasn't my idea
+				Vec3 itemStartPos = dropperPos.add(dropperNormal.scale(0.6)).add(0, 0, 0); //move up so the item doesnt glitch into the boat
 				ItemEntity ent = new ItemEntity(boat.level, itemStartPos.x, itemStartPos.y, itemStartPos.z, toDrop);
 				
 				//figure out its velocity
 				double g = boat.level.getRandom().nextDouble() * 0.1 + 0.2;
 				double spread = 0.103365; //0.0172275 * 6
+				
 				Vec3 dropperTangent = new Vec3(vertical ? 1 : 0, vertical ? 0 : 1, 0);
 				Vec3 dropperBitangent = dropperNormal.cross(dropperTangent);
-				Vec3 result =
-					dropperNormal.scale(boat.level.getRandom().triangle(g, spread)).add(
-						dropperTangent.scale(boat.level.getRandom().triangle(0.2, spread)).add(
-							dropperBitangent.scale(boat.level.getRandom().triangle(g, spread))
-						)
-					);
+				
+				//This isn't quite "vanilla dropper code but non-axis-aligned", but it looks pretty okay?
+				//I fudged the numbers until it looked similar to a vanilla dropper idk didnt think too hard. Its late
+				Vec3 result = dropperNormal.scale(boat.level.getRandom().triangle(g * 1.8, spread * 1.2));
+				result = result.add(dropperTangent.scale(boat.level.getRandom().triangle(0, spread * 1.4)));
+				result = result.add(dropperBitangent.scale(boat.level.getRandom().triangle(0, spread * 1.4)));
+				
 				ent.setDeltaMovement(result.x, result.y, result.z);
 				boat.level.addFreshEntity(ent);
+				boat.level.playSound(null, itemStartPos.x, itemStartPos.y, itemStartPos.z, SoundEvents.DISPENSER_DISPENSE, SoundSource.BLOCKS, 1f, 1f);
 				//itemEntity.setDeltaMovement(
 				// level.random.triangle((double)direction.getStepX() * g, 0.0172275 * 6),
 				// level.random.triangle(0.2, 0.0172275 * 6),
