@@ -1,6 +1,6 @@
 # Boat with Everything
 
-Ok, the game has boats with chests now. Cute. But I want to put more blocks in my boat
+An exercise in how far you have to take a joke before it starts being funny.
 
 ## Inspiration
 

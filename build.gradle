@@ -1,6 +1,5 @@
 plugins {
 	id 'fabric-loom' version '0.12-SNAPSHOT'
-	id 'maven-publish'
 }
 
 java {
@@ -11,9 +10,16 @@ java {
 }
 
 repositories {
+	//ModMenu, just for runtime
 	maven {
 		url = "https://maven.terraformersmc.com"
 		content { includeGroup("com.terraformersmc") }
+	}
+	
+	//Lucium, just for runtime
+	maven {
+		url = "https://repo.sleeping.town"
+		content { includeGroup("com.unascribed") }
 	}
 }
 
@@ -21,10 +27,12 @@ dependencies {
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
 	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	
-	modRuntimeOnly "com.terraformersmc:modmenu:4.0.6"
+	// Lets make the dev workspace epic
+	modLocalRuntime "com.terraformersmc:modmenu:4.0.6"
+	modLocalRuntime "com.unascribed:lucium:1.1"
 }
 
 processResources {
