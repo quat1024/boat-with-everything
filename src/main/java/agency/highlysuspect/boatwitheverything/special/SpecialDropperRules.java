@@ -98,8 +98,8 @@ public class SpecialDropperRules implements SpecialBoatRules {
 				leftover = stackInSlot;
 				//now looking at DefaultDispenseItemBehavior
 				Vec3 itemStartPos = dropperPos.add(dropperNormal.scale(0.6));
+				if(!vertical) itemStartPos = itemStartPos.add(0, 0.3, 0); //Please stop glitching into the boat, thanks
 				ItemEntity ent = new ItemEntity(boat.level, itemStartPos.x, itemStartPos.y, itemStartPos.z, toDrop);
-				
 				
 				//Two perpendicular vectors that form a coordinate plane parallel to the front face of the dropper.
 				//For example, if the dropper was facing upwards, these would be the X and Z axes.
@@ -116,6 +116,7 @@ public class SpecialDropperRules implements SpecialBoatRules {
 				result = result.add(dropperBitangent.scale(boat.level.getRandom().triangle(0, spread * 1.4)));
 				
 				ent.setDeltaMovement(result.x, result.y, result.z);
+				ent.setPickUpDelay(10);
 				boat.level.addFreshEntity(ent);
 				boat.level.playSound(null, dropperPos.x, dropperPos.y, dropperPos.z, SoundEvents.DISPENSER_DISPENSE, SoundSource.BLOCKS, 1f, 1f);
 			}
