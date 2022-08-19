@@ -6,6 +6,8 @@ import agency.highlysuspect.boatwitheverything.BoatWithEverything;
 import agency.highlysuspect.boatwitheverything.ContainerExt;
 import agency.highlysuspect.boatwitheverything.HackyEntityUpdateIds;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
+import agency.highlysuspect.boatwitheverything.block.BoatLightBlock;
+import agency.highlysuspect.boatwitheverything.block.BoatLightBlockEntity;
 import agency.highlysuspect.boatwitheverything.cosmetic.ChestLidRenderData;
 import agency.highlysuspect.boatwitheverything.cosmetic.RenderData;
 import net.minecraft.core.BlockPos;
@@ -25,6 +27,7 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.material.Fluid;
@@ -183,7 +186,7 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	
 	@Inject(method = "interact", at = @At("HEAD"), cancellable = true)
 	public void whenInteracting(Player player, InteractionHand hand, CallbackInfoReturnable<InteractionResult> cir) {
-		InteractionResult result = BoatWithEverything.interact(boat(), ext, player, hand);
+		InteractionResult result = BoatWithEverything.INSTANCE.interact(boat(), ext, player, hand);
 		if(result != InteractionResult.PASS) cir.setReturnValue(result);
 	}
 	
@@ -193,7 +196,7 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		target = "Lnet/minecraft/world/entity/vehicle/Boat;setHurtDir(I)V"
 	), cancellable = true)
 	public void whenHurting(DamageSource src, float amount, CallbackInfoReturnable<Boolean> cir) {
-		if(BoatWithEverything.hurt(boat(), ext, src)) cir.setReturnValue(false);
+		if(BoatWithEverything.INSTANCE.hurt(boat(), ext, src)) cir.setReturnValue(false);
 	}
 	
 	@Inject(method = "destroy", at = @At("RETURN"))
@@ -225,6 +228,16 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		if(rules != null) {
 			heavy = rules.isHeavy();
 			rules.tick(boat(), ext);
+			
+			//TODO find a better home for this maybe lmao
+			int light = rules.light(boat(), ext);
+			if(light != 0) {
+				BlockPos lightBlockPos = BoatLightBlockEntity.lightBlockPos(boat());
+				BlockState stateThere = level.getBlockState(lightBlockPos);
+				if(stateThere.isAir() && !(stateThere.getBlock() instanceof BoatLightBlock)) {
+					level.setBlockAndUpdate(BoatLightBlockEntity.lightBlockPos(boat()), BoatWithEverything.INSTANCE.boatLightBlock.withLevel(light));
+				}
+			}
 		} else {
 			heavy = false;
 		}

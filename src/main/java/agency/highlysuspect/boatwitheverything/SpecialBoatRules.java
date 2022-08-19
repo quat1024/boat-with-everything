@@ -70,6 +70,11 @@ public interface SpecialBoatRules {
 		return false;
 	}
 	
+	default int light(Boat boat, BoatExt ext) {
+		BlockState state = ext.getBlockState();
+		return state != null ? state.getLightEmission() : 0;
+	}
+	
 	// additional data //
 	
 	String CONTAINER_KEY = "BoatWithEverything$container";

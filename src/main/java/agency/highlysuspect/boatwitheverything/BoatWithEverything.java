@@ -1,5 +1,8 @@
 package agency.highlysuspect.boatwitheverything;
 
+import agency.highlysuspect.boatwitheverything.block.BoatLightBlock;
+import agency.highlysuspect.boatwitheverything.block.BoatLightBlockEntity;
+import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -17,6 +20,9 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.block.ConcretePowderBlock;
+import net.minecraft.world.level.block.entity.BlockEntity;
+import net.minecraft.world.level.block.entity.BlockEntityTicker;
+import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
 import org.jetbrains.annotations.NotNull;
@@ -25,19 +31,37 @@ import org.jetbrains.annotations.Nullable;
 public class BoatWithEverything {
 	public static final String MODID = "boat-with-everything";
 	public static BoatWithEverything INSTANCE;
+	public static ThreadLocal<Boat> HOPPER_SKIP_THIS_BOAT_PLEASE = ThreadLocal.withInitial(() -> null); //see MixinHopperBlockEntity and yes, its not pretty
 	
-	public BoatWithEverything() {
-		//todo put init stuff here if it crops up
+	public LoaderServices services;
+	
+	public BoatLightBlock boatLightBlock;
+	public BlockEntityType<BoatLightBlockEntity> boatLightBlockEntityType;
+	
+	public BoatWithEverything(LoaderServices services) {
+		this.services = services;
+		
+		services.blocks(reg -> {
+			boatLightBlock = new BoatLightBlock();
+			reg.register(id("light"), boatLightBlock);
+		});
+		
+		services.blockEntityTypes(reg -> {
+			boatLightBlockEntityType = FabricBlockEntityTypeBuilder.create(BoatLightBlockEntity::new, boatLightBlock).build();
+			reg.register(id("light"), boatLightBlockEntityType);
+		});
 	}
-	
-	//see MixinHopperBlockEntity and yes, its not pretty
-	public static ThreadLocal<Boat> HOPPER_SKIP_THIS_BOAT_PLEASE = ThreadLocal.withInitial(() -> null);
 	
 	public static ResourceLocation id(String path) {
 		return new ResourceLocation(MODID, path);
 	}
 	
-	public static boolean hurt(Boat boat, BoatExt ext, DamageSource source) {
+	@Nullable
+	public static <E extends BlockEntity, A extends BlockEntity> BlockEntityTicker<A> blockTickersCanKissMyAss(BlockEntityType<A> realType, BlockEntityType<E> expectedType, BlockEntityTicker<? super E> epic) {
+		return expectedType == realType ? (BlockEntityTicker<A>) epic : null;
+	}
+	
+	public boolean hurt(Boat boat, BoatExt ext, DamageSource source) {
 		if(!ext.hasBlockState()) return false;
 		
 		SpecialBoatRules rules = ext.getRules();
@@ -69,7 +93,7 @@ public class BoatWithEverything {
 		return player != null; //Only cancel vanilla damage handling if it was from a player punch.
 	}
 	
-	public static @NotNull InteractionResult interact(Boat boat, BoatExt ext, Player player, InteractionHand hand) {		
+	public @NotNull InteractionResult interact(Boat boat, BoatExt ext, Player player, InteractionHand hand) {		
 		//Vanilla boat interaction always instantly returns when you're sneaking, so adding more behavior on sneak doesn't conflict
 		if(!player.isSecondaryUseActive()) return InteractionResult.PASS;
 		
@@ -109,7 +133,7 @@ public class BoatWithEverything {
 		return InteractionResult.PASS;
 	}
 	
-	public static @Nullable BlockState getPlacementStateInsideBoat(Player player, Boat boat, InteractionHand hand) {
+	private @Nullable BlockState getPlacementStateInsideBoat(Player player, Boat boat, InteractionHand hand) {
 		//Big TODO
 		ItemStack stack = player.getItemInHand(hand);
 		if(stack.getItem() instanceof BlockItem bi) {
@@ -141,7 +165,7 @@ public class BoatWithEverything {
 		} else return null;
 	}
 	
-	public static boolean canAddBlockState(Boat boat, BoatExt ext, BlockState state) {
+	private boolean canAddBlockState(Boat boat, BoatExt ext, BlockState state) {
 		if(boat instanceof ChestBoat || ext.hasBlockState()) return false;
 		return boat.getPassengers().size() < ext.getMaxPassengers();
 	}
