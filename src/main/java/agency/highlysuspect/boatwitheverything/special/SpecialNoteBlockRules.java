@@ -27,10 +27,8 @@ public class SpecialNoteBlockRules implements SpecialBoatRules {
 		
 		NoteBlockInstrument currentInst = state.getValue(BlockStateProperties.NOTEBLOCK_INSTRUMENT);
 		
-		Vec3 wha = SpecialBoatRules.positionOfBlock(boat);
-		BlockPos huh = new BlockPos(wha).below();
-		
-		NoteBlockInstrument worldInst = NoteBlockInstrument.byState(boat.level.getBlockState(huh));
+		BlockPos below = new BlockPos(SpecialBoatRules.positionOfBlock(boat)).below();
+		NoteBlockInstrument worldInst = NoteBlockInstrument.byState(boat.level.getBlockState(below));
 		if(currentInst != worldInst) {
 			state = state.setValue(BlockStateProperties.NOTEBLOCK_INSTRUMENT, worldInst);
 			ext.setBlockState(state);

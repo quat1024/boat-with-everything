@@ -16,6 +16,7 @@
 		"MixinEntitySelector",
 		"MixinItemCombinerMenu",
 		"MixinMultiPlayerGameMode",
+		"cosmetic.AccessorCampfireBlock",
 		"cosmetic.AccessorChestBlockEntity",
 		"cosmetic.AccessorEnderChestBlockEntity",
 		"cosmetic.MixinChestLidController"

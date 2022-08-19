@@ -1,6 +1,7 @@
 package agency.highlysuspect.boatwitheverything;
 
 import agency.highlysuspect.boatwitheverything.special.SpecialBarrelRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialCampfireRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialChestRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialConcretePowderRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialContainerlessMenuRules;
@@ -133,13 +134,11 @@ public interface SpecialBoatRules {
 	};
 	
 	//beacon (working?)
-	//dropper, maybe dispenser if its not too difficult (working w/ inventory gui)
+	//some dispenser behaviors
 	//shulker box (working w/ animation and sound when opened)
 	//conduit? maybe
 	//bell (ding)
-	//campfire, soul campfire (particles, maybe cook food)
 	//lectern (other people can click to see the book lol)
-	//torch, glowstone, soul torch, etc (light source that follows you around)
 	//furnace, smoker, blastfurnace (working, speed boost the boat when lit)
 	//bed (set spawn? or maybe just differnet pose while riding? idk)
 	
@@ -177,6 +176,7 @@ public interface SpecialBoatRules {
 		if(state.is(Blocks.TNT)) return new SpecialTntRules();
 		if(state.is(Blocks.REDSTONE_LAMP)) return new SpecialLampRules();
 		if(state.is(Blocks.NOTE_BLOCK)) return new SpecialNoteBlockRules();
+		if(state.is(BlockTags.CAMPFIRES)) return new SpecialCampfireRules();
 		
 		//doors and the like
 		if(state.is(BlockTags.DOORS))
