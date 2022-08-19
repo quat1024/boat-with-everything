@@ -15,7 +15,6 @@
 		"MixinEntity",
 		"MixinEntitySelector",
 		"MixinItemCombinerMenu",
-		"MixinMultiPlayerGameMode",
 		"cosmetic.AccessorCampfireBlock",
 		"cosmetic.AccessorChestBlockEntity",
 		"cosmetic.AccessorEnderChestBlockEntity",
@@ -23,6 +22,7 @@
   ],
 	"client": [
 		"MixinBoatRenderer",
+		"MixinMultiPlayerGameMode",
 		"AccessorBlockRenderDispatcher",
 		"cosmetic.AccessorBannerRenderer",
 		"cosmetic.MixinEntity_HackyBoatUpdates",

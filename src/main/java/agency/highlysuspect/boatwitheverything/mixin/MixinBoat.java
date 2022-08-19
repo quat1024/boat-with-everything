@@ -103,9 +103,6 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 			} else {
 				rules = SpecialBoatRules.get(state);
 				
-				//Wow! It's Bad:tm:
-				if(level.isClientSide && (state.is(Blocks.CHEST) || state.is(Blocks.ENDER_CHEST))) setRenderAttachmentData(new ChestLidRenderData());
-				
 				//only swap out the container if a different implementation was returned w/ the new blockstate
 				//makes it so stuff like opening the barrel doesn't delete the container because the blockstate changed
 				//Hey cheat client developers this is probably where you should look to find the egregious dupe bugs in the mod
@@ -117,6 +114,9 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 					container = newContainer;
 					renderAttachmentData = null;
 				}
+				
+				//Wow! It's Bad:tm:
+				if(level.isClientSide && (state.is(Blocks.CHEST) || state.is(Blocks.ENDER_CHEST))) setRenderAttachmentData(new ChestLidRenderData());
 			}
 		}
 		
@@ -149,7 +149,7 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		public void onSyncedDataUpdated(EntityDataAccessor<?> accessor) {
 			//Called from MixinEntity, upwards in the hierarchy - BoatEntity doesn't override onSyncedDataUpdated itself, so there's nothing to inject to.
 			//We need to make sure that when vanilla uses the EntityDataAccessor system, clients know to change the cached SpecialBoatRules instance as well.
-			if(accessor == DATA_ID_BLOCK_STATE) {
+			if(DATA_ID_BLOCK_STATE.equals(accessor)) {
 				BlockState state = boat().getEntityData().get(DATA_ID_BLOCK_STATE).orElse(null);
 				setBlockState0(state);
 			}
