@@ -31,7 +31,7 @@ import org.jetbrains.annotations.Nullable;
 public class BoatWithEverything {
 	public static final String MODID = "boat-with-everything";
 	public static BoatWithEverything INSTANCE;
-	public static ThreadLocal<Boat> HOPPER_SKIP_THIS_BOAT_PLEASE = ThreadLocal.withInitial(() -> null); //see MixinHopperBlockEntity and yes, its not pretty
+	public static ThreadLocal<Boat> HOPPER_SKIP_THIS_BOAT_PLEASE = ThreadLocal.withInitial(() -> null); //see MixinEntitySelector and yes, its not pretty
 	
 	public LoaderServices services;
 	
