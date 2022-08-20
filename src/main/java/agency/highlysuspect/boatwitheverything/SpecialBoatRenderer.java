@@ -5,6 +5,7 @@ import agency.highlysuspect.boatwitheverything.mixin.cosmetic.AccessorChestBlock
 import agency.highlysuspect.boatwitheverything.mixin.cosmetic.AccessorEnderChestBlockEntity;
 import agency.highlysuspect.boatwitheverything.special.SpecialBannerRenderer;
 import agency.highlysuspect.boatwitheverything.special.SpecialChestRenderer;
+import agency.highlysuspect.boatwitheverything.special.SpecialLecternRenderer;
 import agency.highlysuspect.boatwitheverything.special.SpecialSkullBlockRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
@@ -51,6 +52,7 @@ public interface SpecialBoatRenderer {
 	
 	SpecialBoatRenderer CHEST = new SpecialChestRenderer<>(new ChestBlockEntity(BlockPos.ZERO, Blocks.CHEST.defaultBlockState()), chest -> ((AccessorChestBlockEntity) chest).bwe$getChestLidController());
 	SpecialBoatRenderer ENDER_CHEST = new SpecialChestRenderer<>(new EnderChestBlockEntity(BlockPos.ZERO, Blocks.ENDER_CHEST.defaultBlockState()), chest -> ((AccessorEnderChestBlockEntity) chest).bwe$getChestLidController());
+	SpecialBoatRenderer LECTERN = new SpecialLecternRenderer();
 	
 	SpecialBoatRenderer BANNER = new SpecialBannerRenderer();
 	SpecialBoatRenderer SKULL = new SpecialSkullBlockRenderer();
@@ -76,6 +78,7 @@ public interface SpecialBoatRenderer {
 		//Haxx for chests
 		if(state.is(Blocks.CHEST)) return CHEST;
 		if(state.is(Blocks.ENDER_CHEST)) return ENDER_CHEST;
+		if(state.is(Blocks.LECTERN)) return LECTERN;
 		if(state.getBlock() instanceof BannerBlock) return BANNER;
 		if(state.getBlock() instanceof SkullBlock) return SKULL;
 		

@@ -4,6 +4,7 @@ import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.ContainerExt;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
 import net.minecraft.core.NonNullList;
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.world.InteractionHand;
@@ -48,6 +49,13 @@ public class SpecialLecternRules implements SpecialBoatRules {
 		}
 		
 		return InteractionResult.PASS;
+	}
+	
+	@Override
+	public boolean hasServerControlledInventory(Boat boat, BoatExt ext, Player player) {
+		BlockState state = ext.getBlockState();
+		if(state == null || !state.hasProperty(BlockStateProperties.HAS_BOOK)) return false;
+		return state.getValue(BlockStateProperties.HAS_BOOK);
 	}
 	
 	@Override
@@ -154,7 +162,7 @@ public class SpecialLecternRules implements SpecialBoatRules {
 		
 		@Override
 		public void setChanged() {
-			//egg
+			//No
 		}
 		
 		@Override
@@ -173,9 +181,28 @@ public class SpecialLecternRules implements SpecialBoatRules {
 			return false; //No
 		}
 		
+		@Override
+		public CompoundTag writeSaveData() {
+			CompoundTag tag = new CompoundTag();
+			tag.put("Book", book.save(new CompoundTag()));
+			tag.putInt("Page", page);
+			return tag;
+		}
+		
+		@Override
+		public void readSaveData(CompoundTag tag) {
+			book = ItemStack.of(tag.getCompound("Book"));
+			page = tag.getInt("Page");
+		}
+		
 		@Nullable
 		@Override
 		public AbstractContainerMenu createMenu(int i, Inventory inventory, Player player) {
+			BlockState state = ext.getBlockState();
+			if(state == null || !state.hasProperty(BlockStateProperties.HAS_BOOK) || !state.getValue(BlockStateProperties.HAS_BOOK)) {
+				return null;
+			}
+			
 			return new LecternMenu(i, this, pageData);
 		}
 	}
