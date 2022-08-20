@@ -139,7 +139,6 @@ public interface SpecialBoatRules {
 	//shulker box (working w/ animation and sound when opened)
 	//conduit? maybe
 	//bell (ding)
-	//lectern (other people can click to see the book lol)
 	//furnace, smoker, blastfurnace (working, speed boost the boat when lit)
 	//bed (set spawn? or maybe just differnet pose while riding? idk)
 	
