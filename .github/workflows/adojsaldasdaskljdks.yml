@@ -16,6 +16,8 @@ jobs:
         uses: gradle/gradle-build-action@v2
         with:
           arguments: clean build
+          # bro idk
+          cache-disabled: true
 
       - name: Upload artifacts™
         uses: actions/upload-artifact@v2
