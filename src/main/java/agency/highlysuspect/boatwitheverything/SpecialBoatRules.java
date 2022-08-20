@@ -11,6 +11,7 @@ import agency.highlysuspect.boatwitheverything.special.SpecialDropperRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialEnderChestRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialFlowerPotRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialLampRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialLecternRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialNoteBlockRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialSpongeRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialTntRules;
@@ -151,6 +152,7 @@ public interface SpecialBoatRules {
 		if(state.is(Blocks.ENDER_CHEST)) return new SpecialEnderChestRules();
 		if(state.is(Blocks.DROPPER)) return new SpecialDropperRules();
 		if(state.is(Blocks.DISPENSER)) return new SpecialDispenserRules();
+		if(state.is(Blocks.LECTERN)) return new SpecialLecternRules();
 		
 		//fairly basic guis that can simply be opened server+client side with not much extra work
 		//make sure to check that the boat ContainerLevelAccess can actually work safely for this gui (e.g. no setBlockState)

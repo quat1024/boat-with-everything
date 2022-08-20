@@ -18,7 +18,7 @@ public class SpecialChestRules implements SpecialBoatRules {
 		return new ChestContainerExt(boat, ext);
 	}
 	
-	public static class ChestContainerExt extends ContainerExt.SimpleContainerImpl implements ContainerExt {
+	public static class ChestContainerExt extends ContainerExt.SimpleContainerImpl {
 		public ChestContainerExt(Boat boat, BoatExt ext) {
 			super(boat, ext, 27);
 		}
