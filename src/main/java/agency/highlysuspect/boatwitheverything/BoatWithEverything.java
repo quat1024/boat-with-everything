@@ -3,7 +3,7 @@ package agency.highlysuspect.boatwitheverything;
 import agency.highlysuspect.boatwitheverything.block.BoatLightBlock;
 import agency.highlysuspect.boatwitheverything.block.BoatLightBlockEntity;
 import agency.highlysuspect.boatwitheverything.special.SpecialBarrelRules;
-import agency.highlysuspect.boatwitheverything.special.SpecialBoatRules;
+import agency.highlysuspect.boatwitheverything.special.BoatRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialCampfireRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialChestRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialConcretePowderRules;
@@ -65,7 +65,7 @@ public class BoatWithEverything {
 	public BoatLightBlock boatLightBlock;
 	public BlockEntityType<BoatLightBlockEntity> boatLightBlockEntityType;
 	
-	public Supplier<WeirdBlockRegistryThing<SpecialBoatRules>> rulesRegistry = Suppliers.memoize(this::makeRulesRegistry);
+	public Supplier<WeirdBlockRegistryThing<BoatRules>> rulesRegistry = Suppliers.memoize(this::makeRulesRegistry);
 	
 	public BoatWithEverything(LoaderServices services) {
 		this.services = services;
@@ -91,8 +91,8 @@ public class BoatWithEverything {
 		return expectedType == realType ? (BlockEntityTicker<A>) epic : null;
 	}
 	
-	public WeirdBlockRegistryThing<SpecialBoatRules> makeRulesRegistry() {
-		WeirdBlockRegistryThing<SpecialBoatRules> r = new WeirdBlockRegistryThing<>(SpecialBoatRules.DEFAULT);
+	public WeirdBlockRegistryThing<BoatRules> makeRulesRegistry() {
+		WeirdBlockRegistryThing<BoatRules> r = new WeirdBlockRegistryThing<>(BoatRules.DEFAULT);
 		
 		//TODO:
 		// beacon (working?)
@@ -126,7 +126,7 @@ public class BoatWithEverything {
 		r.put(new SpecialConcretePowderRules(), ConcretePowderBlock.class);
 		
 		//banners, carpets, and things that don't take up space
-		r.putMixed(new SpecialBoatRules() {
+		r.putMixed(new BoatRules() {
 			@Override
 			public boolean consumesPassengerSlot() {
 				return false;
@@ -139,7 +139,7 @@ public class BoatWithEverything {
 		r.put(SpecialDoorRules.FENCE_GATES, BlockTags.FENCE_GATES);
 		
 		//heavy blocks
-		r.putMixed(new SpecialBoatRules() {
+		r.putMixed(new BoatRules() {
 			@Override
 			public boolean isHeavy() {
 				return true;
@@ -161,7 +161,7 @@ public class BoatWithEverything {
 	public boolean hurt(Boat boat, BoatExt ext, DamageSource source) {
 		if(!ext.hasBlockState()) return false;
 		
-		SpecialBoatRules rules = ext.getRules();
+		BoatRules rules = ext.getRules();
 		if(rules != null) {
 			boolean handled = rules.hurt(boat, ext, source);
 			if(handled) return true;
@@ -195,7 +195,7 @@ public class BoatWithEverything {
 		if(!player.isSecondaryUseActive()) return InteractionResult.PASS;
 		
 		//If there's something in the boat already, perform its right click action
-		@Nullable SpecialBoatRules rules = ext.getRules();
+		@Nullable BoatRules rules = ext.getRules();
 		if(rules != null && hand == InteractionHand.MAIN_HAND) {
 			InteractionResult result = rules.interact(boat, ext, player, hand);
 			if(result != InteractionResult.PASS) return result;

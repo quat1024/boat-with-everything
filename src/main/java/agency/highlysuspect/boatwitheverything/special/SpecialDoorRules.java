@@ -13,7 +13,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.level.material.Material;
 
 @SuppressWarnings("ClassCanBeRecord")
-public class SpecialDoorRules implements SpecialBoatRules {
+public class SpecialDoorRules implements BoatRules {
 	public SpecialDoorRules(SoundEvent openWood, SoundEvent openMetal, SoundEvent closeWood, SoundEvent closeMetal) {
 		this.openWood = openWood;
 		this.openMetal = openMetal;
@@ -33,7 +33,7 @@ public class SpecialDoorRules implements SpecialBoatRules {
 		if(state == null || !state.hasProperty(BlockStateProperties.OPEN) || !state.hasProperty(BlockStateProperties.POWERED)) return;
 		
 		boolean isPowered = state.getValue(BlockStateProperties.POWERED);
-		boolean shouldPower = SpecialBoatRules.isPowered(boat);
+		boolean shouldPower = BoatRules.isPowered(boat);
 		if(isPowered != shouldPower) {
 			boolean isOpen = state.getValue(BlockStateProperties.OPEN);
 			ext.setBlockState(state.setValue(BlockStateProperties.OPEN, shouldPower).setValue(BlockStateProperties.POWERED, shouldPower));

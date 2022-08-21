@@ -17,7 +17,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 
 public class SpecialFlowerPotRules {
-	public static class Potted implements SpecialBoatRules {
+	public static class Potted implements BoatRules {
 		@Override
 		public @NotNull InteractionResult interact(Boat boat, BoatExt ext, Player player, InteractionHand hand) {
 			//check that we are a potted flower in the first place
@@ -42,7 +42,7 @@ public class SpecialFlowerPotRules {
 		// this kills the pot. All u get is the flower
 	}
 	
-	public static class Unpotted implements SpecialBoatRules {
+	public static class Unpotted implements BoatRules {
 		@Override
 		public @NotNull InteractionResult interact(Boat boat, BoatExt ext, Player player, InteractionHand hand) {
 			//check that we are a flower pot in the first place

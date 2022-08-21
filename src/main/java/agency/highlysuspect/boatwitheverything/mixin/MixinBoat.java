@@ -8,7 +8,7 @@ import agency.highlysuspect.boatwitheverything.RenderData;
 import agency.highlysuspect.boatwitheverything.block.BoatLightBlock;
 import agency.highlysuspect.boatwitheverything.block.BoatLightBlockEntity;
 import agency.highlysuspect.boatwitheverything.container.ContainerExt;
-import agency.highlysuspect.boatwitheverything.special.SpecialBoatRules;
+import agency.highlysuspect.boatwitheverything.special.BoatRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialChestRules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
@@ -57,7 +57,7 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	//For mapmakers, conventions, etc
 	@Unique private static final EntityDataAccessor<Boolean> DATA_ID_LOCKED = SynchedEntityData.defineId(Boat.class, EntityDataSerializers.BOOLEAN);
 	
-	@Unique private @Nullable SpecialBoatRules rules;
+	@Unique private @Nullable BoatRules rules;
 	@Unique private @Nullable ContainerExt container;
 	
 	@Unique private RenderData renderAttachmentData; //SpecialBoatRenderers can squirrel away data that persists from frame-to-frame here
@@ -131,7 +131,7 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		}
 		
 		@Override
-		public SpecialBoatRules getRules() {
+		public BoatRules getRules() {
 			return rules;
 		}
 		
@@ -219,7 +219,7 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	
 	@Inject(method = "tick", at = @At("RETURN"))
 	public void whenTicking(CallbackInfo ci) {
-		SpecialBoatRules rules = ext.getRules();
+		BoatRules rules = ext.getRules();
 		if(rules != null) {
 			heavy = rules.isHeavy();
 			rules.tick(boat(), ext);
@@ -279,7 +279,7 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		ItemStack stack = ext.getItemStack();
 		if(!stack.isEmpty()) tag.put(ITEMSTACK_KEY, stack.save(new CompoundTag()));
 		
-		SpecialBoatRules rules = ext.getRules();
+		BoatRules rules = ext.getRules();
 		if(rules != null) rules.addAdditionalSaveData(boat(), ext, tag);
 		
 		tag.putBoolean(LOCKED_KEY, boat().getEntityData().get(DATA_ID_LOCKED));
@@ -299,7 +299,7 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 			ext.clearItemStack();
 		}
 		
-		SpecialBoatRules rules = ext.getRules();
+		BoatRules rules = ext.getRules();
 		if(rules != null) rules.readAdditionalSaveData(boat(), ext, tag);
 		
 		boat().getEntityData().set(DATA_ID_LOCKED, tag.getBoolean(LOCKED_KEY));
@@ -309,13 +309,13 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	
 	@Inject(method = "getMaxPassengers", at = @At("HEAD"), cancellable = true)
 	protected void whenCountingMaxPassengers(CallbackInfoReturnable<Integer> cir) {
-		SpecialBoatRules rules = ext.getRules();
+		BoatRules rules = ext.getRules();
 		if(rules != null && rules.consumesPassengerSlot()) cir.setReturnValue(1);
 	}
 	
 	@Inject(method = "getSinglePassengerXOffset", at = @At("HEAD"), cancellable = true)
 	protected void whenOffsettingSinglePassenger(CallbackInfoReturnable<Float> cir) {
-		SpecialBoatRules rules = ext.getRules();
+		BoatRules rules = ext.getRules();
 		if(rules != null && rules.consumesPassengerSlot()) cir.setReturnValue(0.15f); //same as ChestBoat
 	}
 	

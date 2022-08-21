@@ -3,7 +3,7 @@ package agency.highlysuspect.boatwitheverything.mixin;
 import agency.highlysuspect.boatwitheverything.BoatDuck;
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.container.ContainerExt;
-import agency.highlysuspect.boatwitheverything.special.SpecialBoatRules;
+import agency.highlysuspect.boatwitheverything.special.BoatRules;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;
@@ -31,7 +31,7 @@ public abstract class MixinBoat_ContainerEntity implements ContainerEntity, HasC
 	
 	@Override
 	public void openCustomInventoryScreen(Player player) {
-		SpecialBoatRules rules = rules();
+		BoatRules rules = rules();
 		if(rules == null) return;
 		
 		MenuProvider provider = rules.getMenuProvider(boat(), ext(), player);
@@ -134,7 +134,7 @@ public abstract class MixinBoat_ContainerEntity implements ContainerEntity, HasC
 		return ((BoatDuck) this).bwe$getExt();
 	}
 	
-	@Unique private @Nullable SpecialBoatRules rules() {
+	@Unique private @Nullable BoatRules rules() {
 		return ext().getRules();
 	}
 	

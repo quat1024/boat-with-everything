@@ -23,7 +23,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
-public class SpecialDropperRules implements SpecialBoatRules {
+public class SpecialDropperRules implements BoatRules {
 	@Override
 	public @Nullable ContainerExt makeNewContainer(Boat boat, BoatExt ext) {
 		return new DropperContainerExt(boat, ext);
@@ -35,7 +35,7 @@ public class SpecialDropperRules implements SpecialBoatRules {
 		if(state == null || !state.hasProperty(BlockStateProperties.TRIGGERED)) return;
 		
 		boolean isPowered = state.getValue(BlockStateProperties.TRIGGERED);
-		boolean shouldPower = SpecialBoatRules.isPowered(boat);
+		boolean shouldPower = BoatRules.isPowered(boat);
 		if(isPowered != shouldPower) {
 			ext.setBlockState(state.setValue(BlockStateProperties.TRIGGERED, shouldPower));
 			if(shouldPower && ext.getContainer() instanceof DropperContainerExt e) {
@@ -64,7 +64,7 @@ public class SpecialDropperRules implements SpecialBoatRules {
 			boolean vertical = facing.getAxis() == Direction.Axis.Y;
 			
 			//Position of dropper
-			Vec3 dropperPos = SpecialBoatRules.positionOfBlock(boat).add(0, 0.5, 0); //cause it returns the bottom-center
+			Vec3 dropperPos = BoatRules.positionOfBlock(boat).add(0, 0.5, 0); //cause it returns the bottom-center
 			
 			//Pick an item, any item
 			int slot = getRandomSlot(boat.level.getRandom());

@@ -12,7 +12,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import org.jetbrains.annotations.Nullable;
 
-public class SpecialBarrelRules implements SpecialBoatRules {
+public class SpecialBarrelRules implements BoatRules {
 	@Override
 	public @Nullable ContainerExt makeNewContainer(Boat boat, BoatExt ext) {
 		return new BarrelContainerExt(boat, ext);

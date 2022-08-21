@@ -18,7 +18,7 @@ import net.minecraft.world.inventory.PlayerEnderChestContainer;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
-public class SpecialEnderChestRules implements SpecialBoatRules {
+public class SpecialEnderChestRules implements BoatRules {
 	@Override
 	public @Nullable MenuProvider getMenuProvider(Boat boat, BoatExt ext, Player player) {
 		return new MenuProvider() {

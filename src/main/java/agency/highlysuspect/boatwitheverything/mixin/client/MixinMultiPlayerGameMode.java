@@ -2,7 +2,7 @@ package agency.highlysuspect.boatwitheverything.mixin.client;
 
 import agency.highlysuspect.boatwitheverything.BoatDuck;
 import agency.highlysuspect.boatwitheverything.BoatExt;
-import agency.highlysuspect.boatwitheverything.special.SpecialBoatRules;
+import agency.highlysuspect.boatwitheverything.special.BoatRules;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.MultiPlayerGameMode;
 import net.minecraft.client.player.LocalPlayer;
@@ -26,7 +26,7 @@ public class MixinMultiPlayerGameMode {
 		if(player.isPassenger() && player.getVehicle() instanceof Boat boat) {
 			BoatExt ext = ((BoatDuck) boat).bwe$getExt();
 			
-			SpecialBoatRules rules = ext.getRules();
+			BoatRules rules = ext.getRules();
 			if(rules == null) cir.setReturnValue(false);
 			else cir.setReturnValue(rules.hasServerControlledInventory(boat, ext, player));
 		}

@@ -13,7 +13,7 @@ import net.minecraft.world.inventory.ChestMenu;
 import net.minecraft.world.level.block.entity.ChestLidController;
 import org.jetbrains.annotations.Nullable;
 
-public class SpecialChestRules implements SpecialBoatRules {
+public class SpecialChestRules implements BoatRules {
 	@Override
 	public @Nullable ContainerExt makeNewContainer(Boat boat, BoatExt ext) {
 		return new ChestContainerExt(boat, ext);

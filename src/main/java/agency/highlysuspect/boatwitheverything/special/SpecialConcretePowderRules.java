@@ -6,7 +6,7 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;
 
-public class SpecialConcretePowderRules implements SpecialBoatRules {
+public class SpecialConcretePowderRules implements BoatRules {
 	@Override
 	public void tick(Boat boat, BoatExt ext) {
 		if(!boat.isUnderWater()) return;

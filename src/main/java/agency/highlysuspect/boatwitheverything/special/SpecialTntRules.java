@@ -10,10 +10,10 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
 
-public class SpecialTntRules implements SpecialBoatRules {
+public class SpecialTntRules implements BoatRules {
 	@Override
 	public void tick(Boat boat, BoatExt ext) {
-		if(SpecialBoatRules.isPowered(boat)) kaboom(boat, ext);
+		if(BoatRules.isPowered(boat)) kaboom(boat, ext);
 	}
 	
 	@Override
@@ -30,7 +30,7 @@ public class SpecialTntRules implements SpecialBoatRules {
 		ext.clearItemStack();
 		
 		//TntBlock.explode(boat.level, boat.blockPosition());
-		Vec3 pos = SpecialBoatRules.positionOfBlock(boat);
+		Vec3 pos = BoatRules.positionOfBlock(boat);
 		PrimedTnt primedTnt = new PrimedTnt(boat.level, pos.x, pos.y, pos.z, null);
 		boat.level.addFreshEntity(primedTnt);
 		boat.level.playSound(null, primedTnt.getX(), primedTnt.getY(), primedTnt.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0f, 1.0f);

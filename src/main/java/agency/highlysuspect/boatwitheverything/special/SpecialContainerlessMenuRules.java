@@ -20,7 +20,7 @@ import java.util.function.BiFunction;
 import java.util.function.Predicate;
 
 @SuppressWarnings("ClassCanBeRecord")
-public class SpecialContainerlessMenuRules implements SpecialBoatRules {
+public class SpecialContainerlessMenuRules implements BoatRules {
 	public SpecialContainerlessMenuRules(MenuConstructor cons) {
 		this.cons = cons;
 	}

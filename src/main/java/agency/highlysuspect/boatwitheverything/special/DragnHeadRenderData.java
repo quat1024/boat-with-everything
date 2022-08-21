@@ -13,7 +13,7 @@ public class DragnHeadRenderData implements RenderData {
 	
 	@Override
 	public void tick(Boat boat, BoatExt ext) {
-		powered = SpecialBoatRules.isPowered(boat);
+		powered = BoatRules.isPowered(boat);
 		if(powered) ticks++;
 	}
 }

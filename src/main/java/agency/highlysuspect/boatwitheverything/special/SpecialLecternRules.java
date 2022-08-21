@@ -22,7 +22,7 @@ import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public class SpecialLecternRules implements SpecialBoatRules {
+public class SpecialLecternRules implements BoatRules {
 	@Override
 	public @NotNull InteractionResult interact(Boat boat, BoatExt ext, Player player, InteractionHand hand) {
 		BlockState state = ext.getBlockState();

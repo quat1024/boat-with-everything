@@ -3,7 +3,7 @@ package agency.highlysuspect.boatwitheverything.block;
 import agency.highlysuspect.boatwitheverything.BoatDuck;
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.BoatWithEverything;
-import agency.highlysuspect.boatwitheverything.special.SpecialBoatRules;
+import agency.highlysuspect.boatwitheverything.special.BoatRules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.level.Level;
@@ -23,7 +23,7 @@ public class BoatLightBlockEntity extends BlockEntity {
 	
 	//kept here so there isn't a duplicate copy in the code responsible for placing light blocks
 	public static BlockPos lightBlockPos(Boat boat) {
-		Vec3 real = SpecialBoatRules.positionOfBlock(boat);
+		Vec3 real = BoatRules.positionOfBlock(boat);
 		return new BlockPos(real.x, real.y + 0.5d, real.z);
 	}
 	
@@ -41,7 +41,7 @@ public class BoatLightBlockEntity extends BlockEntity {
 		int lightLevel = state.getValue(BoatLightBlock.LEVEL);
 		for(Boat boat : boatsAround(level, pos)) {
 			BoatExt ext = ((BoatDuck) boat).bwe$getExt();
-			SpecialBoatRules rules = ext.getRules();
+			BoatRules rules = ext.getRules();
 			if(rules == null) continue;
 			
 			if(Objects.equals(pos, lightBlockPos(boat)) && lightLevel == rules.light(boat, ext)) return; //happy return

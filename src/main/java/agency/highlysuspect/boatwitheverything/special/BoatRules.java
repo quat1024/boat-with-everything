@@ -21,7 +21,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
-public interface SpecialBoatRules {
+public interface BoatRules {
 	default boolean consumesPassengerSlot() {
 		return true;
 	}
@@ -113,5 +113,5 @@ public interface SpecialBoatRules {
 	
 	//////////
 	
-	SpecialBoatRules DEFAULT = new SpecialBoatRules() {};
+	BoatRules DEFAULT = new BoatRules() {};
 }

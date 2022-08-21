@@ -20,7 +20,7 @@ import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-public class SpecialCampfireRules implements SpecialBoatRules {
+public class SpecialCampfireRules implements BoatRules {
 	@Override
 	public @NotNull InteractionResult interact(Boat boat, BoatExt ext, Player player, InteractionHand hand) {
 		BlockState state = ext.getBlockState();
@@ -63,7 +63,7 @@ public class SpecialCampfireRules implements SpecialBoatRules {
 	//Based on copy from CampfireBlock.makeParticles, uses vec3 instead of blockpos.
 	public void particle(Boat boat, BoatExt ext, BlockState state, boolean smoky) {
 		RandomSource r = boat.level.getRandom();
-		Vec3 campfirePos = SpecialBoatRules.positionOfBlock(boat);
+		Vec3 campfirePos = BoatRules.positionOfBlock(boat);
 		SimpleParticleType type = state.getValue(BlockStateProperties.SIGNAL_FIRE) ? ParticleTypes.CAMPFIRE_SIGNAL_SMOKE : ParticleTypes.CAMPFIRE_COSY_SMOKE;
 		
 		boat.level.addAlwaysVisibleParticle(
@@ -93,7 +93,7 @@ public class SpecialCampfireRules implements SpecialBoatRules {
 		BlockState state = ext.getBlockState();
 		if(state == null || !(state.getBlock() instanceof CampfireBlock cb)) return;
 		
-		BlockPos below = new BlockPos(SpecialBoatRules.positionOfBlock(boat)).below();
+		BlockPos below = new BlockPos(BoatRules.positionOfBlock(boat)).below();
 		boolean isSignal = state.getValue(BlockStateProperties.SIGNAL_FIRE);
 		boolean shouldSignal = ((AccessorCampfireBlock) cb).bwe$isSmokeSource(boat.level.getBlockState(below));
 		if(isSignal != shouldSignal) ext.setBlockState(state.setValue(BlockStateProperties.SIGNAL_FIRE, shouldSignal));
@@ -103,7 +103,7 @@ public class SpecialCampfireRules implements SpecialBoatRules {
 				dowse(boat, ext, state);
 			} else if(boat.level.isClientSide) {
 				if(((AccessorCampfireBlock) cb).bwe$spawnLavaParticles() && boat.level.random.nextFloat() < 0.08f) { //crude randomDisplayTick/5 estimation
-					Vec3 p = SpecialBoatRules.positionOfBlock(boat);
+					Vec3 p = BoatRules.positionOfBlock(boat);
 					for (int i = 0; i < boat.level.random.nextInt(1) + 1; ++i) {
 						boat.level.addParticle(ParticleTypes.LAVA,
 							p.x, p.y + 0.5, p.z,

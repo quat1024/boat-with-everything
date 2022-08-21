@@ -7,7 +7,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 
-public class SpecialSpongeRules implements SpecialBoatRules {
+public class SpecialSpongeRules implements BoatRules {
 	@Override
 	public void tick(Boat boat, BoatExt ext) {
 		if(((AccessorSpongeBlock) Blocks.SPONGE).boatWithEverything$removeWaterBreadthFirstSearch(boat.level, boat.blockPosition())) {

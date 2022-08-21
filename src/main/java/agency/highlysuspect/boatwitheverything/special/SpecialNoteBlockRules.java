@@ -16,7 +16,7 @@ import net.minecraft.world.level.block.state.properties.NoteBlockInstrument;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
-public class SpecialNoteBlockRules implements SpecialBoatRules {
+public class SpecialNoteBlockRules implements BoatRules {
 	@Override
 	public void tick(Boat boat, BoatExt ext) {
 		BlockState state = ext.getBlockState();
@@ -26,7 +26,7 @@ public class SpecialNoteBlockRules implements SpecialBoatRules {
 		
 		NoteBlockInstrument currentInst = state.getValue(BlockStateProperties.NOTEBLOCK_INSTRUMENT);
 		
-		BlockPos below = new BlockPos(SpecialBoatRules.positionOfBlock(boat)).below();
+		BlockPos below = new BlockPos(BoatRules.positionOfBlock(boat)).below();
 		NoteBlockInstrument worldInst = NoteBlockInstrument.byState(boat.level.getBlockState(below));
 		if(currentInst != worldInst) {
 			state = state.setValue(BlockStateProperties.NOTEBLOCK_INSTRUMENT, worldInst);
@@ -34,7 +34,7 @@ public class SpecialNoteBlockRules implements SpecialBoatRules {
 		}
 		
 		boolean isPowered = state.getValue(BlockStateProperties.POWERED);
-		boolean shouldPower = SpecialBoatRules.isPowered(boat);
+		boolean shouldPower = BoatRules.isPowered(boat);
 		if(isPowered != shouldPower) {
 			state = state.setValue(BlockStateProperties.POWERED, shouldPower);
 			ext.setBlockState(state);
@@ -68,7 +68,7 @@ public class SpecialNoteBlockRules implements SpecialBoatRules {
 		int note = state.getValue(BlockStateProperties.NOTE);
 		float pitch = (float) Math.pow(2, (note - 12) / 12f);
 		
-		Vec3 pos = SpecialBoatRules.positionOfBlock(boat);
+		Vec3 pos = BoatRules.positionOfBlock(boat);
 		boat.level.playLocalSound(pos.x, pos.y, pos.z, state.getValue(BlockStateProperties.NOTEBLOCK_INSTRUMENT).getSoundEvent(), SoundSource.RECORDS, 3f, pitch, false);
 		boat.level.addParticle(ParticleTypes.NOTE, pos.x, pos.y + 1, pos.z, note / 24d, 0, 0);
 	}
