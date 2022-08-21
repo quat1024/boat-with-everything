@@ -1,7 +1,7 @@
-package agency.highlysuspect.boatwitheverything.cosmetic;
+package agency.highlysuspect.boatwitheverything.special;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
-import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
+import agency.highlysuspect.boatwitheverything.RenderData;
 import net.minecraft.world.entity.vehicle.Boat;
 
 /**

@@ -1,5 +1,6 @@
-package agency.highlysuspect.boatwitheverything;
+package agency.highlysuspect.boatwitheverything.container;
 
+import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.mixin.AccessorSimpleContainer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;

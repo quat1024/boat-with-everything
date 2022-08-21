@@ -1,7 +1,7 @@
 package agency.highlysuspect.boatwitheverything.special;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
-import agency.highlysuspect.boatwitheverything.ContainerExt;
+import agency.highlysuspect.boatwitheverything.container.ContainerExt;
 import agency.highlysuspect.boatwitheverything.mixin.AccessorAbstractProjectileDispenseBehavior;
 import agency.highlysuspect.boatwitheverything.mixin.AccessorDispenserBlock;
 import net.minecraft.core.Direction;

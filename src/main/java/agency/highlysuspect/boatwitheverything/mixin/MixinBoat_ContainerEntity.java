@@ -2,8 +2,8 @@ package agency.highlysuspect.boatwitheverything.mixin;
 
 import agency.highlysuspect.boatwitheverything.BoatDuck;
 import agency.highlysuspect.boatwitheverything.BoatExt;
-import agency.highlysuspect.boatwitheverything.ContainerExt;
-import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
+import agency.highlysuspect.boatwitheverything.container.ContainerExt;
+import agency.highlysuspect.boatwitheverything.special.SpecialBoatRules;
 import net.minecraft.core.NonNullList;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.MenuProvider;

@@ -1,9 +1,9 @@
-package agency.highlysuspect.boatwitheverything.mixin.cosmetic;
+package agency.highlysuspect.boatwitheverything.mixin.client;
 
 import agency.highlysuspect.boatwitheverything.BoatDuck;
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.HackyEntityUpdateIds;
-import agency.highlysuspect.boatwitheverything.cosmetic.ChestLidRenderData;
+import agency.highlysuspect.boatwitheverything.special.SpecialChestRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialNoteBlockRules;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.vehicle.Boat;
@@ -27,7 +27,7 @@ public class MixinEntity_HackyBoatUpdates {
 				return;
 			}
 			
-			if(ext.getRenderAttachmentData() instanceof ChestLidRenderData lid) {
+			if(ext.getRenderAttachmentData() instanceof SpecialChestRules.ChestLidRenderData lid) {
 				lid.setShouldBeOpen(event == HackyEntityUpdateIds.OPEN_CHEST);
 				return;
 			}

@@ -5,6 +5,7 @@
   "compatibilityLevel": "JAVA_17",
   "mixins": [
 		"AccessorAbstractProjectileDispenseBehavior",
+		"AccessorCampfireBlock",
 		"AccessorConcretePowderBlock",
 		"AccessorDispenserBlock",
 		"AccessorFlowerPotBlock",
@@ -16,19 +17,18 @@
 		"MixinBoat_ContainerEntity",
 		"MixinEntity",
 		"MixinEntitySelector",
-		"MixinItemCombinerMenu",
-		"cosmetic.AccessorCampfireBlock",
-		"cosmetic.AccessorChestBlockEntity",
-		"cosmetic.AccessorEnderChestBlockEntity",
-		"cosmetic.MixinChestLidController"
+		"MixinItemCombinerMenu"
   ],
 	"client": [
-		"MixinBoatRenderer",
-		"MixinMultiPlayerGameMode",
-		"AccessorBlockRenderDispatcher",
-		"cosmetic.AccessorBannerRenderer",
-		"cosmetic.MixinEntity_HackyBoatUpdates",
-		"cosmetic.AccessorSkullBlockEntity"
+		"client.AccessorBlockRenderDispatcher",
+		"client.AccessorChestBlockEntity",
+		"client.AccessorEnderChestBlockEntity",
+		"client.AccessorSkullBlockEntity",
+		"client.AccessorBannerRenderer",
+		"client.MixinBoatRenderer",
+		"client.MixinChestLidController",
+		"client.MixinEntity_HackyBoatUpdates",
+		"client.MixinMultiPlayerGameMode"
 	],
   "injectors": {
     "defaultRequire": 1

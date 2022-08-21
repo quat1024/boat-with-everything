@@ -3,13 +3,13 @@ package agency.highlysuspect.boatwitheverything.mixin;
 import agency.highlysuspect.boatwitheverything.BoatDuck;
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.BoatWithEverything;
-import agency.highlysuspect.boatwitheverything.ContainerExt;
 import agency.highlysuspect.boatwitheverything.HackyEntityUpdateIds;
-import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
+import agency.highlysuspect.boatwitheverything.RenderData;
 import agency.highlysuspect.boatwitheverything.block.BoatLightBlock;
 import agency.highlysuspect.boatwitheverything.block.BoatLightBlockEntity;
-import agency.highlysuspect.boatwitheverything.cosmetic.ChestLidRenderData;
-import agency.highlysuspect.boatwitheverything.cosmetic.RenderData;
+import agency.highlysuspect.boatwitheverything.container.ContainerExt;
+import agency.highlysuspect.boatwitheverything.special.SpecialBoatRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialChestRules;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtUtils;
@@ -21,18 +21,13 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.GameRules;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
-import net.minecraft.world.level.material.Fluid;
-import net.minecraft.world.level.material.Fluids;
-import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 import org.spongepowered.asm.mixin.Mixin;
@@ -116,7 +111,7 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 				}
 				
 				//Wow! It's Bad:tm:
-				if(level.isClientSide && (state.is(Blocks.CHEST) || state.is(Blocks.ENDER_CHEST))) setRenderAttachmentData(new ChestLidRenderData());
+				if(level.isClientSide && (state.is(Blocks.CHEST) || state.is(Blocks.ENDER_CHEST))) setRenderAttachmentData(new SpecialChestRules.ChestLidRenderData());
 			}
 		}
 		

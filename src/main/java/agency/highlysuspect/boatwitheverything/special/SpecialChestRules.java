@@ -1,15 +1,16 @@
 package agency.highlysuspect.boatwitheverything.special;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
-import agency.highlysuspect.boatwitheverything.ContainerExt;
 import agency.highlysuspect.boatwitheverything.HackyEntityUpdateIds;
-import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
+import agency.highlysuspect.boatwitheverything.RenderData;
+import agency.highlysuspect.boatwitheverything.container.ContainerExt;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.inventory.ChestMenu;
+import net.minecraft.world.level.block.entity.ChestLidController;
 import org.jetbrains.annotations.Nullable;
 
 public class SpecialChestRules implements SpecialBoatRules {
@@ -54,6 +55,24 @@ public class SpecialChestRules implements SpecialBoatRules {
 				else boat.playSound(SoundEvents.CHEST_CLOSE);
 			}
 			oldWatchers = watchers;
+		}
+	}
+	
+	//Accessed on client *and* server btw
+	public static class ChestLidRenderData implements RenderData {
+		public final ChestLidController lidController = new ChestLidController();
+		
+		@Override
+		public void tick(Boat boat, BoatExt ext) {
+			lidController.tickLid();
+		}
+		
+		public void setShouldBeOpen(boolean shouldBeOpen) {
+			lidController.shouldBeOpen(shouldBeOpen);
+		}
+		
+		public float getOpenness(float partialTicks) {
+			return lidController.getOpenness(partialTicks);
 		}
 	}
 }

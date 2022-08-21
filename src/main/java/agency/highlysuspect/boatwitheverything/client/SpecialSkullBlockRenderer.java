@@ -1,9 +1,8 @@
-package agency.highlysuspect.boatwitheverything.special;
+package agency.highlysuspect.boatwitheverything.client;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
-import agency.highlysuspect.boatwitheverything.SpecialBoatRenderer;
-import agency.highlysuspect.boatwitheverything.cosmetic.DragnHeadRenderData;
-import agency.highlysuspect.boatwitheverything.mixin.cosmetic.AccessorSkullBlockEntity;
+import agency.highlysuspect.boatwitheverything.mixin.client.AccessorSkullBlockEntity;
+import agency.highlysuspect.boatwitheverything.special.DragnHeadRenderData;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;

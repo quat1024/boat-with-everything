@@ -3,6 +3,7 @@ package agency.highlysuspect.boatwitheverything;
 import agency.highlysuspect.boatwitheverything.block.BoatLightBlock;
 import agency.highlysuspect.boatwitheverything.block.BoatLightBlockEntity;
 import agency.highlysuspect.boatwitheverything.special.SpecialBarrelRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialBoatRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialCampfireRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialChestRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialConcretePowderRules;

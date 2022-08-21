@@ -1,4 +1,4 @@
-package agency.highlysuspect.boatwitheverything.mixin.cosmetic;
+package agency.highlysuspect.boatwitheverything.mixin.client;
 
 import net.minecraft.world.level.block.entity.SkullBlockEntity;
 import org.spongepowered.asm.mixin.Mixin;

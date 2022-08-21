@@ -1,4 +1,4 @@
-package agency.highlysuspect.boatwitheverything.mixin.cosmetic;
+package agency.highlysuspect.boatwitheverything.mixin.client;
 
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.blockentity.BannerRenderer;

@@ -1,7 +1,6 @@
 package agency.highlysuspect.boatwitheverything.special;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
-import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
 import agency.highlysuspect.boatwitheverything.mixin.AccessorFlowerPotBlock;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;

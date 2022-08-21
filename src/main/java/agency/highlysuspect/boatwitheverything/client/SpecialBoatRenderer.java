@@ -1,12 +1,9 @@
-package agency.highlysuspect.boatwitheverything;
+package agency.highlysuspect.boatwitheverything.client;
 
-import agency.highlysuspect.boatwitheverything.mixin.AccessorBlockRenderDispatcher;
-import agency.highlysuspect.boatwitheverything.mixin.cosmetic.AccessorChestBlockEntity;
-import agency.highlysuspect.boatwitheverything.mixin.cosmetic.AccessorEnderChestBlockEntity;
-import agency.highlysuspect.boatwitheverything.special.SpecialBannerRenderer;
-import agency.highlysuspect.boatwitheverything.special.SpecialChestRenderer;
-import agency.highlysuspect.boatwitheverything.special.SpecialLecternRenderer;
-import agency.highlysuspect.boatwitheverything.special.SpecialSkullBlockRenderer;
+import agency.highlysuspect.boatwitheverything.BoatExt;
+import agency.highlysuspect.boatwitheverything.mixin.client.AccessorBlockRenderDispatcher;
+import agency.highlysuspect.boatwitheverything.mixin.client.AccessorChestBlockEntity;
+import agency.highlysuspect.boatwitheverything.mixin.client.AccessorEnderChestBlockEntity;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.Minecraft;
@@ -50,8 +47,8 @@ public interface SpecialBoatRenderer {
 		pose.translate(0.5, 0, 0.5);
 	};
 	
-	SpecialBoatRenderer CHEST = new SpecialChestRenderer<>(new ChestBlockEntity(BlockPos.ZERO, Blocks.CHEST.defaultBlockState()), chest -> ((AccessorChestBlockEntity) chest).bwe$getChestLidController());
-	SpecialBoatRenderer ENDER_CHEST = new SpecialChestRenderer<>(new EnderChestBlockEntity(BlockPos.ZERO, Blocks.ENDER_CHEST.defaultBlockState()), chest -> ((AccessorEnderChestBlockEntity) chest).bwe$getChestLidController());
+	SpecialBoatRenderer CHEST = new SpecialChestRenderer<>(new ChestBlockEntity(BlockPos.ZERO, Blocks.CHEST.defaultBlockState()), chest -> ((AccessorChestBlockEntity) chest).bwe$getChestLidController_ClientSide());
+	SpecialBoatRenderer ENDER_CHEST = new SpecialChestRenderer<>(new EnderChestBlockEntity(BlockPos.ZERO, Blocks.ENDER_CHEST.defaultBlockState()), chest -> ((AccessorEnderChestBlockEntity) chest).bwe$getChestLidController_ClientSide());
 	SpecialBoatRenderer LECTERN = new SpecialLecternRenderer();
 	
 	SpecialBoatRenderer BANNER = new SpecialBannerRenderer();

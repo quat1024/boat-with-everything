@@ -1,4 +1,4 @@
-package agency.highlysuspect.boatwitheverything.mixin.cosmetic;
+package agency.highlysuspect.boatwitheverything.mixin.client;
 
 import net.minecraft.world.level.block.entity.ChestLidController;
 import net.minecraft.world.level.block.entity.EnderChestBlockEntity;
@@ -7,5 +7,5 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(EnderChestBlockEntity.class)
 public interface AccessorEnderChestBlockEntity {
-	@Accessor("chestLidController") ChestLidController bwe$getChestLidController();
+	@Accessor("chestLidController") ChestLidController bwe$getChestLidController_ClientSide();
 }

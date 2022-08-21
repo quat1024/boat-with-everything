@@ -1,4 +1,4 @@
-package agency.highlysuspect.boatwitheverything.mixin.cosmetic;
+package agency.highlysuspect.boatwitheverything.mixin;
 
 import net.minecraft.world.level.block.CampfireBlock;
 import net.minecraft.world.level.block.state.BlockState;

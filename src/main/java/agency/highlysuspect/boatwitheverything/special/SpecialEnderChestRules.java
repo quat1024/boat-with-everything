@@ -1,10 +1,9 @@
 package agency.highlysuspect.boatwitheverything.special;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
-import agency.highlysuspect.boatwitheverything.ContainerExt;
-import agency.highlysuspect.boatwitheverything.DelegatingContainer;
 import agency.highlysuspect.boatwitheverything.HackyEntityUpdateIds;
-import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
+import agency.highlysuspect.boatwitheverything.container.ContainerExt;
+import agency.highlysuspect.boatwitheverything.container.DelegatingContainer;
 import agency.highlysuspect.boatwitheverything.mixin.AccessorSimpleContainer;
 import net.minecraft.core.NonNullList;
 import net.minecraft.network.chat.Component;

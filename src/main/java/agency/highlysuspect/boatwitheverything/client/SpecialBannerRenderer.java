@@ -1,9 +1,8 @@
-package agency.highlysuspect.boatwitheverything.special;
+package agency.highlysuspect.boatwitheverything.client;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
-import agency.highlysuspect.boatwitheverything.SpecialBoatRenderer;
-import agency.highlysuspect.boatwitheverything.cosmetic.RenderData;
-import agency.highlysuspect.boatwitheverything.mixin.cosmetic.AccessorBannerRenderer;
+import agency.highlysuspect.boatwitheverything.RenderData;
+import agency.highlysuspect.boatwitheverything.mixin.client.AccessorBannerRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.datafixers.util.Pair;

@@ -1,4 +1,4 @@
-package agency.highlysuspect.boatwitheverything;
+package agency.highlysuspect.boatwitheverything.container;
 
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.player.Player;

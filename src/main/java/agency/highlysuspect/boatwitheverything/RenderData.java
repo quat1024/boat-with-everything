@@ -1,6 +1,5 @@
-package agency.highlysuspect.boatwitheverything.cosmetic;
+package agency.highlysuspect.boatwitheverything;
 
-import agency.highlysuspect.boatwitheverything.BoatExt;
 import net.minecraft.world.entity.vehicle.Boat;
 
 /**

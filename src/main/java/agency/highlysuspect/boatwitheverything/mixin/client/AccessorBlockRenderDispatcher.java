@@ -1,4 +1,4 @@
-package agency.highlysuspect.boatwitheverything.mixin;
+package agency.highlysuspect.boatwitheverything.mixin.client;
 
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.block.BlockRenderDispatcher;

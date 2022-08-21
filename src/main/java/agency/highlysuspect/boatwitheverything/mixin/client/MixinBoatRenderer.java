@@ -1,8 +1,8 @@
-package agency.highlysuspect.boatwitheverything.mixin;
+package agency.highlysuspect.boatwitheverything.mixin.client;
 
 import agency.highlysuspect.boatwitheverything.BoatDuck;
 import agency.highlysuspect.boatwitheverything.BoatExt;
-import agency.highlysuspect.boatwitheverything.SpecialBoatRenderer;
+import agency.highlysuspect.boatwitheverything.client.SpecialBoatRenderer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;

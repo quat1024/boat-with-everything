@@ -1,6 +1,7 @@
 package agency.highlysuspect.boatwitheverything;
 
-import agency.highlysuspect.boatwitheverything.cosmetic.RenderData;
+import agency.highlysuspect.boatwitheverything.container.ContainerExt;
+import agency.highlysuspect.boatwitheverything.special.SpecialBoatRules;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.state.BlockState;

@@ -1,4 +1,6 @@
-package agency.highlysuspect.boatwitheverything;
+package agency.highlysuspect.boatwitheverything.special;
+import agency.highlysuspect.boatwitheverything.BoatExt;
+import agency.highlysuspect.boatwitheverything.container.ContainerExt;
 import net.minecraft.core.BlockPos;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.chat.Component;

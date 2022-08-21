@@ -19,7 +19,7 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "agency.highlysuspect.boatwitheverything.FabricEntrypoint"
+			"agency.highlysuspect.boatwitheverything.fabric.FabricEntrypoint"
     ]
   },
   "mixins": [

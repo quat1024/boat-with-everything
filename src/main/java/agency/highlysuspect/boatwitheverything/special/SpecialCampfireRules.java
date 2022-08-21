@@ -1,8 +1,7 @@
 package agency.highlysuspect.boatwitheverything.special;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
-import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
-import agency.highlysuspect.boatwitheverything.mixin.cosmetic.AccessorCampfireBlock;
+import agency.highlysuspect.boatwitheverything.mixin.AccessorCampfireBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
