@@ -3,6 +3,7 @@ package agency.highlysuspect.boatwitheverything.special;
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.SpecialBoatRules;
 import net.minecraft.sounds.SoundEvent;
+import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -20,6 +21,10 @@ public class SpecialDoorRules implements SpecialBoatRules {
 		this.closeWood = closeWood;
 		this.closeMetal = closeMetal;
 	}
+	
+	public static final SpecialDoorRules DOORS = new SpecialDoorRules(SoundEvents.WOODEN_DOOR_OPEN, SoundEvents.IRON_DOOR_OPEN, SoundEvents.WOODEN_DOOR_CLOSE, SoundEvents.IRON_DOOR_CLOSE);
+	public static final SpecialDoorRules TRAPDOORS = new SpecialDoorRules(SoundEvents.WOODEN_TRAPDOOR_OPEN, SoundEvents.IRON_TRAPDOOR_OPEN, SoundEvents.WOODEN_TRAPDOOR_CLOSE, SoundEvents.IRON_TRAPDOOR_CLOSE);
+	public static final SpecialDoorRules FENCE_GATES = new SpecialDoorRules(SoundEvents.FENCE_GATE_OPEN, SoundEvents.FENCE_GATE_OPEN, SoundEvents.FENCE_GATE_CLOSE, SoundEvents.FENCE_GATE_CLOSE);
 	
 	private final SoundEvent openWood, openMetal, closeWood, closeMetal;
 	

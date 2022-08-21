@@ -101,7 +101,7 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 				container = null;
 				renderAttachmentData = null;
 			} else {
-				rules = SpecialBoatRules.get(state);
+				rules = BoatWithEverything.INSTANCE.rulesRegistry.get().get(state);
 				
 				//only swap out the container if a different implementation was returned w/ the new blockstate
 				//makes it so stuff like opening the barrel doesn't delete the container because the blockstate changed
