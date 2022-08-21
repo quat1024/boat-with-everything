@@ -2,8 +2,8 @@ package agency.highlysuspect.boatwitheverything;
 
 import agency.highlysuspect.boatwitheverything.block.BoatLightBlock;
 import agency.highlysuspect.boatwitheverything.block.BoatLightBlockEntity;
-import agency.highlysuspect.boatwitheverything.special.SpecialBarrelRules;
 import agency.highlysuspect.boatwitheverything.special.BoatRules;
+import agency.highlysuspect.boatwitheverything.special.SpecialBarrelRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialCampfireRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialChestRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialConcretePowderRules;
@@ -103,27 +103,27 @@ public class BoatWithEverything {
 		// bed (set spawn? or maybe just differnet pose while riding? idk)
 		
 		//special containers
-		r.put(new SpecialBarrelRules(), Blocks.BARREL);
-		r.put(new SpecialChestRules(), Blocks.CHEST);
-		r.put(new SpecialEnderChestRules(), Blocks.ENDER_CHEST);
-		r.put(new SpecialDropperRules(), Blocks.DROPPER);
-		r.put(new SpecialDispenserRules(), Blocks.DISPENSER);
-		r.put(new SpecialLecternRules(), Blocks.LECTERN);
+		r.putBlock(new SpecialBarrelRules(), Blocks.BARREL);
+		r.putBlock(new SpecialChestRules(), Blocks.CHEST);
+		r.putBlock(new SpecialEnderChestRules(), Blocks.ENDER_CHEST);
+		r.putBlock(new SpecialDropperRules(), Blocks.DROPPER);
+		r.putBlock(new SpecialDispenserRules(), Blocks.DISPENSER);
+		r.putBlock(new SpecialLecternRules(), Blocks.LECTERN);
 		
 		//generic containers
-		r.put(new SpecialContainerlessMenuRules(LoomMenu::new), Blocks.LOOM);
-		r.put(new SpecialContainerlessMenuRules(CartographyTableMenu::new), Blocks.CARTOGRAPHY_TABLE);
-		r.put(new SpecialContainerlessMenuRules(StonecutterMenu::new), Blocks.STONECUTTER);
-		r.put(new SpecialContainerlessMenuRules(CraftingMenu::new), Blocks.CRAFTING_TABLE);
-		r.put(new SpecialContainerlessMenuRules(GrindstoneMenu::new), Blocks.GRINDSTONE);
-		r.put(new SpecialContainerlessMenuRules(SmithingMenu::new), Blocks.SMITHING_TABLE); //see MixinAbstractContainerMenu
+		r.putBlock(new SpecialContainerlessMenuRules(LoomMenu::new), Blocks.LOOM);
+		r.putBlock(new SpecialContainerlessMenuRules(CartographyTableMenu::new), Blocks.CARTOGRAPHY_TABLE);
+		r.putBlock(new SpecialContainerlessMenuRules(StonecutterMenu::new), Blocks.STONECUTTER);
+		r.putBlock(new SpecialContainerlessMenuRules(CraftingMenu::new), Blocks.CRAFTING_TABLE);
+		r.putBlock(new SpecialContainerlessMenuRules(GrindstoneMenu::new), Blocks.GRINDSTONE);
+		r.putBlock(new SpecialContainerlessMenuRules(SmithingMenu::new), Blocks.SMITHING_TABLE); //see MixinAbstractContainerMenu
 		
 		//flower momer
-		r.put(new SpecialFlowerPotRules.Unpotted(), Blocks.FLOWER_POT);
-		r.put(new SpecialFlowerPotRules.Potted(), BlockTags.FLOWER_POTS);
+		r.putBlock(new SpecialFlowerPotRules.Unpotted(), Blocks.FLOWER_POT);
+		r.putBlockTag(new SpecialFlowerPotRules.Potted(), BlockTags.FLOWER_POTS);
 		
 		//conk crete
-		r.put(new SpecialConcretePowderRules(), ConcretePowderBlock.class);
+		r.putClass(new SpecialConcretePowderRules(), ConcretePowderBlock.class);
 		
 		//banners, carpets, and things that don't take up space
 		r.putMixed(new BoatRules() {
@@ -134,9 +134,9 @@ public class BoatWithEverything {
 		}, BlockTags.BANNERS, BlockTags.WOOL_CARPETS, Blocks.DRAGON_HEAD);
 		
 		//doors
-		r.put(SpecialDoorRules.DOORS, BlockTags.DOORS);
-		r.put(SpecialDoorRules.TRAPDOORS, BlockTags.TRAPDOORS);
-		r.put(SpecialDoorRules.FENCE_GATES, BlockTags.FENCE_GATES);
+		r.putBlockTag(SpecialDoorRules.DOORS, BlockTags.DOORS);
+		r.putBlockTag(SpecialDoorRules.TRAPDOORS, BlockTags.TRAPDOORS);
+		r.putBlockTag(SpecialDoorRules.FENCE_GATES, BlockTags.FENCE_GATES);
 		
 		//heavy blocks
 		r.putMixed(new BoatRules() {
@@ -147,11 +147,11 @@ public class BoatWithEverything {
 		}, Blocks.ANVIL, Blocks.BEDROCK, BlockTags.BEACON_BASE_BLOCKS);
 		
 		//odds and ends
-		r.put(new SpecialSpongeRules(), Blocks.SPONGE);
-		r.put(new SpecialTntRules(), Blocks.TNT);
-		r.put(new SpecialLampRules(), Blocks.REDSTONE_LAMP);
-		r.put(new SpecialNoteBlockRules(), Blocks.NOTE_BLOCK);
-		r.put(new SpecialCampfireRules(), Blocks.CAMPFIRE);
+		r.putBlock(new SpecialSpongeRules(), Blocks.SPONGE);
+		r.putBlock(new SpecialTntRules(), Blocks.TNT);
+		r.putBlock(new SpecialLampRules(), Blocks.REDSTONE_LAMP);
+		r.putBlock(new SpecialNoteBlockRules(), Blocks.NOTE_BLOCK);
+		r.putBlock(new SpecialCampfireRules(), Blocks.CAMPFIRE);
 		
 		return r;
 	}

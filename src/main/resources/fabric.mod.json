@@ -20,7 +20,10 @@
   "entrypoints": {
     "main": [
 			"agency.highlysuspect.boatwitheverything.fabric.FabricEntrypoint"
-    ]
+    ],
+		"client": [
+			"agency.highlysuspect.boatwitheverything.fabric.FabricClientEntrypoint"
+		]
   },
   "mixins": [
     "boat-with-everything.mixins.json"

@@ -2,7 +2,7 @@ package agency.highlysuspect.boatwitheverything.mixin.client;
 
 import agency.highlysuspect.boatwitheverything.BoatDuck;
 import agency.highlysuspect.boatwitheverything.BoatExt;
-import agency.highlysuspect.boatwitheverything.client.SpecialBoatRenderer;
+import agency.highlysuspect.boatwitheverything.client.BoatWithEverythingClient;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Vector3f;
 import net.minecraft.client.renderer.MultiBufferSource;
@@ -40,7 +40,9 @@ public class MixinBoatRenderer {
 		pose.scale(0.8f, 0.8f, 0.8f); //Scale down so the block fits inside the boat
 		
 		try {
-			SpecialBoatRenderer.get(state).render(boat, ext, yaw, partialTicks, pose, bufs, light, state, ext.getItemStack());
+			BoatWithEverythingClient.INSTANCE.rendererRegistry.get()
+				.get(state)
+				.render(boat, ext, yaw, partialTicks, pose, bufs, light, state, ext.getItemStack());
 		} catch (Exception e) {
 			if(!noSpamPls) e.printStackTrace();
 			noSpamPls = true;
