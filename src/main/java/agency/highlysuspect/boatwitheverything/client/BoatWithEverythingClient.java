@@ -52,6 +52,8 @@ public class BoatWithEverythingClient {
 			SpecialBoatRenderer.DEFAULT.render(boat, ext, yaw, pt, pose, bufs, light, state_, stack);
 		}, (state) -> state.getRenderShape() == RenderShape.ENTITYBLOCK_ANIMATED && state.hasProperty(BlockStateProperties.HORIZONTAL_FACING));
 		
+		services.addMoreRenderers(r);
+		
 		return r;
 	}
 }

@@ -42,8 +42,6 @@ public class KahurIntegration {
 			BlockState state = ext.getBlockState();
 			if(state == null || state.getBlock() != KBlocks.CONFETTI_CANNON) return;
 			
-			BlockPos cannonPos = new BlockPos(BoatRules.positionOfBlock(boat).add(0, 0.5, 0));
-			
 			boolean isPowered = state.getValue(BlockStateProperties.TRIGGERED);
 			boolean shouldPower = BoatRules.isPowered(boat);
 			if(isPowered != shouldPower) {
