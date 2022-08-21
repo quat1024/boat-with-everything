@@ -1,5 +1,6 @@
 package agency.highlysuspect.boatwitheverything;
 
+import agency.highlysuspect.boatwitheverything.special.BoatRules;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -12,5 +13,9 @@ public interface LoaderServices {
 	
 	interface Registerer<T> {
 		void register(ResourceLocation id, T thing);
+	}
+	
+	default void addMoreRules(WeirdBlockRegistryThing<BoatRules> rules) {
+		
 	}
 }

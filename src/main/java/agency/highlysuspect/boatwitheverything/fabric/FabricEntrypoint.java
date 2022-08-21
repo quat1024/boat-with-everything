@@ -2,7 +2,10 @@ package agency.highlysuspect.boatwitheverything.fabric;
 
 import agency.highlysuspect.boatwitheverything.BoatWithEverything;
 import agency.highlysuspect.boatwitheverything.LoaderServices;
+import agency.highlysuspect.boatwitheverything.WeirdBlockRegistryThing;
+import agency.highlysuspect.boatwitheverything.special.BoatRules;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.loader.api.FabricLoader;
 import net.minecraft.core.Registry;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntityType;
@@ -25,6 +28,21 @@ public class FabricEntrypoint implements ModInitializer {
 			@Override
 			public void blockEntityTypes(Consumer<Registerer<BlockEntityType<?>>> reg) {
 				reg.accept(vanillaRegisterer(Registry.BLOCK_ENTITY_TYPE));
+			}
+			
+			@Override
+			public void addMoreRules(WeirdBlockRegistryThing<BoatRules> rules) {
+				if(FabricLoader.getInstance().isModLoaded("kahur")) {
+					try {
+						//I might be too cautious about classloading here
+						Class.forName("agency.highlysuspect.boatwitheverything.fabric.integration.kahur.KahurIntegration")
+							.getDeclaredMethod("addMoreRules", WeirdBlockRegistryThing.class)
+							.invoke(null, rules);
+					} catch (ReflectiveOperationException e) {
+						//Oh well
+						e.printStackTrace();
+					}
+				}
 			}
 		});
 	}

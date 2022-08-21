@@ -153,6 +153,8 @@ public class BoatWithEverything {
 		r.putBlock(new SpecialNoteBlockRules(), Blocks.NOTE_BLOCK);
 		r.putBlock(new SpecialCampfireRules(), Blocks.CAMPFIRE);
 		
+		services.addMoreRules(r);
+		
 		return r;
 	}
 	
