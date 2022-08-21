@@ -50,6 +50,7 @@ import net.minecraft.world.level.block.entity.BlockEntityTicker;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.BlockHitResult;
+import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -236,31 +237,38 @@ public class BoatWithEverything {
 		//Big TODO
 		ItemStack stack = player.getItemInHand(hand);
 		if(stack.getItem() instanceof BlockItem bi) {
-			//Turn the player momentarily to fool anything using BlockPlaceContext#getDirection or similar
+			//Owo what's this? A leaky abstraction? Never seen that in this mod before
+			if(bi.getBlock() instanceof ConcretePowderBlock) return bi.getBlock().defaultBlockState();
+			
+			//Turn the player momentarily, to fool anything using BlockPlaceContext#getDirection or similar.
 			float oldYRot = player.getYRot();
 			float oldYHeadRot = player.getYHeadRot();
 			float oldYRot0 = player.yRotO;
-			
 			float relativeDirection = Mth.wrapDegrees(player.getYRot() - boat.getYRot());
-			player.setYRot(relativeDirection); //used by BlockPlaceContext#getDirection
-			player.setYHeadRot(relativeDirection); //used by #getNearestLookingDirection but only on the server lol
-			player.yRotO = relativeDirection; //idk cant hurt ?
 			
-			//Owo what's this? A leaky abstraction? Never seen that in this mod before
-			BlockState state;
-			if(bi.getBlock() instanceof ConcretePowderBlock) state = bi.getBlock().defaultBlockState();
-			else state = bi.getBlock().getStateForPlacement(new BlockPlaceContext(
-				player, hand, stack, 
-				new BlockHitResult(boat.position(), Direction.UP, boat.blockPosition(), true)
-			));
+			//Also move the player, to fool anyone using the difference between the player's and block's position. Blame Kahur.
+			Vec3 oldPos = player.position();
 			
-			//restore player position
-			player.setYRot(oldYRot);
-			player.setYHeadRot(oldYHeadRot);
-			player.yRotO = oldYRot0;
+			Vec3 boatBlockPos = BoatRules.positionOfBlock(boat);
+			Vec3 funkyPos = player.position().subtract(boatBlockPos).yRot(boat.getYRot() * Mth.DEG_TO_RAD).add(boatBlockPos);
 			
-			//return
-			return state; 
+			try {
+				player.setYRot(relativeDirection); //used by BlockPlaceContext#getDirection
+				player.setYHeadRot(relativeDirection); //used by #getNearestLookingDirection but only on the server lol
+				player.yRotO = relativeDirection; //idk cant hurt ?
+				((EntityDuck) player).setPositionSuperRawSuperDangerous(funkyPos);
+				
+				return bi.getBlock().getStateForPlacement(new BlockPlaceContext(
+					player, hand, stack,
+					new BlockHitResult(boat.position(), Direction.UP, boat.blockPosition(), true)
+				));
+			} finally {
+				//restore player position. Note that "finally" blocks run before returning from the method.
+				player.setYRot(oldYRot);
+				player.setYHeadRot(oldYHeadRot);
+				player.yRotO = oldYRot0;
+				((EntityDuck) player).setPositionSuperRawSuperDangerous(oldPos);
+			}
 		} else return null;
 	}
 	
