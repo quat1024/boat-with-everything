@@ -126,12 +126,12 @@ public class BoatWithEverything {
 		r.put(new SpecialConcretePowderRules(), ConcretePowderBlock.class);
 		
 		//banners, carpets, and things that don't take up space
-		r.put(new SpecialBoatRules() {
+		r.putMixed(new SpecialBoatRules() {
 			@Override
 			public boolean consumesPassengerSlot() {
 				return false;
 			}
-		}, BlockTags.BANNERS, BlockTags.WOOL_CARPETS);
+		}, BlockTags.BANNERS, BlockTags.WOOL_CARPETS, Blocks.DRAGON_HEAD);
 		
 		//doors
 		r.put(SpecialDoorRules.DOORS, BlockTags.DOORS);
