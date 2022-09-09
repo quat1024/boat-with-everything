@@ -165,6 +165,10 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 			return boat().getEntityData().get(DATA_ID_LOCKED);
 		}
 		
+		public void setLocked(boolean locked) {
+			boat().getEntityData().set(DATA_ID_LOCKED, locked);
+		}
+		
 		@Override
 		public void clickWithWaterBucket() {
 			setForceSink();

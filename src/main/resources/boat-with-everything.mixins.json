@@ -17,7 +17,9 @@
 		"MixinBoat_ContainerEntity",
 		"MixinEntity",
 		"MixinEntitySelector",
-		"MixinItemCombinerMenu"
+		"MixinItemCombinerMenu",
+		"modfest.MixinBoat_Modfest",
+		"modfest.MixinEntityDataSerializers_Modfest"
   ],
 	"client": [
 		"client.AccessorBlockRenderDispatcher",
