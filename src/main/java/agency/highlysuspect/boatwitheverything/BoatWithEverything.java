@@ -31,7 +31,6 @@ import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.entity.vehicle.ChestBoat;
 import net.minecraft.world.inventory.CartographyTableMenu;
 import net.minecraft.world.inventory.CraftingMenu;
 import net.minecraft.world.inventory.GrindstoneMenu;
@@ -132,7 +131,7 @@ public class BoatWithEverything {
 			public boolean consumesPassengerSlot() {
 				return false;
 			}
-		}, BlockTags.BANNERS, BlockTags.WOOL_CARPETS, Blocks.DRAGON_HEAD);
+		}, BlockTags.BANNERS, BlockTags.CARPETS, Blocks.DRAGON_HEAD);
 		
 		//doors
 		r.putBlockTag(SpecialDoorRules.DOORS, BlockTags.DOORS);
@@ -189,7 +188,7 @@ public class BoatWithEverything {
 		ext.clearBlockState();
 		ext.clearItemStack();
 		
-		boat.playSound(SoundEvents.ITEM_FRAME_REMOVE_ITEM); //todo caption
+		Starboarding.playSound(boat, SoundEvents.ITEM_FRAME_REMOVE_ITEM); //todo caption
 		return player != null; //Only cancel vanilla damage handling if it was from a player punch.
 	}
 	
@@ -225,7 +224,7 @@ public class BoatWithEverything {
 			ext.setBlockState(placementState);
 			ext.setItemStack(held.split(1));
 			
-			boat.playSound(placementState.getSoundType().getPlaceSound());
+			Starboarding.playSound(boat, placementState.getSoundType().getPlaceSound());
 			
 			return InteractionResult.SUCCESS;
 		}
@@ -273,7 +272,8 @@ public class BoatWithEverything {
 	}
 	
 	private boolean canAddBlockState(Boat boat, BoatExt ext, BlockState state) {
-		if(boat instanceof ChestBoat || ext.hasBlockState()) return false;
+		//if(boat instanceof ChestBoat || ext.hasBlockState()) return false;
+		if(ext.hasBlockState()) return false;
 		return boat.getPassengers().size() < ext.getMaxPassengers();
 	}
 }

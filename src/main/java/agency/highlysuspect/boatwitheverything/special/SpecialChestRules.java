@@ -3,6 +3,7 @@ package agency.highlysuspect.boatwitheverything.special;
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.HackyEntityUpdateIds;
 import agency.highlysuspect.boatwitheverything.RenderData;
+import agency.highlysuspect.boatwitheverything.Starboarding;
 import agency.highlysuspect.boatwitheverything.container.ContainerExt;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
@@ -51,8 +52,8 @@ public class SpecialChestRules implements BoatRules {
 			if(wasOpen != shouldOpen) {
 				boat.level.broadcastEntityEvent(boat, shouldOpen ? HackyEntityUpdateIds.OPEN_CHEST : HackyEntityUpdateIds.CLOSE_CHEST); //see MixinEntity_HackyBoatUpdates
 				
-				if(shouldOpen) boat.playSound(SoundEvents.CHEST_OPEN);
-				else boat.playSound(SoundEvents.CHEST_CLOSE);
+				if(shouldOpen) Starboarding.playSound(boat, SoundEvents.CHEST_OPEN);
+				else Starboarding.playSound(boat, SoundEvents.CHEST_CLOSE);
 			}
 			oldWatchers = watchers;
 		}

@@ -1,6 +1,7 @@
 package agency.highlysuspect.boatwitheverything.special;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
+import agency.highlysuspect.boatwitheverything.Starboarding;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
@@ -57,10 +58,10 @@ public class SpecialDoorRules implements BoatRules {
 	
 	private void playSound(BlockState state, Boat boat, boolean opening) {
 		if(opening) {
-			boat.playSound(state.getMaterial() == Material.METAL ? openMetal : openWood);
+			Starboarding.playSound(boat, state.getMaterial() == Material.METAL ? openMetal : openWood);
 			boat.gameEvent(GameEvent.BLOCK_OPEN);
 		}	else {
-			boat.playSound(state.getMaterial() == Material.METAL ? closeMetal : closeWood);
+			Starboarding.playSound(boat, state.getMaterial() == Material.METAL ? closeMetal : closeWood);
 			boat.gameEvent(GameEvent.BLOCK_CLOSE);
 		}
 	}

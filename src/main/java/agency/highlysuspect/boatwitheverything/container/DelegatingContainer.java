@@ -29,6 +29,6 @@ public class DelegatingContainer<T extends Container> implements Container {
 	@Override public boolean canPlaceItem(int i, ItemStack itemStack) {return delegate.canPlaceItem(i, itemStack);}
 	@Override public int countItem(Item item) {return delegate.countItem(item);}
 	@Override public boolean hasAnyOf(Set<Item> set) {return delegate.hasAnyOf(set);}
-	@Override public boolean hasAnyMatching(Predicate<ItemStack> predicate) {return delegate.hasAnyMatching(predicate);}
+	//@Override public boolean hasAnyMatching(Predicate<ItemStack> predicate) {return delegate.hasAnyMatching(predicate);}
 	@Override public void clearContent() {delegate.clearContent();}
 }

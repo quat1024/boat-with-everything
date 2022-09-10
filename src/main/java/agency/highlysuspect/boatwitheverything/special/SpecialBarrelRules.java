@@ -1,6 +1,7 @@
 package agency.highlysuspect.boatwitheverything.special;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
+import agency.highlysuspect.boatwitheverything.Starboarding;
 import agency.highlysuspect.boatwitheverything.container.ContainerExt;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.player.Inventory;
@@ -52,8 +53,8 @@ public class SpecialBarrelRules implements BoatRules {
 			if(wasOpen != shouldOpen) {
 				ext.setBlockState(currentState.setValue(BlockStateProperties.OPEN, shouldOpen));
 				
-				if(shouldOpen) boat.playSound(SoundEvents.BARREL_OPEN);
-				else boat.playSound(SoundEvents.BARREL_CLOSE);
+				if(shouldOpen) Starboarding.playSound(boat, SoundEvents.BARREL_OPEN);
+				else Starboarding.playSound(boat, SoundEvents.BARREL_CLOSE);
 			}
 		}
 	}

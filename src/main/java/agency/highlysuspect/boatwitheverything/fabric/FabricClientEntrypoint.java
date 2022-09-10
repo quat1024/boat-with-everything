@@ -13,17 +13,17 @@ public class FabricClientEntrypoint implements ClientModInitializer {
 		BoatWithEverythingClient.INSTANCE = new BoatWithEverythingClient(new ClientLoaderServices() {
 			@Override
 			public void addMoreRenderers(WeirdBlockRegistryThing<SpecialBoatRenderer> r) {
-				if(FabricLoader.getInstance().isModLoaded("kahur")) {
-					try {
-						//I might be too cautious about classloading here
-						Class.forName("agency.highlysuspect.boatwitheverything.fabric.integration.kahur.KahurIntegrationClient")
-							.getDeclaredMethod("addMoreRenderers", WeirdBlockRegistryThing.class)
-							.invoke(null, r);
-					} catch (ReflectiveOperationException e) {
-						//Oh well
-						e.printStackTrace();
-					}
-				}
+//				if(FabricLoader.getInstance().isModLoaded("kahur")) {
+//					try {
+//						//I might be too cautious about classloading here
+//						Class.forName("agency.highlysuspect.boatwitheverything.fabric.integration.kahur.KahurIntegrationClient")
+//							.getDeclaredMethod("addMoreRenderers", WeirdBlockRegistryThing.class)
+//							.invoke(null, r);
+//					} catch (ReflectiveOperationException e) {
+//						//Oh well
+//						e.printStackTrace();
+//					}
+//				}
 			}
 		});
 	}

@@ -17,17 +17,17 @@ repositories {
 		content { includeGroup("com.terraformersmc") }
 	}
 	
-	//Lucium and lib39, just for runtime
-	maven {
-		url = "https://repo.sleeping.town"
-		content { includeGroup("com.unascribed") }
-	}
-	
-	//Modrinth, for Kahur (integration)
-	maven {
-		url = "https://api.modrinth.com/maven"
-		content { includeGroup("maven.modrinth") }
-	}
+//	//Lucium and lib39, just for runtime
+//	maven {
+//		url = "https://repo.sleeping.town"
+//		content { includeGroup("com.unascribed") }
+//	}
+//	
+//	//Modrinth, for Kahur (integration)
+//	maven {
+//		url = "https://api.modrinth.com/maven"
+//		content { includeGroup("maven.modrinth") }
+//	}
 }
 
 dependencies {
@@ -37,17 +37,17 @@ dependencies {
 	modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
 	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	
-	// Kahur :)
-	modImplementation "maven.modrinth:kahur:1.21"
-	modLocalRuntime "com.unascribed:lib39-core:1.1.10"
-	modLocalRuntime "com.unascribed:lib39-lockpick:1.1.10"
-	modLocalRuntime "com.unascribed:lib39-recoil:1.1.10"
-	modLocalRuntime "com.unascribed:lib39-ripple:1.1.10"
-	modLocalRuntime "com.unascribed:lib39-util:1.1.10"
-	
-	// Lets make the dev workspace epic
-	modLocalRuntime "com.terraformersmc:modmenu:4.0.6"
-	modLocalRuntime "com.unascribed:lucium:1.1"
+//	// Kahur :)
+//	modImplementation "maven.modrinth:kahur:1.21"
+//	modLocalRuntime "com.unascribed:lib39-core:1.1.10"
+//	modLocalRuntime "com.unascribed:lib39-lockpick:1.1.10"
+//	modLocalRuntime "com.unascribed:lib39-recoil:1.1.10"
+//	modLocalRuntime "com.unascribed:lib39-ripple:1.1.10"
+//	modLocalRuntime "com.unascribed:lib39-util:1.1.10"
+//	
+//	// Lets make the dev workspace epic
+//	modLocalRuntime "com.terraformersmc:modmenu:4.0.6"
+//	modLocalRuntime "com.unascribed:lucium:1.1"
 }
 
 processResources {

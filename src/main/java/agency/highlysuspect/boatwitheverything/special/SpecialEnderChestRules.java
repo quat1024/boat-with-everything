@@ -2,6 +2,7 @@ package agency.highlysuspect.boatwitheverything.special;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
 import agency.highlysuspect.boatwitheverything.HackyEntityUpdateIds;
+import agency.highlysuspect.boatwitheverything.Starboarding;
 import agency.highlysuspect.boatwitheverything.container.ContainerExt;
 import agency.highlysuspect.boatwitheverything.container.DelegatingContainer;
 import agency.highlysuspect.boatwitheverything.mixin.AccessorSimpleContainer;
@@ -70,8 +71,8 @@ public class SpecialEnderChestRules implements BoatRules {
 			if(wasOpen != shouldOpen) {
 				boat.level.broadcastEntityEvent(boat, shouldOpen ? HackyEntityUpdateIds.OPEN_CHEST : HackyEntityUpdateIds.CLOSE_CHEST); //see MixinEntity_HackyBoatUpdates
 				
-				if(shouldOpen) boat.playSound(SoundEvents.ENDER_CHEST_OPEN);
-				else boat.playSound(SoundEvents.ENDER_CHEST_CLOSE);
+				if(shouldOpen) Starboarding.playSound(boat, SoundEvents.ENDER_CHEST_OPEN);
+				else Starboarding.playSound(boat, SoundEvents.ENDER_CHEST_CLOSE);
 			}
 			oldWatchers = watchers;
 		}

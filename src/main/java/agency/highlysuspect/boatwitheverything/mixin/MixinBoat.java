@@ -34,7 +34,9 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
+import org.spongepowered.asm.mixin.injection.Constant;
 import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.ModifyConstant;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
@@ -137,7 +139,9 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		
 		@Override
 		public int getMaxPassengers() {
-			return MixinBoat.this.getMaxPassengers();
+			//return MixinBoat.this.getMaxPassengers();
+			BoatRules rules = ext.getRules();
+			return rules != null && rules.consumesPassengerSlot() ? 1 : 2;
 		}
 		
 		@Override
@@ -194,8 +198,9 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 		if(BoatWithEverything.INSTANCE.hurt(boat(), ext, src)) cir.setReturnValue(false);
 	}
 	
-	@Inject(method = "destroy", at = @At("RETURN"))
-	public void whenDestroying(DamageSource source, CallbackInfo ci) {
+	//@Inject(method = "destroy", at = @At("RETURN"))
+	@Inject(method = "hurt", at = @At(value = "INVOKE", target = "Lnet/minecraft/world/entity/vehicle/Boat;spawnAtLocation(Lnet/minecraft/world/level/ItemLike;)Lnet/minecraft/world/entity/item/ItemEntity;"))
+	public void whenDestroying(DamageSource damageSource, float f, CallbackInfoReturnable<Boolean> cir) {
 		boat().spawnAtLocation(ext.getItemStack());
 		ext.clearBlockState();
 		ext.clearItemStack();
@@ -307,16 +312,23 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	
 	// passenger tweaks //
 	
-	@Inject(method = "getMaxPassengers", at = @At("HEAD"), cancellable = true)
-	protected void whenCountingMaxPassengers(CallbackInfoReturnable<Integer> cir) {
-		BoatRules rules = ext.getRules();
-		if(rules != null && rules.consumesPassengerSlot()) cir.setReturnValue(1);
-	}
+//	@Inject(method = "getMaxPassengers", at = @At("HEAD"), cancellable = true)
+//	protected void whenCountingMaxPassengers(CallbackInfoReturnable<Integer> cir) {
+//		BoatRules rules = ext.getRules();
+//		if(rules != null && rules.consumesPassengerSlot()) cir.setReturnValue(1);
+//	}
+//	
+//	@Inject(method = "getSinglePassengerXOffset", at = @At("HEAD"), cancellable = true)
+//	protected void whenOffsettingSinglePassenger(CallbackInfoReturnable<Float> cir) {
+//		BoatRules rules = ext.getRules();
+//		if(rules != null && rules.consumesPassengerSlot()) cir.setReturnValue(0.15f); //same as ChestBoat
+//	}
 	
-	@Inject(method = "getSinglePassengerXOffset", at = @At("HEAD"), cancellable = true)
-	protected void whenOffsettingSinglePassenger(CallbackInfoReturnable<Float> cir) {
+	@ModifyConstant(method = "canAddPassenger", constant = @Constant(intValue = 2))
+	protected int bwe$canAddPassenger(int maxPassengers) {
 		BoatRules rules = ext.getRules();
-		if(rules != null && rules.consumesPassengerSlot()) cir.setReturnValue(0.15f); //same as ChestBoat
+		if(rules != null && rules.consumesPassengerSlot()) return maxPassengers - 1;
+		else return maxPassengers;
 	}
 	
 	// helper //
@@ -329,6 +341,4 @@ public abstract class MixinBoat extends Entity implements BoatDuck {
 	public BoatExt bwe$getExt() {
 		return ext;
 	}
-	
-	@Shadow protected abstract int getMaxPassengers();
 }

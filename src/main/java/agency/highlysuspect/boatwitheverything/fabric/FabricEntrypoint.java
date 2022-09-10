@@ -32,17 +32,17 @@ public class FabricEntrypoint implements ModInitializer {
 			
 			@Override
 			public void addMoreRules(WeirdBlockRegistryThing<BoatRules> rules) {
-				if(FabricLoader.getInstance().isModLoaded("kahur")) {
-					try {
-						//I might be too cautious about classloading here
-						Class.forName("agency.highlysuspect.boatwitheverything.fabric.integration.kahur.KahurIntegration")
-							.getDeclaredMethod("addMoreRules", WeirdBlockRegistryThing.class)
-							.invoke(null, rules);
-					} catch (ReflectiveOperationException e) {
-						//Oh well
-						e.printStackTrace();
-					}
-				}
+//				if(FabricLoader.getInstance().isModLoaded("kahur")) {
+//					try {
+//						//I might be too cautious about classloading here
+//						Class.forName("agency.highlysuspect.boatwitheverything.fabric.integration.kahur.KahurIntegration")
+//							.getDeclaredMethod("addMoreRules", WeirdBlockRegistryThing.class)
+//							.invoke(null, rules);
+//					} catch (ReflectiveOperationException e) {
+//						//Oh well
+//						e.printStackTrace();
+//					}
+//				}
 			}
 		});
 	}

@@ -1,12 +1,12 @@
 package agency.highlysuspect.boatwitheverything.special;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
+import agency.highlysuspect.boatwitheverything.Starboarding;
 import agency.highlysuspect.boatwitheverything.mixin.AccessorCampfireBlock;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.player.Player;
@@ -19,6 +19,8 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
+
+import java.util.Random;
 
 public class SpecialCampfireRules implements BoatRules {
 	@Override
@@ -56,13 +58,13 @@ public class SpecialCampfireRules implements BoatRules {
 	public void dowse(Boat boat, BoatExt ext, BlockState state) {
 		ext.setBlockState(state.setValue(BlockStateProperties.LIT, false));
 		
-		boat.playSound(SoundEvents.GENERIC_EXTINGUISH_FIRE);
+		Starboarding.playSound(boat, SoundEvents.GENERIC_EXTINGUISH_FIRE);
 		for(int i = 0; i < 20; i++) particle(boat, ext, state, true);
 	}
 	
 	//Based on copy from CampfireBlock.makeParticles, uses vec3 instead of blockpos.
 	public void particle(Boat boat, BoatExt ext, BlockState state, boolean smoky) {
-		RandomSource r = boat.level.getRandom();
+		Random r = boat.level.getRandom();
 		Vec3 campfirePos = BoatRules.positionOfBlock(boat);
 		SimpleParticleType type = state.getValue(BlockStateProperties.SIGNAL_FIRE) ? ParticleTypes.CAMPFIRE_SIGNAL_SMOKE : ParticleTypes.CAMPFIRE_COSY_SMOKE;
 		
@@ -84,7 +86,7 @@ public class SpecialCampfireRules implements BoatRules {
 		}
 	}
 	
-	private static double rflip(RandomSource r, double v) {
+	private static double rflip(Random r, double v) {
 		return r.nextBoolean() ? -v : v;
 	}
 	

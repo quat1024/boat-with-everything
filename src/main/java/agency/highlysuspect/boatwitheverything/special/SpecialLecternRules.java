@@ -1,6 +1,7 @@
 package agency.highlysuspect.boatwitheverything.special;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
+import agency.highlysuspect.boatwitheverything.Starboarding;
 import agency.highlysuspect.boatwitheverything.container.ContainerExt;
 import net.minecraft.core.NonNullList;
 import net.minecraft.nbt.CompoundTag;
@@ -35,7 +36,7 @@ public class SpecialLecternRules implements BoatRules {
 		ItemStack held = player.getItemInHand(hand);
 		if(!hasBook && held.is(ItemTags.LECTERN_BOOKS)) {
 			lec.setBook(held.split(1));
-			boat.playSound(SoundEvents.BOOK_PUT);
+			Starboarding.playSound(boat, SoundEvents.BOOK_PUT);
 			return InteractionResult.SUCCESS;
 		}
 		
