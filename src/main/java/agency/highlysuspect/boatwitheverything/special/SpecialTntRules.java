@@ -1,6 +1,7 @@
 package agency.highlysuspect.boatwitheverything.special;
 
 import agency.highlysuspect.boatwitheverything.BoatExt;
+import net.minecraft.core.BlockPos;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.damagesource.DamageSource;
@@ -34,6 +35,6 @@ public class SpecialTntRules implements BoatRules {
 		PrimedTnt primedTnt = new PrimedTnt(boat.level, pos.x, pos.y, pos.z, null);
 		boat.level.addFreshEntity(primedTnt);
 		boat.level.playSound(null, primedTnt.getX(), primedTnt.getY(), primedTnt.getZ(), SoundEvents.TNT_PRIMED, SoundSource.BLOCKS, 1.0f, 1.0f);
-		boat.level.gameEvent(boat, GameEvent.PRIME_FUSE, pos);
+		boat.level.gameEvent(boat, GameEvent.PRIME_FUSE, new BlockPos(pos));
 	}
 }

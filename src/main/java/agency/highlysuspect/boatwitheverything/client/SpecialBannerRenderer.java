@@ -43,7 +43,7 @@ public class SpecialBannerRenderer implements SpecialBoatRenderer {
 		double gameTime = boat.level.getGameTime() + partialTicks;
 		
 		bannerBe.fromItem(stack, bannerBlock.getColor());
-		List<Pair<Holder<BannerPattern>, DyeColor>> patterns = bannerBe.getPatterns();
+		List<Pair<BannerPattern, DyeColor>> patterns = bannerBe.getPatterns();
 		
 		pose.mulPose(Vector3f.YP.rotationDegrees(180));
 		pose.translate(0, 0.9375, 0.59); //Sticks the banner's post into the side of the boat

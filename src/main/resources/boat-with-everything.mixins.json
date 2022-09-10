@@ -17,7 +17,8 @@
 		"MixinBoat_ContainerEntity",
 		"MixinEntity",
 		"MixinEntitySelector",
-		"MixinItemCombinerMenu"
+		"MixinItemCombinerMenu",
+		"backport1_18.MixinServerGamePacketListenerImpl"
   ],
 	"client": [
 		"client.AccessorBlockRenderDispatcher",

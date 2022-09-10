@@ -8,7 +8,6 @@ import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.Container;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Inventory;
@@ -20,8 +19,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.entity.HopperBlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
+import net.minecraft.world.level.levelgen.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
+
+import java.util.Random;
 
 public class SpecialDropperRules implements BoatRules {
 	@Override
@@ -107,7 +109,7 @@ public class SpecialDropperRules implements BoatRules {
 		
 		//Modified copy from DispenserBlockEntity. Look at this algorithm, isn't it neat?
 		//Picks a random non-empty slot with uniform probability, in a single pass, with constant scratch space
-		public int getRandomSlot(RandomSource randomSource) {
+		public int getRandomSlot(Random randomSource) {
 			int slot = -1, chance = 1;
 			for (int i = 0; i < getContainerSize(); i++) {
 				if (getItem(i).isEmpty() || randomSource.nextInt(chance++) != 0) continue;
@@ -136,10 +138,14 @@ public class SpecialDropperRules implements BoatRules {
 				//This isn't quite "vanilla dropper code mathed to be non-axis-aligned", but it looks pretty okay?
 				//I fudged the numbers until it looked similar to a vanilla dropper idk didnt think too hard. Its late
 				double g = boat.level.getRandom().nextDouble() * 0.1 + 0.2;
-				double spread = 0.103365; //0.0172275 * 6
-				Vec3 result = dropperNormal.scale(boat.level.getRandom().triangle(g * 1.8, spread * 1.2));
-				result = result.add(dropperTangent.scale(boat.level.getRandom().triangle(0, spread * 1.4)));
-				result = result.add(dropperBitangent.scale(boat.level.getRandom().triangle(0, spread * 1.4)));
+				double spread = 0.0075f * 3;
+//				Vec3 result = dropperNormal.scale(boat.level.getRandom().triangle(g * 1.8, spread * 1.2));
+//				result = result.add(dropperTangent.scale(boat.level.getRandom().triangle(0, spread * 1.4)));
+//				result = result.add(dropperBitangent.scale(boat.level.getRandom().triangle(0, spread * 1.4)));
+				//1.18 doesn't have triangle() and uses nextGaussian in the dropper code, hard to port, this is basially eyeballed
+				Vec3 result = dropperNormal.scale(g * boat.level.getRandom().nextDouble(0.5, 2));
+				result = result.add(dropperTangent.scale(g * 0.2 * boat.level.getRandom().nextGaussian()));
+				result = result.add(dropperBitangent.scale(g * 0.2 * boat.level.getRandom().nextGaussian()));
 				
 				ent.setDeltaMovement(result.x, result.y, result.z);
 				ent.setPickUpDelay(10);

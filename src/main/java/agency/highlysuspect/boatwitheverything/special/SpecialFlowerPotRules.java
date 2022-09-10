@@ -33,7 +33,7 @@ public class SpecialFlowerPotRules {
 			//give the previous contents to the player, game events etc
 			ItemStack yeah = new ItemStack(potted);
 			if(!player.addItem(yeah)) player.drop(yeah, false);
-			boat.level.gameEvent(player, GameEvent.BLOCK_CHANGE, boat.position());
+			boat.level.gameEvent(player, GameEvent.BLOCK_CHANGE, boat.blockPosition());
 			
 			return InteractionResult.SUCCESS;
 		}
@@ -72,7 +72,7 @@ public class SpecialFlowerPotRules {
 				ext.setItemStack(held.split(1));
 			}
 			player.awardStat(Stats.POT_FLOWER);
-			boat.level.gameEvent(player, GameEvent.BLOCK_CHANGE, boat.position());
+			boat.level.gameEvent(player, GameEvent.BLOCK_CHANGE, boat.blockPosition());
 			
 			return InteractionResult.SUCCESS;
 		}

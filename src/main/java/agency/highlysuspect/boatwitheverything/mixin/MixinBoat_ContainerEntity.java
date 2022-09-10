@@ -2,16 +2,14 @@ package agency.highlysuspect.boatwitheverything.mixin;
 
 import agency.highlysuspect.boatwitheverything.BoatDuck;
 import agency.highlysuspect.boatwitheverything.BoatExt;
+import agency.highlysuspect.boatwitheverything.backport1_18.MyCustomInventoryScreen;
 import agency.highlysuspect.boatwitheverything.container.ContainerExt;
 import agency.highlysuspect.boatwitheverything.special.BoatRules;
-import net.minecraft.core.NonNullList;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.Container;
 import net.minecraft.world.MenuProvider;
-import net.minecraft.world.entity.HasCustomInventoryScreen;
 import net.minecraft.world.entity.monster.piglin.PiglinAi;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.vehicle.Boat;
-import net.minecraft.world.entity.vehicle.ContainerEntity;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.gameevent.GameEvent;
 import org.jetbrains.annotations.Nullable;
@@ -19,12 +17,12 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Unique;
 
 @Mixin(Boat.class)
-public abstract class MixinBoat_ContainerEntity implements ContainerEntity, HasCustomInventoryScreen {
+public abstract class MixinBoat_ContainerEntity implements Container, MyCustomInventoryScreen {
 	// Grounding //
 	
 	@Override
 	public boolean stillValid(Player player) {
-		return isChestVehicleStillValid(player) && container() != null;
+		return container() != null && !boat().isRemoved() && boat().distanceToSqr(player) < 64;
 	}
 	
 	// Menu //
@@ -45,20 +43,6 @@ public abstract class MixinBoat_ContainerEntity implements ContainerEntity, HasC
 	}
 	
 	// Inventory //
-	
-	@Unique private static final NonNullList<ItemStack> EMPTY = NonNullList.withSize(0, ItemStack.EMPTY);
-	
-	@Override
-	public NonNullList<ItemStack> getItemStacks() {
-		ContainerExt cont = container();
-		return cont == null ? EMPTY : cont.getItemStacks();
-	}
-	
-	@Override
-	public void clearItemStacks() {
-		ContainerExt cont = container();
-		if(cont != null) cont.clearContent();
-	}
 	
 	@Override
 	public int getContainerSize() {
@@ -98,30 +82,38 @@ public abstract class MixinBoat_ContainerEntity implements ContainerEntity, HasC
 	
 	@Override
 	public void clearContent() {
-		clearItemStacks();
-	}
-	
-	// Loot table junk //
-	
-	@Nullable
-	@Override
-	public ResourceLocation getLootTable() {
-		return null;
+		ContainerExt cont = container();
+		if(cont != null) cont.clearContent();
 	}
 	
 	@Override
-	public void setLootTable(@Nullable ResourceLocation resourceLocation) {
-		//nope
+	public int getMaxStackSize() {
+		ContainerExt cont = container();
+		return cont == null ? Container.LARGE_MAX_STACK_SIZE : cont.getMaxStackSize();
 	}
 	
 	@Override
-	public long getLootTableSeed() {
-		return 0;
+	public void startOpen(Player player) {
+		ContainerExt cont = container();
+		if(cont != null) cont.startOpen(player);
 	}
 	
 	@Override
-	public void setLootTableSeed(long l) {
-		
+	public void stopOpen(Player player) {
+		ContainerExt cont = container();
+		if(cont != null) cont.stopOpen(player);
+	}
+	
+	@Override
+	public boolean isEmpty() {
+		ContainerExt cont = container();
+		return cont == null || cont.isEmpty();
+	}
+	
+	@Override
+	public boolean canPlaceItem(int slot, ItemStack stack) {
+		ContainerExt cont = container();
+		return cont == null || cont.canPlaceItem(slot, stack);
 	}
 	
 	// helpers //
