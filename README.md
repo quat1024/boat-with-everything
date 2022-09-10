@@ -1,6 +1,8 @@
 # Boat with Everything
 
-An exercise in how far you have to take a joke before it starts being funny.
+An exercise in how far you have to take a joke before it starts being funny. It's for Fabric but I'm evaluating how hard a Forge port would be (probably not very).
+
+This is for 1.19. 1.18.2 work is on the [1.18.2-back](https://github.com/quat1024/boat-with-everything/tree/1.18.2-back) branch.
 
 ## Inspiration
 
