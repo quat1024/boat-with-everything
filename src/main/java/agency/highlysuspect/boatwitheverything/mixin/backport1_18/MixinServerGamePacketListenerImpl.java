@@ -17,6 +17,7 @@ public class MixinServerGamePacketListenerImpl {
 	@Inject(method = "handlePlayerCommand", at = @At(value = "INVOKE", target = "Lnet/minecraft/server/level/ServerPlayer;resetLastActionTime()V", shift = At.Shift.AFTER), cancellable = true)
 	private void whenHandlingPlayerCommand(ServerboundPlayerCommandPacket cmd, CallbackInfo ci) {
 		ServerboundPlayerCommandPacket.Action action = cmd.getAction();
+		//"Entities that open custom inventory screens" is hardcoded to horses here pre-1.19
 		if(action == ServerboundPlayerCommandPacket.Action.OPEN_INVENTORY && player.getVehicle() instanceof MyCustomInventoryScreen my) {
 			my.openCustomInventoryScreen(player);
 			ci.cancel();
