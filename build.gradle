@@ -1,59 +1,38 @@
-plugins {
-	id 'fabric-loom' version '0.12-SNAPSHOT'
-	id 'maven-publish'
-}
-
-java {
-	toolchain {
-		sourceCompatibility = JavaLanguageVersion.of(17)
-	}
-	withSourcesJar()
-}
-
-repositories {
-	//ModMenu, just for runtime
-	maven {
-		url = "https://maven.terraformersmc.com"
-		content { includeGroup("com.terraformersmc") }
+subprojects {
+	apply plugin: "java"
+	java.toolchain.languageVersion = JavaLanguageVersion.of(17)
+	java.withSourcesJar()
+	
+	tasks.withType(JavaCompile).configureEach {
+		it.options.encoding = "UTF-8"
+		it.options.release = 17
 	}
 	
-	//Lucium and lib39, just for runtime
-	maven {
-		url = "https://repo.sleeping.town"
-		content { includeGroup("com.unascribed") }
+	tasks.withType(GenerateModuleMetadata) {
+		//This shit is broke
+		enabled = false
 	}
 	
-	//Modrinth, for Kahur (integration)
-	maven {
-		url = "https://api.modrinth.com/maven"
-		content { includeGroup("maven.modrinth") }
+	processResources {
+		inputs.property "version", project.version
+		
+		filesMatching(["**/fabric.mod.json", "**/mods.toml"]) {
+			expand "version": project.version
+		}
 	}
-}
-
-dependencies {
-	// To change the versions see the gradle.properties file
-	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	
-	// Kahur :)
-	modImplementation "maven.modrinth:kahur:1.21"
-	modLocalRuntime "com.unascribed:lib39-core:1.1.10"
-	modLocalRuntime "com.unascribed:lib39-lockpick:1.1.10"
-	modLocalRuntime "com.unascribed:lib39-recoil:1.1.10"
-	modLocalRuntime "com.unascribed:lib39-ripple:1.1.10"
-	modLocalRuntime "com.unascribed:lib39-util:1.1.10"
+	dependencies {
+		//This mf keeps disappearing on me
+		implementation "org.jetbrains:annotations:16.0.2"
+	}
 	
-	// Lets make the dev workspace epic
-	modLocalRuntime "com.terraformersmc:modmenu:4.0.6"
-	modLocalRuntime "com.unascribed:lucium:1.1"
-}
-
-processResources {
-	inputs.property "version", project.version
-
-	filesMatching("fabric.mod.json") {
-		expand "version": project.version
+	repositories {
+		maven {
+			name = "spunchbob"
+			url = "https://repo.spongepowered.org/repository/maven-public/"
+			content {
+				includeGroup "org.spongepowered"
+			}
+		}
 	}
 }

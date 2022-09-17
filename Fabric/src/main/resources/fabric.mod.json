@@ -26,8 +26,9 @@
 		]
   },
   "mixins": [
-    "boat-with-everything.mixins.json"
-  ],
+    "boat-with-everything.xplat.mixins.json",
+		"boat-with-everything.fabric.mixins.json"
+	],
 
   "depends": {
     "fabricloader": ">=0.14.6",

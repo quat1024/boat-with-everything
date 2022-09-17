@@ -1,10 +1,20 @@
 pluginManagement {
-    repositories {
-        maven {
-            name = 'Fabric'
-            url = 'https://maven.fabricmc.net/'
-        }
-        mavenCentral()
-        gradlePluginPortal()
-    }
+	repositories {
+		gradlePluginPortal()
+		maven {
+			name = "Fabric"
+			url = "https://maven.fabricmc.net/"
+		}
+		maven {
+			name = "Spongbob"
+			url = "https://repo.spongepowered.org/repository/maven-public/"
+		}
+	}
 }
+
+rootProject.name = "boat-with-everything"
+include(
+	"Xplat",
+	"Fabric",
+	"Forge"
+)

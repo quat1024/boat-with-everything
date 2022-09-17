@@ -1,0 +1,76 @@
+plugins {
+	id "fabric-loom" version "1.0-SNAPSHOT"
+	//id 'maven-publish'
+}
+
+archivesBaseName = "${rootProject.name}-fabric-${project.minecraft_version}"
+
+repositories {
+	//ModMenu, just for runtime
+	maven {
+		url = "https://maven.terraformersmc.com"
+		content { includeGroup("com.terraformersmc") }
+	}
+	
+	//Lucium and lib39, just for runtime
+	maven {
+		url = "https://repo.sleeping.town"
+		content { includeGroup("com.unascribed") }
+	}
+	
+	//Modrinth, for Kahur (integration)
+	maven {
+		url = "https://api.modrinth.com/maven"
+		content { includeGroup("maven.modrinth") }
+	}
+}
+
+dependencies {
+	minecraft "com.mojang:minecraft:${project.minecraft_version}"
+	mappings loom.officialMojangMappings()
+	modImplementation "net.fabricmc:fabric-loader:${project.fabric_loader_version}"
+	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}" //insert the usual "todo dep on less of fabric api" comment here
+	
+	// Kahur :)
+	modImplementation "maven.modrinth:kahur:1.21"
+	modLocalRuntime "com.unascribed:lib39-core:1.1.10"
+	modLocalRuntime "com.unascribed:lib39-lockpick:1.1.10"
+	modLocalRuntime "com.unascribed:lib39-recoil:1.1.10"
+	modLocalRuntime "com.unascribed:lib39-ripple:1.1.10"
+	modLocalRuntime "com.unascribed:lib39-util:1.1.10"
+	
+	// Make the dev workspace epic
+	modLocalRuntime "com.terraformersmc:modmenu:4.0.6"
+	modLocalRuntime "com.unascribed:lucium:1.1"
+	
+	//Xplat
+	compileOnly project(":Xplat")
+}
+
+//fold in xplat resources and sources
+processResources { from project(":Xplat").sourceSets.main.resources }
+tasks.withType(JavaCompile) { source(project(":Xplat").sourceSets.main.allSource) }
+
+//loom doesn't generate run configs by default in subprojects
+loom {
+	runs {
+		client {
+			client()
+			setConfigName("Fabric Client")
+			ideConfigGenerated(true)
+			runDir("run")
+		}
+		server {
+			server()
+			setConfigName("Fabric Server")
+			ideConfigGenerated(true)
+			runDir("run")
+		}
+	}
+	
+	//nor can it figure out the refmap name in this situation
+	mixin {
+		//TODO why the fuck is rootProject.name broken in this situation, i hate gradle
+		defaultRefmapName = "boat-with-everything.refmap.json"
+	}
+}
