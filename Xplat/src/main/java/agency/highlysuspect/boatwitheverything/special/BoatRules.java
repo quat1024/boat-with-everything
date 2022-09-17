@@ -15,6 +15,7 @@ import net.minecraft.world.entity.vehicle.Boat;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
+import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.gameevent.GameEvent;
 import net.minecraft.world.phys.Vec3;
@@ -82,7 +83,7 @@ public interface BoatRules {
 		if(cext != null) return new MenuProvider() {
 			@Override
 			public Component getDisplayName() {
-				return boat.getDisplayName();
+				return getContainerTitle(boat, ext);
 			}
 			
 			@Nullable
@@ -92,6 +93,14 @@ public interface BoatRules {
 			}
 		};
 		else return null;
+	}
+	
+	static Component getContainerTitle(Boat boat, BoatExt ext) {
+		//Silly special case because (at least on English) the smithing table name is too long and falls out of the gui lol
+		if(ext.getBlockState() != null && ext.getBlockState().getBlock() != Blocks.SMITHING_TABLE) {
+			return Component.translatable("boat-with-everything.boat-with", ext.getBlockState().getBlock().getName());
+		}
+		else return boat.getName();
 	}
 	
 	//////////

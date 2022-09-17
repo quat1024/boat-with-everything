@@ -1,8 +1,14 @@
 # Boat with Everything
 
-An exercise in how far you have to take a joke before it starts being funny. It's for Fabric but I'm evaluating how hard a Forge port would be (probably not very).
+An exercise in how far you have to take a joke before it starts being funny. It's for both the modloaders, you can stop complaining now!
 
-This is for 1.19. 1.18.2 work is on the [1.18.2-back](https://github.com/quat1024/boat-with-everything/tree/1.18.2-back) branch.
+This is the 1.19 xplat branch. 1.18.2-fabric work is on the [1.18.2-back](https://github.com/quat1024/boat-with-everything/tree/1.18.2-back) branch.
+
+Research:
+
+* Can it be a more ✨ *well-integrated* ✨ mod, i.e use modloader services instead of aggressively hacking up the boat entity class lol.
+  * Apparently it does have incompatibilities with some other fabric mods, but the one i checked was... poorly put together. Yes this mod is a giant "coremod" but I at least tried to be polite with my patches.
+* Make the 1.18.2 backport for forge too (I mean it's doable it's just going to be a giant pain in the tail)
 
 ## Inspiration
 

@@ -24,7 +24,7 @@ public class SpecialEnderChestRules implements BoatRules {
 		return new MenuProvider() {
 			@Override
 			public Component getDisplayName() {
-				return boat.getDisplayName();
+				return BoatRules.getContainerTitle(boat, ext);
 			}
 			
 			@Nullable
