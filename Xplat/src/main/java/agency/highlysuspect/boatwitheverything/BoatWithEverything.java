@@ -19,7 +19,6 @@ import agency.highlysuspect.boatwitheverything.special.SpecialNoteBlockRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialSpongeRules;
 import agency.highlysuspect.boatwitheverything.special.SpecialTntRules;
 import com.google.common.base.Suppliers;
-import net.fabricmc.fabric.api.object.builder.v1.block.entity.FabricBlockEntityTypeBuilder;
 import net.minecraft.core.Direction;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.sounds.SoundEvents;
@@ -77,7 +76,7 @@ public class BoatWithEverything {
 		});
 		
 		services.blockEntityTypes(reg -> {
-			boatLightBlockEntityType = FabricBlockEntityTypeBuilder.create(BoatLightBlockEntity::new, boatLightBlock).build();
+			boatLightBlockEntityType = services.makeBlockEntityType(BoatLightBlockEntity::new, boatLightBlock);
 			reg.register(id("light"), boatLightBlockEntityType);
 		});
 	}

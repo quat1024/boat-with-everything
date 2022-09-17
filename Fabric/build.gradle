@@ -48,8 +48,13 @@ dependencies {
 }
 
 //fold in xplat resources and sources
-processResources { from project(":Xplat").sourceSets.main.resources }
-tasks.withType(JavaCompile) { source(project(":Xplat").sourceSets.main.allSource) }
+processResources {
+	from project(":Xplat").sourceSets.main.resources
+}
+
+tasks.withType(JavaCompile) {
+	source(project(":Xplat").sourceSets.main.allSource)
+}
 
 //loom doesn't generate run configs by default in subprojects
 loom {
