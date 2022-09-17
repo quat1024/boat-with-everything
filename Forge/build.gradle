@@ -24,7 +24,7 @@ mixin {
 	
 	//Tell mixingradle which mixin configs exist
 	config "${rootProject.name}.xplat.mixins.json"
-	config "${rootProject.name}.forge.mixins.json"
+	//config "${rootProject.name}.forge.mixins.json" //atm don't need any forge specific mixins
 }
 
 dependencies {

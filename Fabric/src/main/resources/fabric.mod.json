@@ -14,7 +14,7 @@
   },
 
   "license": "LGPL-3.0-or-later",
-  "icon": "assets/boat-with-everything/icon.png",
+  "icon": "boat-with-everything/icon.png",
 
   "environment": "*",
   "entrypoints": {
@@ -26,8 +26,7 @@
 		]
   },
   "mixins": [
-    "boat-with-everything.xplat.mixins.json",
-		"boat-with-everything.fabric.mixins.json"
+    "boat-with-everything.xplat.mixins.json"
 	],
 
   "depends": {

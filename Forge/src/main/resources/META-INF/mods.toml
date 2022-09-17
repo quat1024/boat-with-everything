@@ -1,0 +1,28 @@
+modLoader="javafml"
+loaderVersion="[38,)"
+license="LGPL-3.0-or-later"
+issueTrackerURL="https://github.com/quat1024/boat-with-everything/issues"
+
+[[mods]]
+modId="boat_with_everything"
+
+# Forge explodes on modids that have hyphens in them, even though it states that restrictions on modids are because they need to be
+# valid resourcelocation namespaces. But then it also lets you register alternate namespaces for your mod, and that actually does
+# adhere to the correct resourcelocation standard... except the length is capped and they can't start with a hyphen but I'm not sure
+# why those restrictions exist either. I seriously do not understand Forge sometimes
+namespace="boat-with-everything"
+
+version="${version}"
+displayName="Boat with Everything"
+displayURL="https://github.com/quat1024/boat-with-everything/"
+logoFile="boat-with-everything-icon.png"
+credits="Your mom"
+authors="quaternary"
+description="The Boat with Chest is cool, I guess, but I want more things in my boat"
+
+[[dependencies.boat_with_everything]]
+modId="minecraft"
+mandatory=true
+versionRange="[1.19,1.19.2)"
+ordering="NONE"
+side="BOTH"
